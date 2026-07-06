@@ -632,7 +632,7 @@ export default function Admin() {
                       className="w-full h-full object-contain rounded-xl"
                     />
                   </div>
-                <h1 className="text-lg font-black text-white">Admin Panel</h1>
+                <h1 className="text-lg font-black text-white">Admin Login</h1>
                 <p className="text-xs text-white/35 mt-1">ANDIKA STORE</p>
               </div>
               <form onSubmit={(e) => void handleLogin(e)} className="space-y-4">
