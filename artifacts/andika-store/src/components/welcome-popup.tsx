@@ -68,8 +68,8 @@ export function WelcomePopup() {
               <img
                 src="/logo.png"
                 alt="Andika Store"
-                className="w-20 h-20 object-contain mb-5"
-               />
+                className="w-20 h-20 rounded-2xl bg-white p-2 object-contain border border-violet-500/20 shadow-xl shadow-violet-600/25 mb-5"
+              />
               <div className="mb-3 rounded-full border border-violet-500/20 bg-violet-500/10 px-3 py-1">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-violet-300">
                   MEMBER ALFAMART
