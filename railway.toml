@@ -2,7 +2,10 @@
 # Health check — Railway uses this to confirm the service is up before routing traffic.
 # The /api/healthz endpoint returns { status: "ok" } with HTTP 200.
 healthcheckPath = "/api/healthz"
-healthcheckTimeout = 60
+# Increased timeout to 90 seconds for cold starts with build artifacts
+healthcheckTimeout = 90
+# Check health more aggressively during startup
+startTimeout = 120
 
 # Automatically restart the service if it crashes.
 restartPolicyType = "ON_FAILURE"
