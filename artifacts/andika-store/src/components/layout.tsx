@@ -11,23 +11,23 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-background">
-      <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-[#080812]/90 backdrop-blur-xl">
-        <div className="max-w-lg mx-auto px-4 h-14 flex items-center justify-between">
+        <header className="sticky top-0 z-50 w-full border-b border-violet-500/10 bg-[#080812]/85 backdrop-blur-2xl">
+          <div className="max-w-lg mx-auto px-4 h-16 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5" data-testid="link-logo">
             <img
               src="/logo.png"
               alt="Andika Store"
-              className="w-10 h-10 object-contain drop-shadow-[0_0_10px_rgba(168,85,247,.45)]"
+              className="w-11 h-11 object-contain drop-shadow-[0_0_14px_rgba(168,85,247,.55)]"
             />
 
-            <span className="font-black text-sm tracking-widest uppercase text-white">
+            <span className="font-black text-[15px] tracking-[0.12em] uppercase text-white">
               ANDIKA STORE
             </span>
           </Link>
 
           {/* Nav */}
-          <nav className="flex items-center gap-2">
+          <nav className="flex items-center gap-3">
             <Link
               href="/"
               className={`px-3.5 py-1.5 rounded-lg text-xs font-bold tracking-widest uppercase transition-all duration-200 ${
