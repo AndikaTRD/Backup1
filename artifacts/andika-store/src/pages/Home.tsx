@@ -67,7 +67,7 @@ export default function Home() {
           </h1>
 
           <p className="text-sm text-white/60 max-w-sm mx-auto leading-relaxed">
-            Bantu Targer Member Tokomu Tercapai
+            Bantu Target Member Tokomu Tercapai
             <br />
             Dengan Layanan Aman,Terpercaya
             <br />
