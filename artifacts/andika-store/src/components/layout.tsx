@@ -18,10 +18,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <img
               src="/logo.png"
               alt="Andika Store"
-              className="w-11 h-11 object-contain drop-shadow-[0_0_14px_rgba(168,85,247,.55)]"
+              className="w-9 h-9 rounded-xl bg-white p-1 object-contain border border-violet-500/20 shadow-lg shadow-violet-500/20"
             />
 
-            <span className="font-black text-[15px] tracking-[0.12em] uppercase text-white">
+            <span className="font-black text-xs sm:text-sm tracking-wide uppercase text-white">
               ANDIKA STORE
             </span>
           </Link>
