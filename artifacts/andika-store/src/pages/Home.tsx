@@ -156,6 +156,89 @@ export default function Home() {
           Admin akan konfirmasi via WhatsApp setelah pesanan dikirim.
         </motion.p>
       </section>
+      {/* Ulasan Singkat */}
+      <section className="w-full max-w-sm mx-auto px-4 pb-20">
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Sparkles className="w-5 h-5 text-violet-400" />
+              <h2 className="text-2xl font-black text-white">
+                Ulasan Singkat
+              </h2>
+            </div>
+
+            <p className="text-sm text-white/50 mt-2">
+              Ringkasan pengalaman pelanggan yang telah menggunakan layanan.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+
+            {[
+              {
+                name: "R***",
+                role: "Crew",
+                text: "Target member toko akhirnya tercapai. Admin cepat merespons dan selalu update progress."
+              },
+              {
+                name: "A***",
+                role: "Assistant Chief of Store",
+                text: "Sudah beberapa kali order. Proses cepat, aman, dan hasil sesuai harapan."
+              },
+              {
+                name: "N***",
+                role: "Chief of Store",
+                text: "Harga terjangkau dan pelayanan profesional. Sangat membantu saat mengejar target member."
+              }
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.15 }}
+                className="rounded-2xl border border-violet-500/20 bg-[#0c0c1a] p-5 transition-all duration-300 hover:border-violet-400/40 hover:-translate-y-1"
+                style={{
+                  boxShadow:
+                    "0 0 25px rgba(124,58,237,.08), inset 0 1px 0 rgba(255,255,255,.03)"
+                }}
+              >
+                <div className="flex gap-1 mb-3">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className="w-4 h-4 text-yellow-400 fill-yellow-400"
+                    />
+                  ))}
+                </div>
+
+                <div className="text-4xl text-violet-400/20 font-black leading-none mb-2">
+                  "
+                </div>
+                <p className="text-sm text-white/70 leading-relaxed italic">
+                  "{item.text}"
+                </p>
+
+                <div className="mt-5 pt-4 border-t border-white/5">
+                  <h4 className="text-white font-semibold">
+                    {item.name}
+                  </h4>
+
+                  <p className="text-xs text-violet-300 mt-1">
+                    {item.role}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+
+          </div>
+        </motion.div>
+      </section>
     </Layout>
   );
 }
