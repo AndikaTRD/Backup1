@@ -25,6 +25,7 @@ FROM node:22-alpine AS runner
 
 WORKDIR /app
 ENV NODE_ENV=production
+ENV PORT=8080
 
 # The esbuild bundle is self-contained — only the compiled dist dirs are needed.
 # The API server resolves the frontend path relative to /app so both must be here.
