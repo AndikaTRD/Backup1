@@ -97,7 +97,7 @@ export function WelcomePopup() {
               {/* Subtitle */}
               <p className="text-sm text-white/60 leading-relaxed mb-7">
                 Solusi aktivasi <b className="text-white">New Member Fresh</b>
-                untuk membantu target member tokomu tercapai.
+                 untuk membantu target member tokomu tercapai.
               </p>
 
               {/* Feature points */}
