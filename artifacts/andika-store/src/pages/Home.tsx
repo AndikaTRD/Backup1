@@ -5,10 +5,10 @@ import { motion } from "framer-motion";
 import { Shield, Zap, Clock, Headphones, ChevronRight, Star, Sparkles } from "lucide-react";
 
 const FEATURES = [
-  { icon: Shield, label: "100% MEMBER BARU" },
-  { icon: Sparkles, label: "TARGET MEMBER TERCAPAI" },
-  { icon: Clock, label: "UPDATE PROGRES BERKALA" },
-  { icon: Headphones, label: "SUPPORT SETIAP HARI" },
+  { icon: Shield, label: "100% Member Baru" },
+  { icon: Sparkles, label: "Targer Member Tercapai" },
+  { icon: Clock, label: "Update Progres Berkala" },
+  { icon: Headphones, label: "Support Setiap Hari" },
 ];
 
 export default function Home() {
@@ -67,11 +67,11 @@ export default function Home() {
           </h1>
 
           <p className="text-sm text-white/60 max-w-sm mx-auto leading-relaxed">
-            MEMBANTU MEMENUHI KEBUTUHAN MEMBER BARU TOKO KAMU
+            Bantu Targer Member Tokomu Tercapai
             <br />
-            DENGAN LAYANAN AMAN,TERPERCAYA
+            Dengan Layanan Aman,Terpercaya
             <br />
-            HINGGA MEMBER BERHASIL AKTIF.
+            Hingga Member Berhasil Aktif.
           </p>
         </motion.div>
       </section>
@@ -105,8 +105,8 @@ export default function Home() {
             {/* Pricing table */}
             <div className="mb-5 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3">
               <p className="text-xs text-emerald-300 text-center leading-relaxed">
-                HARGA PER MEMBER NORMAL APABILA ORDER KURANG DARI 10,
-                DAPAT DISKON HARGA JIKA ORDER LEBIH DARI 10 MEMBER
+                Hemat Rp500/member
+                Berlaku untuk pembelian mulai 10 member.
               </p>
             </div>
             <div className="rounded-xl border border-white/6 bg-white/3 overflow-hidden mb-5">
