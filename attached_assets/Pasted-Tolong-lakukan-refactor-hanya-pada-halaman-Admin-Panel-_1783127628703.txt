@@ -1,0 +1,361 @@
+Tolong lakukan refactor hanya pada halaman Admin Panel.
+
+PENTING:
+
+- Jangan mengubah struktur project.
+- Jangan mengubah Homepage.
+- Jangan mengubah halaman Member.
+- Jangan mengubah Checkout.
+- Jangan mengubah Payment Popup.
+- Jangan mengubah Login.
+- Jangan mengubah API yang sudah berjalan.
+- Jangan mengubah database schema kecuali benar-benar diperlukan.
+- Jangan mengubah Dockerfile.
+- Jangan mengubah package.json.
+- Jangan mengubah Vite Config.
+- Jangan mengubah konfigurasi Railway.
+- Jangan mengubah environment variable.
+- Jangan mengubah sistem deploy.
+- Jangan mengubah style website selain halaman Admin.
+- Pastikan project tetap dapat di-build menggunakan:
+
+pnpm build
+
+dan tetap dapat dijalankan di Railway tanpa konfigurasi tambahan.
+
+====================================================
+
+TARGET ADMIN PANEL V2
+
+====================================================
+
+Buat ulang tampilan Admin Panel menjadi lebih modern dengan tetap menggunakan tema website sekarang (Dark + Purple).
+
+====================================================
+
+1. DASHBOARD
+
+Tambahkan kartu statistik:
+
+- Total Order
+- Pending
+- Confirmed
+- Cancelled
+- Order Hari Ini
+- Revenue Hari Ini
+- Total Revenue
+
+Semua data dihitung otomatis dari database.
+
+Revenue hanya menghitung order dengan status Confirmed.
+
+====================================================
+
+2. TOMBOL KEMBALI
+
+Tambahkan tombol kembali di kiri atas.
+
+Saat ditekan langsung kembali ke Homepage.
+
+Jangan logout.
+
+====================================================
+
+3. RIWAYAT ORDER
+
+Riwayat order harus dikelompokkan berdasarkan tanggal.
+
+Contoh:
+
+Hari Ini
+
+- RC-20260702-9214
+- RC-20260702-9686
+
+--------------------------------
+
+Kemarin
+
+- RC-20260701-5512
+
+--------------------------------
+
+30 Juni
+
+- RC-20260630-8811
+
+Gunakan Accordion.
+
+Setiap tanggal dapat dibuka dan ditutup.
+
+====================================================
+
+4. CARD ORDER
+
+Setiap order dibuat menjadi card modern.
+
+Card menampilkan:
+
+- Nomor Order
+- Nama Customer
+- Produk
+- Jumlah Member
+- Total Harga
+- Tanggal
+- Status
+
+Gunakan badge:
+
+🟡 Pending
+
+🟢 Confirmed
+
+🔴 Cancelled
+
+====================================================
+
+5. COPY AKTIVASI
+
+Tambahkan tombol:
+
+📋 Copy Aktivasi
+
+Saat ditekan, Clipboard harus menyalin format PERSIS seperti berikut:
+
+AKTIVASI#(kode_toko_order)
+PIN / TGL LAHIR : (pin_order)
+QTY JUMLAH MEMBER : (jumlah_order)
+
+Contoh:
+
+AKTIVASI#ANDIKA001
+PIN / TGL LAHIR : 120596
+QTY JUMLAH MEMBER : 40
+
+Gunakan data dari order.
+
+Field:
+
+kode_toko_order
+
+pin_order
+
+jumlah_order
+
+Setelah berhasil tampilkan toast:
+
+"Format aktivasi berhasil disalin."
+
+====================================================
+
+6. COPY DETAIL
+
+Tambahkan tombol kedua:
+
+📄 Copy Detail
+
+Format:
+
+Order ID:
+Nama:
+WhatsApp:
+Produk:
+Jumlah:
+Harga:
+Status:
+Tanggal:
+
+Gunakan Clipboard API.
+
+====================================================
+
+7. SEARCH
+
+Tambahkan Search.
+
+Dapat mencari berdasarkan:
+
+- Nomor Order
+- Nama Customer
+
+Realtime.
+
+====================================================
+
+8. FILTER
+
+Tambahkan filter:
+
+Semua
+
+Pending
+
+Confirmed
+
+Cancelled
+
+====================================================
+
+9. REFRESH
+
+Tambahkan tombol Refresh.
+
+Reload data tanpa refresh browser.
+
+====================================================
+
+10. DATABASE
+
+Jangan menghapus data order yang masih aktif.
+
+Tambahkan Auto Clean.
+
+Jika order lebih dari 30 hari:
+
+hapus detail yang tidak diperlukan.
+
+Simpan hanya:
+
+Tanggal
+
+Revenue
+
+Jumlah Order
+
+Status Summary
+
+Database tetap ringan.
+
+====================================================
+
+11. PERFORMANCE
+
+Gunakan Pagination atau Lazy Loading.
+
+Admin tetap cepat walaupun memiliki ribuan order.
+
+====================================================
+
+12. RESPONSIVE
+
+Pastikan tampil sempurna pada:
+
+Desktop
+
+Tablet
+
+Android
+
+iPhone
+
+====================================================
+
+13. UI
+
+Gunakan style website sekarang.
+
+Dark Theme.
+
+Purple Accent.
+
+Rounded Card.
+
+Glow Effect.
+
+Animasi halus.
+
+Jangan mengubah identitas visual.
+
+====================================================
+
+14. ORDER FLOW
+
+Pastikan alur order tetap:
+
+Customer Checkout
+
+↓
+
+Order masuk database
+
+↓
+
+Status Pending
+
+↓
+
+Admin melihat order
+
+↓
+
+Admin Confirm
+
+↓
+
+Status berubah Confirmed
+
+↓
+
+Revenue bertambah
+
+Tidak boleh ada order yang hilang.
+
+====================================================
+
+15. COMPATIBILITY
+
+Pastikan fitur berikut tetap berjalan:
+
+✅ Login Admin
+
+✅ Homepage
+
+✅ Member
+
+✅ Checkout
+
+✅ Payment Popup
+
+✅ QRIS
+
+✅ Upload Bukti
+
+✅ API
+
+✅ Database
+
+✅ Railway
+
+✅ Docker
+
+✅ pnpm build
+
+====================================================
+
+16. CLEAN CODE
+
+Gunakan TypeScript yang rapi.
+
+Hilangkan kode yang tidak digunakan.
+
+Jangan menambah dependency yang tidak diperlukan.
+
+Gunakan komponen React yang reusable.
+
+====================================================
+
+17. HASIL AKHIR
+
+Pastikan seluruh website tetap sama.
+
+Yang berubah HANYA halaman Admin Panel.
+
+Jangan mengubah fitur customer.
+
+Jangan mengubah URL.
+
+Jangan mengubah API.
+
+Jangan mengubah database kecuali untuk optimasi yang kompatibel.
+
+Pastikan hasil akhir tetap bisa langsung di-deploy ke Railway tanpa konfigurasi tambahan.

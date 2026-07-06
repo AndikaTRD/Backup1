@@ -1,0 +1,9 @@
+[deploy]
+# Health check — Railway uses this to confirm the service is up before routing traffic.
+# The /api/healthz endpoint returns { status: "ok" } with HTTP 200.
+healthcheckPath = "/api/healthz"
+healthcheckTimeout = 60
+
+# Automatically restart the service if it crashes.
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5

@@ -1,0 +1,26 @@
+# Dependencies — reinstalled inside Docker
+node_modules
+**/node_modules
+
+# Build artifacts — produced inside Docker
+**/dist
+**/.turbo
+
+# Version control
+.git
+.gitignore
+
+# Replit-specific files (not needed in the container)
+.replit
+replit.nix
+.local
+.agents
+.upm
+
+# Logs and temp
+**/*.log
+**/npm-debug.log*
+**/.DS_Store
+
+# Attached assets (images, docs) — not part of the build
+attached_assets

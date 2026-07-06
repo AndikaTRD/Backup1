@@ -1,0 +1,230 @@
+Buat website modern yang tampilannya semirip mungkin dengan Retail-Cortex.io.
+
+Nama website:
+ANDIKA STORE
+
+Tema:
+- Dark mode
+- Dominan hitam, ungu, dan pink
+- Responsive untuk HP
+- Animasi halus
+- Font modern
+- Card dengan efek glow
+
+================================================
+
+HEADER
+
+Logo:
+ANDIKA STORE
+
+Menu:
+- MEMBER
+
+Hapus semua menu lain.
+
+================================================
+
+HERO
+
+Judul:
+
+NEW MEMBER FRESH
+
+Deskripsi:
+
+Layanan aktivasi New Member Fresh.
+Proses cepat, aman, dan profesional.
+
+================================================
+
+PRODUK
+
+Hanya ada 1 produk.
+
+Nama:
+NEW MEMBER FRESH
+
+Harga:
+
+• 1–9 Member = Rp6.500/member
+
+• Minimal 10 Member = Rp6.000/member
+
+Tombol:
+
+BELI SEKARANG
+
+================================================
+
+POPUP ORDER
+
+Saat tombol BELI ditekan tampilkan popup.
+
+Field yang harus diisi:
+
+1. Jumlah Member
+
+Placeholder:
+Contoh: 12
+
+2. Kode Toko
+
+Placeholder:
+Contoh: 1AN3
+
+Semua huruf otomatis menjadi HURUF BESAR (uppercase).
+
+3. PIN / Tanggal Lahir
+
+Placeholder:
+Contoh: 041275
+
+================================================
+
+SISTEM HARGA
+
+Jika jumlah member kurang dari 10
+
+Harga/member = Rp6.500
+
+Jika jumlah member 10 atau lebih
+
+Harga/member = Rp6.000
+
+Hitung otomatis:
+
+Harga/member
+
+Total pembayaran
+
+================================================
+
+Ringkasan otomatis
+
+AKTIVASI#(KodeToko)
+
+Contoh:
+
+AKTIVASI#1AN3
+
+PIN / TGL LAHIR:
+041275
+
+JUMLAH MEMBER:
+12
+
+HARGA/MEMBER:
+Rp6.000
+
+TOTAL:
+Rp72.000
+
+================================================
+
+Tombol
+
+Tambah ke Keranjang
+
+================================================
+
+KERANJANG
+
+Menampilkan:
+
+Nama produk
+
+Qty
+
+Harga/member
+
+Total
+
+Checkout
+
+================================================
+
+POPUP PEMBAYARAN
+
+Field:
+
+Nama Pemesan
+
+Metode Pembayaran
+
+Pilihan:
+
+QRIS
+
+Transfer
+
+Jika memilih QRIS
+
+Tampilkan gambar QRIS.
+
+Jika memilih Transfer
+
+Tampilkan daftar rekening.
+
+Tambahkan tombol:
+
+PILIH BUKTI
+
+untuk upload bukti pembayaran.
+
+================================================
+
+KONFIRMASI PAYMENT
+
+Setelah upload bukti
+
+aktifkan tombol
+
+KONFIRMASI PAYMENT
+
+================================================
+
+Saat tombol KONFIRMASI PAYMENT ditekan
+
+Buat Nomor Order otomatis seperti:
+
+RC-YYYYMMDD-HHMMSS-XXXX
+
+Lalu buka WhatsApp menggunakan wa.me dengan pesan:
+
+HALLO, SAYA SUDAH MELAKUKAN KONFIRMASI PAYMENT
+
+TRANSAKSI SUKSES
+
+NO ORDER:
+(otomatis)
+
+NAMA PEMESAN:
+(nama)
+
+AKTIVASI#(KodeToko)
+
+PIN / TGL LAHIR:
+(pin)
+
+JUMLAH QTY MEMBER:
+(jumlah)
+
+TOTAL:
+(total)
+
+PAYMENT METODE:
+(QRIS atau TRANSFER)
+
+TERIMA KASIH.
+
+================================================
+
+Tambahkan validasi:
+
+- Semua field wajib diisi.
+- Jumlah member minimal 1.
+- Kode toko otomatis uppercase.
+- Total selalu dihitung otomatis.
+- Website harus sangat responsif di HP.
+- Desain dibuat semirip mungkin dengan Retail-Cortex.io tetapi menggunakan identitas ANDIKA STORE.
