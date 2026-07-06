@@ -61,7 +61,8 @@ export function WelcomePopup() {
             >
               <X className="w-3.5 h-3.5" />
             </button>
-
+            
+            <div className="relative px-6 pt-8 pb-7 flex flex-col items-center text-center">
               <div className="absolute top-12 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full bg-violet-600/20 blur-3xl pointer-events-none" />
               {/* Logo */}
               <img
