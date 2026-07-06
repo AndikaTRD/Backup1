@@ -62,10 +62,17 @@ export function WelcomePopup() {
               <X className="w-3.5 h-3.5" />
             </button>
 
-            <div className="relative px-6 pt-8 pb-7 flex flex-col items-center text-center">
+              <div className="absolute top-12 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full bg-violet-600/20 blur-3xl pointer-events-none" />
               {/* Logo */}
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center mb-5 shadow-lg shadow-violet-900/50">
-                <span className="text-2xl font-black text-white leading-none tracking-tighter">A</span>
+              <img
+                src="/logo.png"
+                alt="Andika Store"
+                className="w-20 h-20 object-contain mb-5"
+              />
+              <div className="mb-3 rounded-full border border-violet-500/20 bg-violet-500/10 px-3 py-1">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-violet-300">
+                  MEMBER ALFAMART
+                </span>
               </div>
 
               {/* Store name */}
@@ -74,24 +81,42 @@ export function WelcomePopup() {
               </p>
 
               {/* Title */}
-              <h2 className="text-lg font-black text-white leading-snug mb-3 px-2">
-                SELAMAT DATANG DI{" "}
-                <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-400 bg-clip-text text-transparent">
-                  ANDIKA STORE
+              <h2 className="text-3xl font-black leading-tight mb-3">
+                <span className="text-white">
+                  TARGET MEMBER
+                </span>
+
+                <br />
+
+                <span className="bg-gradient-to-r from-violet-400 to-pink-500 bg-clip-text text-transparent">
+                  BELUM TERCAPAI?
                 </span>
               </h2>
 
               {/* Subtitle */}
-              <p className="text-[13px] text-white/50 leading-relaxed mb-6 px-2">
-                Layanan aktivasi member terpercaya. Proses cepat, aman, dan support 24 jam.
+              <p className="text-sm text-white/60 leading-relaxed mb-7">
+                Solusi aktivasi <b className="text-white">New Member Fresh</b>
+                untuk membantu target member tokomu tercapai.
               </p>
 
               {/* Feature points */}
               <div className="w-full space-y-2.5 mb-7">
                 {[
-                  { icon: "⚡", label: "Proses Cepat", desc: "Aktivasi dalam hitungan menit" },
-                  { icon: "🛡️", label: "Garansi Aktif", desc: "Setiap order dijamin aktif" },
-                  { icon: "💬", label: "Support 24 Jam", desc: "Tim siap membantu kapanpun" },
+                  {
+                    icon:"🔥",
+                    label:"Member Fresh",
+                    desc:"100% member baru"
+                  },
+                  {
+                    icon:"⚡",
+                    label:"Proses Cepat",
+                    desc:"Update progress berkala"
+                  },
+                  {
+                    icon:"🛡️",
+                    label:"Terpercaya",
+                    desc:"Support admin setiap hari"
+                  }
                 ].map(({ icon, label, desc }) => (
                   <div
                     key={label}
@@ -111,8 +136,11 @@ export function WelcomePopup() {
                 onClick={handleDismiss}
                 className="w-full h-12 rounded-2xl font-black text-sm uppercase tracking-widest text-white bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 hover:opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-violet-900/40"
               >
-                MULAI BELANJA
+                LIHAT HARGA MEMBER
               </button>
+              <p className="mt-3 text-[10px] text-white/30">
+              Admin akan menghubungi melalui WhatsApp setelah order.
+              </p>
             </div>
           </motion.div>
         </motion.div>
