@@ -5,10 +5,10 @@ import { motion } from "framer-motion";
 import { Shield, Zap, Clock, Headphones, ChevronRight, Star, Sparkles } from "lucide-react";
 
 const FEATURES = [
-  { icon: Shield, label: "Akun baru & fresh" },
-  { icon: Zap, label: "Proses cepat" },
-  { icon: Clock, label: "Garansi aktif" },
-  { icon: Headphones, label: "Support 24 jam" },
+  { icon: Shield, label: "Member baru" },
+  { icon: Zap, label: "Garansi hingga aktif" },
+  { icon: Clock, label: "Update progres" },
+  { icon: Headphones, label: "Pelayanan ramah" },
 ];
 
 export default function Home() {
@@ -66,9 +66,12 @@ export default function Home() {
             <span className="text-white">FRESH</span>
           </h1>
 
-          <p className="text-sm text-white/40 max-w-xs mx-auto leading-relaxed">
-            Layanan aktivasi New Member Fresh.<br />
-            Proses cepat, aman, dan amanah.
+          <p className="text-sm text-white/60 max-w-sm mx-auto leading-relaxed">
+            Membantu memenuhi target member toko Anda
+            <br />
+            dengan layanan yang aman, terpercaya,
+            <br />
+            hingga member berhasil aktif.
           </p>
         </motion.div>
       </section>
@@ -100,6 +103,12 @@ export default function Home() {
             <p className="text-xs text-white/40 mb-5">Aktivasi Member Fresh</p>
 
             {/* Pricing table */}
+            <div className="mb-5 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3">
+              <p className="text-xs text-emerald-300 text-center leading-relaxed">
+                💜 Semakin banyak jumlah member yang dipesan,
+                semakin hemat harga per member.
+              </p>
+            </div>
             <div className="rounded-xl border border-white/6 bg-white/3 overflow-hidden mb-5">
               <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/5">
                 <span className="text-xs text-white/45">1 – 9 Member</span>
@@ -144,7 +153,7 @@ export default function Home() {
           transition={{ delay: 0.4 }}
           className="text-center text-[10px] text-white/18 mt-4 tracking-wider"
         >
-          Konfirmasi otomatis via WhatsApp
+          Admin akan menghubungi Anda melalui WhatsApp setelah pesanan dikirim.
         </motion.p>
       </section>
     </Layout>

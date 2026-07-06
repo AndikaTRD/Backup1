@@ -75,4 +75,3 @@ externalPort = 80
 [userenv]
 
 [userenv.shared]
-GITHUB_TOKEN = ""
