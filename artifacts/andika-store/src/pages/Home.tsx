@@ -6,7 +6,7 @@ import { Shield, Zap, Clock, Headphones, ChevronRight, Star, Sparkles } from "lu
 
 const FEATURES = [
   { icon: Shield, label: "100% Member Baru" },
-  { icon: Sparkles, label: "Targer Member Tercapai" },
+  { icon: Sparkles, label: "Target Member Tercapai" },
   { icon: Clock, label: "Update Progres Berkala" },
   { icon: Headphones, label: "Support Setiap Hari" },
 ];
