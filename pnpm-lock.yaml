@@ -160,6 +160,9 @@ importers:
       '@rollup/rollup-linux-x64-musl':
         specifier: ^4.62.2
         version: 4.62.2
+      lightningcss:
+        specifier: ^1.32.0
+        version: 1.32.0
       prettier:
         specifier: ^3.8.4
         version: 3.9.2
