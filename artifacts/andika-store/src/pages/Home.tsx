@@ -167,9 +167,12 @@ export default function Home() {
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-2 mb-2">
               <Sparkles className="w-5 h-5 text-violet-400" />
-              <h2 className="text-2xl font-black text-white">
-                Ulasan Singkat
-              </h2>
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Sparkles className="w-5 h-5 text-violet-400" />
+                <h2 className="text-2xl font-black text-white">
+                  Ulasan Singkat
+                </h2>
+              </div>
             </div>
 
             <p className="text-sm text-white/50 mt-2">
