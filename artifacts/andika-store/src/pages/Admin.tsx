@@ -614,13 +614,24 @@ export default function Admin() {
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-sm"
         >
-          <div className="rounded-2xl border border-violet-500/20 bg-[#0d0d1b] overflow-hidden">
+            <div className="relative rounded-2xl border border-violet-500/20 bg-[#0d0d1b] overflow-hidden">
             <div className="h-1 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500" />
             <div className="p-6">
-              <div className="flex flex-col items-center mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center mb-3">
-                  <ShieldCheck className="w-6 h-6 text-violet-400" />
-                </div>
+              <button
+                onClick={() => window.history.back()}
+                className="absolute top-5 left-5 flex items-center gap-2 text-white/50 hover:text-white transition-colors"
+              >
+                <ArrowLeft className="w-5 h-5" />
+                <span className="text-sm font-medium">Kembali</span>
+              </button>
+                <div className="flex flex-col items-center mb-6 mt-8">
+                  <div className="w-16 h-16 rounded-2xl overflow-hidden bg-white p-2 border border-violet-500/30 shadow-lg shadow-violet-500/20 mb-3">
+                    <img
+                      src="/logo.png"
+                      alt="Andika Store"
+                      className="w-full h-full object-contain rounded-xl"
+                    />
+                  </div>
                 <h1 className="text-lg font-black text-white">Admin Panel</h1>
                 <p className="text-xs text-white/35 mt-1">ANDIKA STORE</p>
               </div>
