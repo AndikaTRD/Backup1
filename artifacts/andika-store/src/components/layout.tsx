@@ -1,6 +1,6 @@
 import { APP_CONFIG } from "@/config/app";
 import { Link, useLocation } from "wouter";
-import { Store, ShoppingCart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -15,12 +15,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <div className="max-w-lg mx-auto px-4 h-14 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5" data-testid="link-logo">
-            <div
-              className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #a855f7)" }}
-            >
-              <Store className="w-4 h-4 text-white" />
-            </div>
+            <img
+              src="/logo.png"
+              alt="Andika Store"
+              className="w-10 h-10 object-contain drop-shadow-[0_0_10px_rgba(168,85,247,.45)]"
+            />
+
             <span className="font-black text-sm tracking-widest uppercase text-white">
               ANDIKA STORE
             </span>
