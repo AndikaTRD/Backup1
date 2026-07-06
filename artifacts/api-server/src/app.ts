@@ -1,4 +1,4 @@
-import express, { type Express } from "express";
+import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
 import session from "express-session";
@@ -91,5 +91,11 @@ if (process.env.NODE_ENV === "production" && fs.existsSync(frontendDist)) {
     res.sendFile(path.join(frontendDist, "index.html"));
   });
 }
+
+// Global error handler — catch-all for any unhandled errors
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  logger.error({ err }, "Unhandled error in express");
+  res.status(500).json({ error: "Internal server error" });
+});
 
 export default app;
