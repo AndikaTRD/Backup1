@@ -5,10 +5,10 @@ import { motion } from "framer-motion";
 import { Shield, Zap, Clock, Headphones, ChevronRight, Star, Sparkles } from "lucide-react";
 
 const FEATURES = [
-  { icon: Shield, label: "Member baru" },
-  { icon: Zap, label: "Garansi hingga aktif" },
-  { icon: Clock, label: "Update progres" },
-  { icon: Headphones, label: "Pelayanan ramah" },
+  { icon: Shield, label: "100% MEMBER BARU" },
+  { icon: Sparkles, label: "TARGET MEMBER TERCAPAI" },
+  { icon: Clock, label: "UPDATE PROGRES BERKALA" },
+  { icon: Headphones, label: "SUPPORT SETIAP HARI" },
 ];
 
 export default function Home() {
@@ -67,11 +67,11 @@ export default function Home() {
           </h1>
 
           <p className="text-sm text-white/60 max-w-sm mx-auto leading-relaxed">
-            Membantu memenuhi target member toko Anda
+            MEMBANTU MEMENUHI KEBUTUHAN MEMBER BARU TOKO KAMU
             <br />
-            dengan layanan yang aman, terpercaya,
+            DENGAN LAYANAN AMAN,TERPERCAYA
             <br />
-            hingga member berhasil aktif.
+            HINGGA MEMBER BERHASIL AKTIF.
           </p>
         </motion.div>
       </section>
@@ -100,13 +100,13 @@ export default function Home() {
             <h2 className="text-xl font-black text-white tracking-tight mb-0.5">
               NEW MEMBER FRESH
             </h2>
-            <p className="text-xs text-white/40 mb-5">Aktivasi Member Fresh</p>
+            <p className="text-xs text-white/40 mb-5">Aktivasi Member Baru</p>
 
             {/* Pricing table */}
             <div className="mb-5 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3">
               <p className="text-xs text-emerald-300 text-center leading-relaxed">
-                💜 Semakin banyak jumlah member yang dipesan,
-                semakin hemat harga per member.
+                HARGA PER MEMBER NORMAL APABILA ORDER KURANG DARI 10,
+                DAPAT DISKON HARGA JIKA ORDER LEBIH DARI 10 MEMBER
               </p>
             </div>
             <div className="rounded-xl border border-white/6 bg-white/3 overflow-hidden mb-5">
@@ -153,7 +153,7 @@ export default function Home() {
           transition={{ delay: 0.4 }}
           className="text-center text-[10px] text-white/18 mt-4 tracking-wider"
         >
-          Admin akan menghubungi Anda melalui WhatsApp setelah pesanan dikirim.
+          Admin akan konfirmasi via WhatsApp setelah pesanan dikirim.
         </motion.p>
       </section>
     </Layout>
