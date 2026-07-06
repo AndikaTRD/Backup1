@@ -78,15 +78,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col">{children}</main>
+          <main className="flex-1 flex flex-col">{children}</main>
 
-      <footer className="border-t border-white/5 py-5">
-        <div className="max-w-lg mx-auto px-4 text-center">
-          <p className="text-[10px] text-white/15 tracking-widest uppercase">
-            © {APP_CONFIG.copyrightYear} {APP_CONFIG.name} {APP_CONFIG.version}
-          </p>
+          <footer className="border-t border-white/5 py-5">
+            <div className="max-w-lg mx-auto px-4 text-center space-y-1">
+              <p className="text-xs text-white/60 font-medium">
+                © {APP_CONFIG.copyrightYear} {APP_CONFIG.name}
+              </p>
+
+              <p className="text-[11px] text-violet-400 font-semibold">
+                Version {APP_CONFIG.version}
+              </p>
+            </div>
+          </footer>
         </div>
-      </footer>
-    </div>
-  );
-}
+      );
+    }
