@@ -9,8 +9,8 @@ interface OrderPopupProps {
   onClose: () => void;
 }
 
-const PRICE_REGULAR = 6500;
-const PRICE_BULK = 6000;
+const PRICE_REGULAR = 6000;
+const PRICE_BULK = 5500;
 const BULK_MIN = 10;
 
 function formatRp(n: number): string {
