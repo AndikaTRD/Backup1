@@ -162,7 +162,7 @@ export function OrderPopup({ open, onClose }: OrderPopupProps) {
                     if (val.length > 6) val = val.slice(0, 6);
                     setPin(val);
                   }}
-                  placeholder="Contoh: 041275"
+                  placeholder="Contoh: 130999"
                   maxLength={8}
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-violet-500/50 focus:bg-violet-500/5 transition-all font-mono tracking-widest"
                   data-testid="input-pin"
