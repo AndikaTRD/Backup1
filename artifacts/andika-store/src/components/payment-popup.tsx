@@ -278,10 +278,19 @@ export function PaymentPopup({ open, onClose }: PaymentPopupProps) {
                   >
                     {/* QRIS placeholder */}
                     <div className="flex flex-col items-center">
+                      <div className="mb-4 rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-center">
+                        <p className="text-red-400 font-bold text-lg">
+                          ⚠️ QRIS Sedang Gangguan
+                        </p>
+                        <p className="text-white/70 text-sm mt-2">
+                          Mohon maaf, pembayaran melalui QRIS untuk sementara tidak tersedia.
+                          Silakan gunakan metode pembayaran lain.
+                        </p>
+                      </div>
                       <img
                         src="/qris.jpeg"
                         alt="QRIS ANDIKA STORE"
-                        className="w-64 rounded-xl shadow-lg"
+                        className="w-64 rounded-xl shadow-lg blur-md opacity-60 select-none pointer-events-none"
                       />
 
                       <p className="mt-4 text-xs font-bold text-white/70 uppercase tracking-widest">
