@@ -616,10 +616,22 @@ export default function Admin() {
         >
           <div className="rounded-2xl border border-violet-500/20 bg-[#0d0d1b] overflow-hidden">
             <div className="h-1 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500" />
-            <div className="p-6">
+              <div className="relative p-6">
+                <button
+                  type="button"
+                  onClick={() => window.history.back()}
+                  className="absolute top-4 right-4 w-8 h-8 rounded-lg flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all"
+                  title="Tutup"
+                >
+                  ✕
+                </button>
               <div className="flex flex-col items-center mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center mb-3">
-                  <ShieldCheck className="w-6 h-6 text-violet-400" />
+                <div className="w-14 h-14 flex items-center justify-center mb-3">
+                  <img
+                    src="/logo.png"
+                    alt="ANDIKA STORE"
+                    className="w-14 h-14 object-contain rounded-xl"
+                  />
                 </div>
                 <h1 className="text-lg font-black text-white">Admin Panel</h1>
                 <p className="text-xs text-white/35 mt-1">ANDIKA STORE</p>
