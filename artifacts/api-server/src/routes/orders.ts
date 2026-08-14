@@ -35,6 +35,17 @@ function ensureUploadsDir() {
   }
 }
 
+function itemIsAbsensiToko(item: { productName?: unknown }) {
+  return (
+    typeof item.productName === "string" &&
+    item.productName.trim().toLowerCase() === "absensi toko"
+  );
+}
+
+function orderContainsAbsensi(items: Array<{ productName?: unknown }>) {
+  return items.some(itemIsAbsensiToko);
+}
+
 function serializeOrder(order: typeof ordersTable.$inferSelect) {
   return {
     ...order,
@@ -59,6 +70,11 @@ router.post("/orders/save", async (req, res): Promise<void> => {
     return;
   }
 
+  if (orderContainsAbsensi(items) && !req.session.customerUserId) {
+    res.status(401).json({ error: "Login customer diperlukan untuk membeli ABSENSI TOKO." });
+    return;
+  }
+
   const [order] = await db
     .insert(ordersTable)
     .values({
@@ -66,6 +82,7 @@ router.post("/orders/save", async (req, res): Promise<void> => {
       customerName,
       customerEmail: "-",
       customerPhone: "-",
+      customerUserId: req.session.customerUserId ?? null,
       items,
       total,
       paymentMethod,
@@ -86,6 +103,10 @@ router.post("/orders", async (req, res): Promise<void> => {
   }
 
   const { customerName, customerEmail, customerPhone, items, paymentMethod, notes } = parsed.data;
+  if (orderContainsAbsensi(items) && !req.session.customerUserId) {
+    res.status(401).json({ error: "Login customer diperlukan untuk membeli ABSENSI TOKO." });
+    return;
+  }
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const orderId = generateOrderId();
 
@@ -96,6 +117,7 @@ router.post("/orders", async (req, res): Promise<void> => {
       customerName,
       customerEmail,
       customerPhone,
+      customerUserId: req.session.customerUserId ?? null,
       items,
       total,
       paymentMethod,
