@@ -1,0 +1,180 @@
+Saya ingin menambahkan produk digital baru ke ANDIKA STORE bernama "ABSENSI TOKO".
+
+PENTING:
+Ini adalah fitur baru. Jangan merusak, menghapus, atau mengubah fungsi yang sudah berjalan pada ANDIKA STORE, terutama:
+- sistem login/register yang sudah ada
+- sistem order
+- NEW MEMBER FRESH
+- status order
+- Total Order
+- Total Member Terjual
+- dashboard admin
+- payment
+- database existing
+- desain/theme existing
+
+Sebelum melakukan perubahan, periksa terlebih dahulu struktur project, database schema, authentication, authorization, dan sistem order yang sudah ada.
+
+KONSEP PRODUK:
+ABSENSI TOKO adalah produk digital berbayar yang memungkinkan pembeli menggunakan aplikasi absensi karyawan melalui website ANDIKA STORE.
+
+Pembeli TIDAK mendapatkan file Excel atau file yang dapat dibagikan.
+Pembeli mendapatkan akses ke fitur Absensi Toko setelah pembelian berhasil dikonfirmasi.
+
+KONSEP AKSES:
+- Setiap data Absensi Toko harus dimiliki oleh user/account yang membelinya.
+- User hanya boleh melihat dan mengedit data Absensi Toko miliknya sendiri.
+- User lain tidak boleh mengakses data tersebut.
+- Jangan hanya mengandalkan URL tersembunyi.
+- Gunakan authorization di backend/server untuk memastikan ownership.
+- Jika User A membagikan URL Absensi Toko kepada User B, User B harus mendapatkan akses ditolak.
+- Jangan sampai ID toko atau ID absensi yang diketahui user dapat digunakan untuk mengambil data milik user lain.
+- Terapkan pengecekan ownership pada semua endpoint terkait absensi.
+
+PRODUK ABSENSI:
+Setelah produk dibeli dan order sudah CONFIRMED, user mendapatkan akses ke fitur "Absensi Toko".
+
+Untuk tahap pertama, buat fondasi berikut:
+
+1. Produk "ABSENSI TOKO"
+- Tambahkan konsep produk digital ini menggunakan struktur produk/order yang sudah ada jika memungkinkan.
+- Jangan membuat sistem pembayaran baru.
+- Gunakan sistem order dan status CONFIRMED yang sudah ada.
+- Jangan mengubah alur pembayaran produk yang sudah berjalan.
+
+2. HALAMAN PRODUK SAYA
+Tambahkan akses "Absensi Toko" pada area user/customer setelah produk dimiliki.
+
+Jika user belum memiliki produk Absensi Toko:
+- tampilkan bahwa produk belum aktif
+- jangan berikan akses ke data absensi.
+
+Jika user sudah memiliki produk dan ordernya CONFIRMED:
+- tampilkan tombol "Buka Absensi Toko".
+
+3. DATA ABSENSI
+Buat struktur database yang diperlukan untuk menyimpan:
+- owner/user ID
+- nama toko
+- daftar personil
+- nama personil
+- jabatan
+- data absensi per tanggal
+- shift
+- status absensi
+- created_at
+- updated_at
+
+Gunakan relasi database yang aman dan sesuai struktur database existing.
+
+4. PERSONIL
+User dapat:
+- menambahkan personil
+- mengubah nama personil
+- mengubah jabatan
+- menghapus personil
+- mengatur urutan personil jika diperlukan
+
+Contoh:
+Andi - Crew
+Budi - Crew
+Sinta - ACOS
+
+5. NAMA TOKO
+User dapat mengubah nama toko sendiri.
+
+6. KALENDER ABSENSI
+Buat tampilan kalender bulanan berbentuk tabel.
+
+Contoh:
+
+Personil | 1 | 2 | 3 | 4 | 5 | ...
+Andi     | P | P | L | P | P | ...
+Budi     | P | I | P | P | L | ...
+
+User dapat berpindah:
+- bulan sebelumnya
+- bulan berikutnya
+- bulan/tahun tertentu
+
+7. STATUS ABSENSI
+Untuk tahap awal sediakan:
+- Hadir
+- Libur
+- Izin
+- Sakit
+- Alpha
+
+Gunakan kode/tampilan yang jelas dan mudah digunakan dari HP.
+
+8. SHIFT
+User dapat mengatur shift untuk setiap personil pada setiap tanggal.
+
+Jangan mengunci pilihan shift secara permanen.
+Buat struktur yang nantinya memungkinkan shift dapat dikustomisasi.
+
+Untuk tahap awal bisa menyediakan:
+- Pagi
+- Siang
+- Malam
+- Libur
+
+9. RESPONSIVE
+Fitur harus nyaman digunakan terutama dari HP karena target pengguna adalah karyawan toko.
+
+Jangan membuat tabel kalender yang sulit digunakan di layar kecil.
+Gunakan horizontal scrolling jika memang diperlukan, tetapi nama personil tetap mudah dibaca.
+
+10. KEAMANAN
+Pastikan:
+- semua endpoint absensi membutuhkan login
+- semua endpoint melakukan ownership check
+- user tidak dapat membaca data user lain
+- user tidak dapat mengubah data user lain
+- user tidak dapat menghapus data user lain
+- jangan expose data absensi melalui endpoint publik
+- jangan hanya mengandalkan validasi frontend
+
+11. ADMIN
+Jangan berikan akses admin ke data absensi customer secara otomatis hanya karena user login sebagai customer.
+
+Admin boleh memiliki akses pengelolaan jika memang diperlukan oleh struktur existing, tetapi pisahkan authorization customer dan admin dengan jelas.
+
+12. DESAIN
+Pertahankan desain ANDIKA STORE yang sekarang.
+Gunakan komponen, warna, typography, button, card, dan layout yang sudah digunakan project.
+Jangan membuat tampilan dengan desain yang berbeda jauh.
+
+JANGAN IMPLEMENTASIKAN DULU:
+- export Excel
+- PDF
+- subscription otomatis
+- multi-toko
+- undang anggota
+- notifikasi
+- payroll
+- perhitungan jam kerja
+- fitur lanjutan lainnya
+
+Fokus tahap pertama hanya membuat fondasi produk Absensi Toko yang aman dan dapat digunakan.
+
+SEBELUM CODING:
+1. Periksa struktur project.
+2. Periksa database schema.
+3. Periksa sistem authentication.
+4. Periksa sistem authorization.
+5. Periksa struktur product/order.
+6. Periksa bagaimana status CONFIRMED disimpan.
+7. Tentukan cara terbaik menghubungkan kepemilikan produk Absensi Toko dengan user yang membeli.
+
+Setelah selesai, laporkan:
+- file yang dibuat/diubah
+- tabel database yang dibuat/diubah
+- endpoint API yang dibuat
+- bagaimana ownership/security diterapkan
+- bagaimana sistem mengetahui user memiliki produk Absensi Toko
+- bagaimana user membuka fitur Absensi Toko
+- hasil test
+- pastikan fitur existing ANDIKA STORE tidak rusak.
+
+Jangan menghapus atau mereset data production/existing.
