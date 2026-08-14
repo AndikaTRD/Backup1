@@ -411,13 +411,17 @@ components:
 
     StoreStats:
       type: object
-      required: [totalOrders, pendingOrders, confirmedOrders, totalRevenue, todayOrders, todayRevenue]
+      required: [totalOrders, pendingOrders, confirmedOrders, cancelledOrders, totalMembersSold, totalRevenue, todayOrders, todayRevenue]
       properties:
         totalOrders:
           type: integer
         pendingOrders:
           type: integer
         confirmedOrders:
+          type: integer
+        cancelledOrders:
+          type: integer
+        totalMembersSold:
           type: integer
         totalRevenue:
           type: number

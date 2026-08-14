@@ -19,6 +19,7 @@ import {
   Package,
   Calendar,
   DollarSign,
+  Users,
 } from "lucide-react";
 import {
   Accordion,
@@ -105,6 +106,7 @@ type Stats = {
   pendingOrders: number;
   confirmedOrders: number;
   cancelledOrders: number;
+  totalMembersSold: number;
   totalRevenue: number;
   todayOrders: number;
   todayRevenue: number;
@@ -739,6 +741,12 @@ export default function Admin() {
               value={stats.confirmedOrders}
               icon={<CheckCircle2 className="w-4 h-4" />}
               accent="bg-emerald-500/5"
+            />
+            <StatCard
+              label="Total Member Terjual"
+              value={stats.totalMembersSold}
+              icon={<Users className="w-4 h-4" />}
+              accent="bg-cyan-500/5"
             />
             <StatCard
               label="Cancelled"

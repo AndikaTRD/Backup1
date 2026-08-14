@@ -119,6 +119,24 @@ router.get("/admin/stats", requireAdmin, async (_req, res): Promise<void> => {
   const pendingOrders = allOrders.filter((o) => o.status === "pending" || o.status === "proof_uploaded").length;
   const confirmedOrders = allOrders.filter((o) => o.status === "confirmed").length;
   const cancelledOrders = allOrders.filter((o) => o.status === "cancelled").length;
+  const totalMembersSold = allOrders
+    .filter((o) => o.status === "confirmed")
+    .reduce((sum, order) => {
+      const items = Array.isArray(order.items)
+        ? (order.items as Array<{ quantity?: unknown }>)
+        : [];
+
+      return (
+        sum +
+        items.reduce((itemSum, item) => {
+          return typeof item.quantity === "number" &&
+            Number.isFinite(item.quantity) &&
+            item.quantity > 0
+            ? itemSum + item.quantity
+            : itemSum;
+        }, 0)
+      );
+    }, 0);
   const totalRevenue = allOrders
     .filter((o) => o.status === "confirmed")
     .reduce((sum, o) => sum + o.total, 0);
@@ -133,6 +151,7 @@ router.get("/admin/stats", requireAdmin, async (_req, res): Promise<void> => {
       pendingOrders,
       confirmedOrders,
       cancelledOrders,
+      totalMembersSold,
       totalRevenue,
       todayOrders: todayCount,
       todayRevenue,

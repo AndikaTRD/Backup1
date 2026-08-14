@@ -1,0 +1,56 @@
+Tambahkan statistik baru pada Admin Dashboard ANDIKA STORE dengan nama:
+
+"TOTAL MEMBER TERJUAL"
+
+Tujuannya adalah menghitung TOTAL JUMLAH MEMBER yang benar-benar terjual dan sudah dikonfirmasi.
+
+ATURAN PERHITUNGAN:
+- Hanya order dengan status "CONFIRMED" yang dihitung.
+- Order dengan status "CANCELLED" tidak boleh dihitung sama sekali.
+- Order dengan status "PENDING" tidak boleh dihitung.
+- Ambil jumlah member dari data masing-masing order, yaitu angka yang saat ini ditampilkan seperti "4 member", "233 member", dan seterusnya.
+- Jika satu order berisi 4 member dan statusnya CONFIRMED, tambahkan 4 ke Total Member Terjual.
+- Jika satu order berisi 233 member tetapi statusnya CANCELLED, tambahkan 0.
+- Jika ada beberapa order CONFIRMED, jumlahkan seluruh member dari order-order tersebut.
+
+CONTOH:
+Order A = 4 member, CONFIRMED → +4
+Order B = 233 member, CANCELLED → +0
+Order C = 10 member, CONFIRMED → +10
+
+Total Member Terjual = 14.
+
+TAMPILAN:
+- Tambahkan 1 card statistik baru bernama "TOTAL MEMBER TERJUAL" pada bagian statistik Admin Dashboard.
+- Pertahankan desain, tema dark/purple, typography, icon style, border, spacing, dan responsive layout yang sudah ada.
+- Jangan menghapus atau mengubah card statistik yang sudah ada.
+- "TOTAL ORDER" tetap menghitung jumlah seluruh order seperti sekarang.
+- Jangan mengganti arti "TOTAL ORDER".
+
+IMPLEMENTASI:
+- Periksa terlebih dahulu struktur database/model order yang sudah digunakan aplikasi.
+- Gunakan field jumlah member yang SUDAH ADA di database/order. Jangan membuat data dummy.
+- Gunakan status order yang sudah ada untuk filter CONFIRMED.
+- Jangan menghitung berdasarkan teks tampilan jika tersedia field numerik jumlah member di database.
+- Jangan membuat field database baru jika field jumlah member dan status sudah tersedia.
+- Pastikan statistik mengambil data langsung dari database dan selalu mengikuti data terbaru.
+- Pastikan order CANCELLED dan PENDING tidak masuk dalam perhitungan.
+- Jangan mengubah data order yang sudah ada.
+- Jangan mengubah fungsi order, pembayaran, status order, atau statistik lainnya.
+
+SEBELUM SELESAI:
+- Periksa apakah ada perbedaan antara jumlah "member" dan jumlah order.
+- Pastikan perhitungan menggunakan JUMLAH MEMBER, bukan jumlah transaksi.
+- Pastikan hanya status CONFIRMED yang dihitung.
+- Test dengan contoh:
+  CONFIRMED 4 member = 4
+  CANCELLED 233 member = 0
+  CONFIRMED 10 member = 10
+  Hasil = 14.
+
+Setelah implementasi selesai, jelaskan:
+1. Field database yang digunakan untuk jumlah member.
+2. Field/status yang digunakan untuk menentukan CONFIRMED.
+3. Query/perhitungan yang digunakan.
+4. File yang diubah.
+5. Hasil test.

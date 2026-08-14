@@ -310,6 +310,7 @@ export const AdminGetStatsResponse = zod.object({
   "pendingOrders": zod.number(),
   "confirmedOrders": zod.number(),
   "cancelledOrders": zod.number(),
+  "totalMembersSold": zod.number(),
   "totalRevenue": zod.number(),
   "todayOrders": zod.number(),
   "todayRevenue": zod.number()

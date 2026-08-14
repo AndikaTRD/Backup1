@@ -80,6 +80,8 @@ export interface StoreStats {
   totalOrders: number;
   pendingOrders: number;
   confirmedOrders: number;
+  cancelledOrders: number;
+  totalMembersSold: number;
   totalRevenue: number;
   todayOrders: number;
   todayRevenue: number;
