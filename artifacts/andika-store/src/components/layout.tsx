@@ -1,6 +1,6 @@
 import { APP_CONFIG } from "@/config/app";
 import { Link, useLocation } from "wouter";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, UserRound } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -65,6 +65,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   </motion.div>
                 )}
               </AnimatePresence>
+            </Link>
+
+            <Link
+              href="/product-saya"
+              className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
+                location === "/product-saya" || location === "/absensi"
+                  ? "bg-violet-600/25 text-violet-300"
+                  : "text-white/40 hover:text-white/70 hover:bg-white/5"
+              }`}
+              aria-label="Produk saya"
+            >
+              <UserRound className="w-4 h-4" />
             </Link>
 
             <Link

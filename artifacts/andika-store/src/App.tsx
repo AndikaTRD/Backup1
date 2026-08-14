@@ -7,6 +7,8 @@ import Home from "@/pages/Home";
 import Cart from "@/pages/Cart";
 import Admin from "@/pages/Admin";
 import { WelcomePopup } from "@/components/welcome-popup";
+import ProductSaya from "@/pages/ProductSaya";
+import Absensi from "@/pages/Absensi";
 
 const queryClient = new QueryClient();
 
@@ -16,6 +18,8 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/cart" component={Cart} />
       <Route path="/admin" component={Admin} />
+      <Route path="/product-saya" component={ProductSaya} />
+      <Route path="/absensi" component={Absensi} />
       <Route component={NotFound} />
     </Switch>
   );

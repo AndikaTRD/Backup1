@@ -1,1 +1,2 @@
 - [Railway deployment setup](railway-deployment.md) — Dockerfile, railway.toml, trust proxy, secure cookies, dynamic Replit plugin imports.
+- [Customer ownership model](customer-ownership.md) — customer accounts are separate from admin; confirmed Absensi orders own all attendance data.
