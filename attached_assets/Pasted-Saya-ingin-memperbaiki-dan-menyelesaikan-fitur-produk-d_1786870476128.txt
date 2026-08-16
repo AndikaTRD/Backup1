@@ -1,0 +1,1049 @@
+Saya ingin memperbaiki dan menyelesaikan fitur produk digital "ABSENSI TOKO" di ANDIKA STORE.
+
+PENTING:
+Baca dan pahami seluruh spesifikasi ini sebelum melakukan perubahan.
+
+Jangan mengubah atau merusak fitur ANDIKA STORE yang sudah berjalan, terutama:
+- NEW MEMBER FRESH
+- checkout NEW MEMBER FRESH
+- order member
+- payment
+- Admin Dashboard
+- Total Order
+- Total Order Member
+- login existing
+- customer existing
+- database existing
+
+ABSENSI TOKO harus menjadi produk digital yang terpisah dari NEW MEMBER FRESH.
+
+==================================================
+1. KONSEP UTAMA ABSENSI TOKO
+==================================================
+
+ABSENSI TOKO adalah aplikasi jadwal dan absensi karyawan toko yang dijual sebagai produk digital melalui ANDIKA STORE.
+
+Customer membeli ABSENSI TOKO.
+
+Setelah order ABSENSI TOKO berstatus CONFIRMED:
+- customer mendapatkan akses ABSENSI TOKO
+- customer login ke website
+- customer dapat membuka halaman ABSENSI TOKO
+- customer dapat mengatur nama toko
+- customer dapat menambahkan personil
+- customer dapat mengatur jabatan personil
+- customer dapat mengisi jadwal/absensi setiap tanggal
+- customer dapat mengubah jadwal kapan saja
+
+Setiap customer memiliki data ABSENSI TOKO sendiri.
+
+Customer A TIDAK BOLEH:
+- melihat data Customer B
+- melihat nama toko Customer B
+- melihat personil Customer B
+- melihat jadwal Customer B
+- mengubah data Customer B
+- menghapus data Customer B
+
+==================================================
+2. TAMPILAN UTAMA
+==================================================
+
+Tampilan utama ABSENSI TOKO HARUS berupa tabel kalender bulanan seperti spreadsheet/jadwal kerja toko.
+
+Konsep utama:
+
+PERSONIL × TANGGAL
+
+Setiap:
+- BARIS = satu personil
+- KOLOM = satu tanggal
+- SEL = absensi/jadwal pada tanggal tersebut
+
+Contoh struktur:
+
+PERSONIL       1      2      3      4      5      6      7
+--------------------------------------------------------------
+COS
+Personil 1     P7     P8     S14    M21    O      Cuti   Izin
+
+ACOS
+Personil 2     P8     S13    P7     M22    O      SO     P9
+
+CREW
+Personil 3     P7     P9     S15    S16    M21    AO     Izin
+
+Tabel kalender harus menjadi FITUR UTAMA.
+
+JANGAN membuat tampilan utama seperti:
+- daftar kartu personil
+- satu personil satu halaman
+- daftar absensi sederhana
+- tombol Hadir/Libur saja
+
+Saya ingin user bisa melihat jadwal seluruh personil dalam satu tabel kalender.
+
+==================================================
+3. URUTAN PERSONIL BERDASARKAN JABATAN
+==================================================
+
+Personil WAJIB otomatis diurutkan berdasarkan jenjang jabatan:
+
+1. COS
+2. ACOS
+3. Crew
+
+Urutan ini harus selalu dipertahankan.
+
+Contoh data dimasukkan secara acak:
+
+Crew A
+COS A
+Crew B
+ACOS A
+COS B
+Crew C
+
+Tampilan harus otomatis:
+
+COS
+- COS A
+- COS B
+
+ACOS
+- ACOS A
+
+Crew
+- Crew A
+- Crew B
+- Crew C
+
+Jangan menggunakan urutan waktu personil ditambahkan sebagai urutan utama.
+
+Jika beberapa personil mempunyai jabatan yang sama, gunakan urutan yang konsisten, misalnya berdasarkan nama secara alfabetis.
+
+==================================================
+4. JABATAN PERSONIL
+==================================================
+
+Saat menambahkan personil:
+
+Nama Personil
+[.........................]
+
+Jabatan
+[ Pilih Jabatan ▼ ]
+
+Pilihan:
+
+COS
+ACOS
+Crew
+
+Personil dapat:
+- ditambahkan
+- diedit
+- dihapus
+
+Jika jabatan berubah:
+
+Crew → ACOS
+
+maka personil otomatis berpindah ke bagian ACOS.
+
+Jika:
+
+ACOS → COS
+
+maka otomatis berpindah ke bagian COS.
+
+Jika:
+
+COS → Crew
+
+maka otomatis berpindah ke bagian Crew.
+
+Jadwal personil TIDAK BOLEH HILANG ketika:
+- nama diedit
+- jabatan diedit
+
+==================================================
+5. DATA PERSONIL AWAL
+==================================================
+
+JANGAN memasukkan nama orang tertentu ke database production.
+
+JANGAN melakukan seed otomatis dengan nama:
+- Andika
+- Anes
+- Sukma
+- Zizi
+atau nama orang lainnya.
+
+Saat customer pertama kali membuka ABSENSI TOKO:
+
+Tampilkan:
+
+Belum ada personil
+
+[ + TAMBAH PERSONIL ]
+
+Customer sendiri yang memasukkan:
+- nama personil
+- jabatan
+
+Jika diperlukan preview UI/demo, gunakan mock data TERPISAH.
+
+Mock data demo tidak boleh tersimpan ke database production/customer.
+
+==================================================
+6. NAMA TOKO
+==================================================
+
+Customer dapat menentukan nama toko sendiri.
+
+Contoh tampilan:
+
+ABSENSI TOKO
+
+Nama Toko
+[........................]
+
+[ Simpan ]
+
+Saat pertama kali dibuka, nama toko masih kosong.
+
+Tampilkan misalnya:
+
+"Nama toko belum diatur"
+
+Jangan memasukkan nama toko dummy ke database production.
+
+==================================================
+7. KALENDER BULANAN
+==================================================
+
+Tampilkan navigasi bulan:
+
+[ < ]       AGUSTUS 2026       [ > ]
+
+Customer dapat:
+- pindah bulan sebelumnya
+- pindah bulan berikutnya
+- memilih bulan/tahun jika diperlukan
+
+Jumlah tanggal harus otomatis mengikuti kalender.
+
+Contoh:
+- Februari 28/29 hari
+- April 30 hari
+- Mei 31 hari
+
+JANGAN hard-code jumlah tanggal.
+
+Header tanggal sebaiknya menampilkan:
+
+SEN
+15
+
+SEL
+16
+
+RAB
+17
+
+KAM
+18
+
+JUM
+19
+
+SAB
+20
+
+MIN
+21
+
+dan seterusnya.
+
+==================================================
+8. SISTEM ABSENSI — FINAL
+==================================================
+
+Pilihan ABSENSI UTAMA hanya:
+
+1. P = Shift Pagi
+2. S = Shift Siang
+3. M = Shift Malam
+4. O = Off / Libur
+5. AO = Add Off
+6. SO = Stock Opname
+7. Cuti
+8. Izin
+
+JANGAN ADA:
+- Alpha
+- A
+
+Alpha harus TIDAK tersedia di sistem.
+
+AO dan O adalah STATUS YANG BERBEDA.
+
+O = Off / Libur
+
+AO = Add Off
+
+Jangan menggabungkan AO dengan O.
+
+==================================================
+9. DETAIL SHIFT P
+==================================================
+
+Jika user memilih:
+
+P = Shift Pagi
+
+maka tampilkan pilihan jam masuk:
+
+P6
+P7
+P8
+P9
+P10
+P11
+P12
+
+Artinya angka menunjukkan jam masuk.
+
+Contoh:
+
+P6 = masuk pukul 06:00
+P7 = masuk pukul 07:00
+P8 = masuk pukul 08:00
+P9 = masuk pukul 09:00
+P10 = masuk pukul 10:00
+P11 = masuk pukul 11:00
+P12 = masuk pukul 12:00
+
+==================================================
+10. DETAIL SHIFT S
+==================================================
+
+Jika user memilih:
+
+S = Shift Siang
+
+maka tampilkan:
+
+S13
+S14
+S15
+S16
+S17
+S18
+
+Artinya:
+
+S13 = masuk pukul 13:00
+S14 = masuk pukul 14:00
+S15 = masuk pukul 15:00
+S16 = masuk pukul 16:00
+S17 = masuk pukul 17:00
+S18 = masuk pukul 18:00
+
+==================================================
+11. DETAIL SHIFT M
+==================================================
+
+Jika user memilih:
+
+M = Shift Malam
+
+maka tampilkan:
+
+M19
+M20
+M21
+M22
+M23
+
+Artinya:
+
+M19 = masuk pukul 19:00
+M20 = masuk pukul 20:00
+M21 = masuk pukul 21:00
+M22 = masuk pukul 22:00
+M23 = masuk pukul 23:00
+
+JANGAN menentukan jam pulang otomatis.
+
+Angka hanya menunjukkan JAM MASUK.
+
+==================================================
+12. ALUR PEMILIHAN ABSENSI
+==================================================
+
+Ketika user menekan satu sel tanggal, tampilkan pilihan:
+
+PILIH ABSENSI
+
+[ P - Pagi ]
+[ S - Siang ]
+[ M - Malam ]
+[ O - Off ]
+[ AO - Add Off ]
+[ SO - Stock Opname ]
+[ Cuti ]
+[ Izin ]
+
+Jika memilih P:
+
+tampilkan:
+
+P6
+P7
+P8
+P9
+P10
+P11
+P12
+
+Jika memilih S:
+
+tampilkan:
+
+S13
+S14
+S15
+S16
+S17
+S18
+
+Jika memilih M:
+
+tampilkan:
+
+M19
+M20
+M21
+M22
+M23
+
+Jika memilih:
+- O
+- AO
+- SO
+- Cuti
+- Izin
+
+langsung simpan status tersebut.
+
+Tambahkan pilihan:
+
+[ Kosongkan ]
+
+untuk menghapus isi absensi tanggal tersebut.
+
+==================================================
+13. HASIL YANG TERLIHAT DI TABEL
+==================================================
+
+Jika user memilih shift P dan jam P7, maka yang tampil di tabel:
+
+P7
+
+Bukan hanya P.
+
+Jika memilih shift S jam 14:
+
+S14
+
+Jika memilih shift M jam 22:
+
+M22
+
+Untuk status:
+
+O
+AO
+SO
+Cuti
+Izin
+
+langsung tampil sesuai status.
+
+Contoh:
+
+P7 | P8 | S14 | M22 | O | AO | SO | Cuti | Izin
+
+==================================================
+14. EDIT ABSENSI
+==================================================
+
+Setiap sel tanggal HARUS dapat diklik dan diedit kapan saja.
+
+Contoh:
+
+Tanggal 15:
+P7
+
+Klik sel.
+
+User dapat mengubah:
+
+P7 → P9
+
+P7 → S14
+
+P7 → M22
+
+P7 → O
+
+P7 → AO
+
+P7 → SO
+
+P7 → Cuti
+
+P7 → Izin
+
+P7 → Kosong
+
+Perubahan harus langsung tersimpan ke database.
+
+==================================================
+15. MOBILE FIRST
+==================================================
+
+Prioritas utama adalah penggunaan di HP.
+
+Karena tabel dapat mempunyai sampai 31 tanggal:
+
+- gunakan horizontal scrolling
+- kolom PERSONIL harus sticky jika memungkinkan
+- header tanggal sebaiknya sticky
+- sel tanggal harus cukup besar untuk disentuh
+- teks tidak boleh terlalu kecil
+- modal/bottom sheet harus nyaman digunakan di HP
+
+Desktop juga harus responsive.
+
+==================================================
+16. DESAIN VISUAL
+==================================================
+
+Gunakan tema existing ANDIKA STORE.
+
+Konsep:
+
+- dark theme
+- aksen ungu
+- modern
+- clean
+- profesional
+- rounded corners
+- card yang rapi
+- typography mudah dibaca
+
+Buat pembeda visual untuk:
+
+P7/P8/P9...
+S13/S14...
+M19/M20...
+O
+AO
+SO
+Cuti
+Izin
+
+Gunakan warna secukupnya.
+
+Jangan membuat tabel terlalu ramai.
+
+==================================================
+17. REKAP BULANAN
+==================================================
+
+Tambahkan rekap absensi untuk bulan yang sedang dibuka.
+
+Hitung:
+
+- Pagi
+- Siang
+- Malam
+- Off
+- Add Off
+- Stock Opname
+- Cuti
+- Izin
+
+Contoh:
+
+REKAP BULAN INI
+
+Nama Personil
+
+Pagi: 10
+Siang: 6
+Malam: 4
+Off: 5
+Add Off: 2
+Stock Opname: 2
+Cuti: 1
+Izin: 1
+
+Rekap harus dihitung otomatis berdasarkan data kalender.
+
+Jangan membuat:
+- payroll
+- perhitungan gaji
+- lembur
+
+==================================================
+18. DATABASE
+==================================================
+
+Gunakan database existing project.
+
+Jangan membuat database baru jika tidak diperlukan.
+
+Minimal struktur:
+
+attendance_workspace
+
+- id
+- owner_customer_id
+- store_name
+- created_at
+- updated_at
+
+attendance_person
+
+- id
+- workspace_id
+- name
+- position
+- created_at
+- updated_at
+
+attendance_schedule
+
+- id
+- workspace_id
+- person_id
+- date
+- attendance_type
+- shift_code
+- created_at
+- updated_at
+
+attendance_type hanya boleh:
+
+P
+S
+M
+O
+AO
+SO
+CUTI
+IZIN
+
+Untuk:
+
+P/S/M
+
+shift_code berisi detail jam masuk.
+
+Contoh:
+
+P7
+P8
+P9
+
+S13
+S14
+S15
+
+M19
+M20
+M21
+
+Untuk:
+
+O
+AO
+SO
+CUTI
+IZIN
+
+shift_code dapat NULL.
+
+Pastikan satu personil hanya mempunyai satu data absensi untuk satu tanggal.
+
+Gunakan unique constraint:
+
+person_id + date
+
+==================================================
+19. OWNERSHIP DAN SECURITY
+==================================================
+
+Semua data ABSENSI harus terikat dengan customer/user yang membeli produk.
+
+Customer A tidak boleh dapat mengakses data Customer B.
+
+Semua API ABSENSI harus melakukan ownership validation di backend.
+
+Jangan hanya menyembunyikan data melalui frontend.
+
+Jangan menggunakan localStorage sebagai sistem keamanan utama.
+
+Customer hanya boleh:
+
+- melihat workspace miliknya
+- mengubah nama toko miliknya
+- melihat personil miliknya
+- menambah personil miliknya
+- mengedit personil miliknya
+- menghapus personil miliknya
+- melihat jadwal miliknya
+- membuat jadwal miliknya
+- mengubah jadwal miliknya
+- menghapus jadwal miliknya
+
+==================================================
+20. PRODUK DAN ORDER
+==================================================
+
+ABSENSI TOKO harus mempunyai product type tersendiri.
+
+Contoh:
+
+ATTENDANCE
+
+NEW MEMBER FRESH tetap menggunakan product type dan workflow existing.
+
+ABSENSI TOKO:
+
+quantity = 1
+
+Jangan menggunakan field NEW MEMBER FRESH seperti:
+
+- jumlah member
+- PIN
+- tanggal lahir
+- kode aktivasi
+- nomor member
+
+ABSENSI TOKO adalah produk digital berupa akses aplikasi.
+
+==================================================
+21. CHECKOUT ABSENSI TOKO
+==================================================
+
+Checkout ABSENSI TOKO harus berbeda dengan checkout NEW MEMBER FRESH.
+
+Ketika customer membeli ABSENSI TOKO:
+
+Tampilkan informasi:
+
+ABSENSI TOKO
+Quantity: 1
+Harga
+Metode pembayaran
+
+JANGAN menampilkan form:
+
+- nama member
+- tanggal lahir
+- PIN
+- kode aktivasi
+- data member lainnya
+
+Jangan menggunakan format checkout NEW MEMBER FRESH.
+
+==================================================
+22. ADMIN ORDER
+==================================================
+
+Jika admin membuka order ABSENSI TOKO:
+
+Tampilkan:
+
+Customer
+ABSENSI TOKO
+Quantity: 1
+Harga
+Payment Method
+Payment Proof
+Status Order
+
+Jangan tampilkan:
+
+- jumlah member
+- PIN
+- tanggal lahir
+- kode aktivasi
+- Copy Aktivasi
+
+NEW MEMBER FRESH harus tetap menggunakan workflow existing.
+
+==================================================
+23. AKSES CUSTOMER
+==================================================
+
+Jika order ABSENSI TOKO berstatus CONFIRMED:
+
+Produk Saya
+
+ABSENSI TOKO
+
+Jadwal & Absensi Toko
+
+[ BUKA ABSENSI ]
+
+Jika order belum CONFIRMED:
+
+ABSENSI TOKO
+
+[ Belum Aktif ]
+
+Customer tidak boleh mendapatkan akses hanya dengan mengetahui URL.
+
+Backend harus memeriksa entitlement/order sebelum memberikan akses.
+
+==================================================
+24. DEMO / PREVIEW
+==================================================
+
+Saya ingin dapat melihat bentuk ABSENSI TOKO tanpa harus memasukkan data customer asli.
+
+Jika diperlukan, buat route demo terpisah.
+
+Contoh:
+
+/demo-absensi
+
+Demo hanya untuk preview UI/interaksi.
+
+Demo TIDAK BOLEH:
+- membuat order
+- mengubah data production
+- membuat personil production
+- mengubah data customer
+- mengubah data customer lain
+
+Gunakan mock data terpisah untuk demo.
+
+==================================================
+25. TESTING WAJIB
+==================================================
+
+Setelah implementasi selesai, lakukan testing.
+
+Test:
+
+1. Buka ABSENSI TOKO dalam keadaan kosong.
+
+2. Tambahkan personil COS.
+
+3. Tambahkan personil ACOS.
+
+4. Tambahkan beberapa personil Crew.
+
+5. Pastikan urutan:
+   COS
+   ACOS
+   Crew
+
+6. Tambahkan personil dalam urutan acak.
+
+7. Pastikan tetap otomatis:
+   COS
+   ACOS
+   Crew
+
+8. Edit jabatan:
+   Crew → ACOS
+
+9. Pastikan personil pindah ke bagian ACOS.
+
+10. Edit:
+    ACOS → COS
+
+11. Pastikan pindah ke bagian COS.
+
+12. Pastikan jadwal tidak hilang ketika jabatan berubah.
+
+13. Edit nama personil.
+
+14. Pastikan jadwal tetap ada.
+
+15. Tambahkan jadwal P7.
+
+16. Ubah menjadi P9.
+
+17. Ubah menjadi S14.
+
+18. Ubah menjadi M22.
+
+19. Ubah menjadi O.
+
+20. Ubah menjadi AO.
+
+21. Ubah menjadi SO.
+
+22. Ubah menjadi Cuti.
+
+23. Ubah menjadi Izin.
+
+24. Kosongkan kembali.
+
+25. Pastikan Alpha TIDAK tersedia.
+
+26. Pindah bulan.
+
+27. Kembali ke bulan sebelumnya.
+
+28. Pastikan data bulan sebelumnya tetap tersimpan.
+
+29. Refresh halaman.
+
+30. Pastikan data tetap tersimpan.
+
+31. Test horizontal scrolling di mobile.
+
+32. Pastikan nama personil tetap mudah terlihat.
+
+33. Pastikan customer lain tidak dapat mengakses data.
+
+34. Order PENDING tidak mendapatkan akses.
+
+35. Order CONFIRMED mendapatkan akses.
+
+36. Order CANCELLED tidak mendapatkan akses.
+
+37. Pastikan checkout ABSENSI TOKO tidak menggunakan checkout member.
+
+38. Pastikan NEW MEMBER FRESH tetap berjalan normal.
+
+39. Pastikan Total Order tetap normal.
+
+40. Pastikan Total Order Member tetap normal.
+
+==================================================
+26. JANGAN TAMBAHKAN FITUR DI LUAR SCOPE
+==================================================
+
+Untuk tahap ini JANGAN membuat:
+
+- payroll
+- perhitungan gaji
+- lembur
+- perhitungan jam kerja
+- export Excel
+- export PDF
+- notifikasi
+- multi-store
+- akun khusus setiap personil
+- fitur kompleks lainnya
+
+Fokus terlebih dahulu pada ABSENSI TOKO.
+
+==================================================
+27. HASIL AKHIR YANG DIINGINKAN
+==================================================
+
+Saya ingin ABSENSI TOKO terasa seperti aplikasi jadwal kerja toko profesional.
+
+FITUR UTAMA:
+
+TABEL KALENDER
+
+PERSONIL × TANGGAL
+
+Urutan personil:
+
+COS
+ACOS
+Crew
+
+Pilihan ABSENSI UTAMA:
+
+P
+S
+M
+O
+AO
+SO
+Cuti
+Izin
+
+Tidak ada Alpha.
+
+Untuk P/S/M terdapat pilihan detail jam masuk:
+
+P6 - P12
+
+S13 - S18
+
+M19 - M23
+
+Contoh yang tampil pada kalender:
+
+P7
+P8
+S14
+M22
+O
+AO
+SO
+Cuti
+Izin
+
+Setiap sel tanggal bisa diklik dan diubah.
+
+Customer dapat:
+- mengubah nama toko
+- menambah personil
+- mengubah personil
+- menghapus personil
+- mengubah jabatan
+- mengisi jadwal
+- mengubah jadwal
+- berpindah bulan
+
+Semua data harus tersimpan dan terisolasi berdasarkan customer.
+
+Jangan memasukkan nama personil dummy ke database production.
+
+Jangan merusak fitur existing ANDIKA STORE.
+
+==================================================
+28. LAPORAN HASIL IMPLEMENTASI
+==================================================
+
+Setelah selesai, jangan hanya mengatakan "selesai".
+
+Jelaskan:
+
+1. File yang diubah.
+2. Database/schema yang dibuat atau diubah.
+3. API/endpoint yang dibuat atau diubah.
+4. Sistem authentication.
+5. Sistem ownership/security.
+6. Sistem urutan COS → ACOS → Crew.
+7. Sistem kalender.
+8. Sistem P/S/M.
+9. Detail P6-P12, S13-S18, M19-M23.
+10. Sistem O.
+11. Sistem AO / Add Off.
+12. Sistem SO / Stock Opname.
+13. Sistem Cuti.
+14. Sistem Izin.
+15. Konfirmasi bahwa Alpha sudah tidak tersedia.
+16. Sistem rekap.
+17. Sistem entitlement berdasarkan order.
+18. Hasil testing.
+19. Konfirmasi bahwa NEW MEMBER FRESH tidak berubah.
+20. Konfirmasi bahwa Total Order dan Total Order Member tetap normal.

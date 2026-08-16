@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Layout } from "@/components/layout";
 import { OrderPopup } from "@/components/order-popup";
 import { AbsensiOrderPopup } from "@/components/absensi-order-popup";
+import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Shield, Zap, Clock, Headphones, ChevronRight, Star, Sparkles } from "lucide-react";
 
@@ -180,7 +181,10 @@ export default function Home() {
               <span className="rounded-lg bg-white/4 px-2 py-2 text-center">Personil</span>
               <span className="rounded-lg bg-white/4 px-2 py-2 text-center">Shift</span>
             </div>
-            <button onClick={() => setAbsensiOpen(true)} className="w-full h-11 mt-5 rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/10 text-fuchsia-200 font-bold text-sm tracking-wider uppercase hover:bg-fuchsia-500/20 transition-all">Beli Absensi Toko</button>
+            <div className="grid grid-cols-2 gap-2 mt-5">
+              <Link href="/demo-absensi" className="h-11 rounded-xl border border-cyan-400/25 bg-cyan-400/8 text-cyan-200 font-bold text-[11px] tracking-wider uppercase flex items-center justify-center hover:bg-cyan-400/15 transition-all">Lihat Demo</Link>
+              <button onClick={() => setAbsensiOpen(true)} className="h-11 rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/10 text-fuchsia-200 font-bold text-[11px] tracking-wider uppercase hover:bg-fuchsia-500/20 transition-all">Beli Absensi Toko</button>
+            </div>
           </div>
         </motion.div>
       </section>

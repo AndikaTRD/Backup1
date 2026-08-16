@@ -8,6 +8,7 @@ export function WelcomePopup() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
+    if (window.location.pathname.endsWith("/demo-absensi")) return;
     const hasVisited = localStorage.getItem(STORAGE_KEY);
     if (!hasVisited) {
       const timer = setTimeout(() => setIsOpen(true), 600);
