@@ -16,7 +16,7 @@ export const absensiStoresTable = pgTable(
     ownerUserId: integer("owner_user_id")
       .notNull()
       .references(() => customerUsersTable.id, { onDelete: "cascade" }),
-    storeName: text("store_name").notNull().default("Toko Saya"),
+    storeName: text("store_name").notNull().default(""),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true })
       .notNull()

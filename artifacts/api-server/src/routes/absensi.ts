@@ -9,8 +9,23 @@ import { and, asc, eq, gte, lt } from "drizzle-orm";
 import { hasConfirmedAbsensiPurchase, requireCustomer } from "./customer-auth";
 
 const router = Router();
-const STATUSES = new Set(["hadir", "libur", "izin", "sakit", "alpha"]);
-const SHIFTS = new Set(["pagi", "siang", "malam", "libur"]);
+const STATUSES = new Set(["P", "S", "M", "O", "SO", "AO", "CUTI", "IZIN"]);
+const ROLE_RANK: Record<string, number> = { COS: 0, ACOS: 1, Crew: 2 };
+
+function normalizeRole(rawRole: unknown) {
+  if (typeof rawRole !== "string") return null;
+  const role = rawRole.trim().toLowerCase();
+  return role === "cos" ? "COS" : role === "acos" ? "ACOS" : role === "crew" ? "Crew" : null;
+}
+
+function sortPersonnel<T extends { role: string; name: string; id: number }>(personnel: T[]) {
+  return [...personnel].sort(
+    (a, b) =>
+      (ROLE_RANK[a.role] ?? 99) - (ROLE_RANK[b.role] ?? 99) ||
+      a.name.localeCompare(b.name, "id") ||
+      a.id - b.id,
+  );
+}
 
 function getUserId(req: Parameters<typeof requireCustomer>[0]) {
   return req.session.customerUserId!;
@@ -39,7 +54,7 @@ async function getOwnedStore(userId: number, create = false) {
   if (!store && create) {
     [store] = await db
       .insert(absensiStoresTable)
-      .values({ ownerUserId: userId, storeName: "Toko Saya" })
+      .values({ ownerUserId: userId, storeName: "" })
       .returning();
   }
 
@@ -65,12 +80,12 @@ router.get("/absensi/store", requireCustomer, async (req, res): Promise<void> =>
     return;
   }
 
-  const [personnel, entries] = await Promise.all([
+  const [rawPersonnel, entries] = await Promise.all([
     db
       .select()
       .from(absensiPersonnelTable)
       .where(eq(absensiPersonnelTable.storeId, store.id))
-      .orderBy(asc(absensiPersonnelTable.sortOrder), asc(absensiPersonnelTable.id)),
+       .orderBy(asc(absensiPersonnelTable.sortOrder), asc(absensiPersonnelTable.id)),
     db
       .select()
       .from(absensiEntriesTable)
@@ -83,7 +98,7 @@ router.get("/absensi/store", requireCustomer, async (req, res): Promise<void> =>
       ),
   ]);
 
-  res.json({ store, personnel, entries, month: range.month });
+  res.json({ store, personnel: sortPersonnel(rawPersonnel), entries, month: range.month });
 });
 
 router.patch("/absensi/store", requireCustomer, async (req, res): Promise<void> => {
@@ -107,8 +122,8 @@ router.post("/absensi/personnel", requireCustomer, async (req, res): Promise<voi
   const store = await getEntitledStore(req, res);
   if (!store) return;
   const name = typeof req.body?.name === "string" ? req.body.name.trim() : "";
-  const role = typeof req.body?.role === "string" ? req.body.role.trim() : "Crew";
-  if (!name || name.length > 100 || !role || role.length > 80) {
+  const role = normalizeRole(req.body?.role) ?? "Crew";
+  if (!name || name.length > 100) {
     res.status(400).json({ error: "Nama personil dan jabatan wajib diisi." });
     return;
   }
@@ -125,7 +140,7 @@ router.patch("/absensi/personnel/:personnelId", requireCustomer, async (req, res
   if (!store) return;
   const personnelId = Number(req.params.personnelId);
   const name = typeof req.body?.name === "string" ? req.body.name.trim() : "";
-  const role = typeof req.body?.role === "string" ? req.body.role.trim() : "";
+  const role = normalizeRole(req.body?.role);
   if (!Number.isInteger(personnelId) || !name || !role) {
     res.status(400).json({ error: "Data personil tidak valid." });
     return;
@@ -168,16 +183,25 @@ router.put("/absensi/attendance", requireCustomer, async (req, res): Promise<voi
   if (!store) return;
   const personnelId = Number(req.body?.personnelId);
   const attendanceDate = typeof req.body?.attendanceDate === "string" ? req.body.attendanceDate : "";
-  const status = typeof req.body?.status === "string" ? req.body.status.toLowerCase() : "";
-  const shift = typeof req.body?.shift === "string" ? req.body.shift.toLowerCase() : "";
+  const rawStatus = typeof req.body?.status === "string" ? req.body.status.trim() : "";
+  const status = rawStatus.toUpperCase();
+  const shift = typeof req.body?.shift === "string" ? req.body.shift.trim().toUpperCase() : "";
 
   if (
     !Number.isInteger(personnelId) ||
     !/^\d{4}-\d{2}-\d{2}$/.test(attendanceDate) ||
-    !STATUSES.has(status) ||
-    !SHIFTS.has(shift)
+    !STATUSES.has(status)
   ) {
     res.status(400).json({ error: "Data absensi tidak valid." });
+    return;
+  }
+  if (
+    (status === "P" && !/^P(6|7|8|9|10|11|12)$/.test(shift)) ||
+    (status === "S" && !/^S(13|14|15|16|17|18)$/.test(shift)) ||
+    (status === "M" && !/^M(19|20|21|22|23)$/.test(shift)) ||
+    (!["P", "S", "M"].includes(status) && shift !== "")
+  ) {
+    res.status(400).json({ error: "Detail shift tidak sesuai dengan status absensi." });
     return;
   }
 
@@ -192,13 +216,41 @@ router.put("/absensi/attendance", requireCustomer, async (req, res): Promise<voi
 
   const [entry] = await db
     .insert(absensiEntriesTable)
-    .values({ storeId: store.id, personnelId, attendanceDate, status, shift })
+    .values({
+      storeId: store.id,
+      personnelId,
+      attendanceDate,
+      status,
+      shift,
+    })
     .onConflictDoUpdate({
       target: [absensiEntriesTable.personnelId, absensiEntriesTable.attendanceDate],
       set: { status, shift },
     })
     .returning();
   res.json({ entry });
+});
+
+router.delete("/absensi/attendance", requireCustomer, async (req, res): Promise<void> => {
+  const store = await getEntitledStore(req, res);
+  if (!store) return;
+  const personnelId = Number(req.body?.personnelId);
+  const attendanceDate =
+    typeof req.body?.attendanceDate === "string" ? req.body.attendanceDate : "";
+  if (!Number.isInteger(personnelId) || !/^\d{4}-\d{2}-\d{2}$/.test(attendanceDate)) {
+    res.status(400).json({ error: "Data absensi tidak valid." });
+    return;
+  }
+  await db
+    .delete(absensiEntriesTable)
+    .where(
+      and(
+        eq(absensiEntriesTable.storeId, store.id),
+        eq(absensiEntriesTable.personnelId, personnelId),
+        eq(absensiEntriesTable.attendanceDate, attendanceDate),
+      ),
+    );
+  res.json({ ok: true });
 });
 
 export default router;

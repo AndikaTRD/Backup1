@@ -81,7 +81,7 @@ export default function Home() {
       </section>
 
       {/* Product Card */}
-      <section className="w-full max-w-sm mx-auto px-4 pb-20">
+      <section id="products" className="w-full max-w-sm mx-auto px-4 pb-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
