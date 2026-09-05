@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link, useLocation } from "wouter";
 import { Layout } from "@/components/layout";
 import {
@@ -411,6 +411,12 @@ export default function Absensi() {
             <Link href="/product-saya" className="text-xs text-white/45 hover:text-violet-300">
               ← Produk Saya
             </Link>
+            <Link
+              href={`/absensi/full?month=${month}`}
+              className="rounded-xl border border-violet-500/25 bg-violet-500/10 px-3 py-2 text-xs font-bold text-violet-100 hover:bg-violet-500/20"
+            >
+              Lihat Full Absensi
+            </Link>
           </div>
         </div>
 
@@ -533,20 +539,7 @@ export default function Absensi() {
                         </td>
                       </tr>
                     ) : (
-                      ROLES.map((role) => {
-                        const members = orderedPersonnel.filter((person) => person.role === role);
-                        if (members.length === 0) return null;
-                        return (
-                          <Fragment key={role}>
-                            <tr className="border-b border-white/5">
-                              <td
-                                colSpan={days.length + 1}
-                                className="sticky left-0 z-10 bg-[#0c0c1a] px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-violet-300/70"
-                              >
-                                {role}
-                              </td>
-                            </tr>
-                            {members.map((person) => (
+                      orderedPersonnel.map((person) => (
                               <tr key={person.id} className="border-b border-white/5 last:border-0">
                                 <td className="sticky left-0 z-10 bg-[#0c0c1a] min-w-[210px] px-4 py-2.5">
                                   <div className="flex items-center justify-between gap-2">
@@ -589,10 +582,7 @@ export default function Absensi() {
                                   );
                                 })}
                               </tr>
-                            ))}
-                          </Fragment>
-                        );
-                      })
+                      ))
                     )}
                   </tbody>
                 </table>

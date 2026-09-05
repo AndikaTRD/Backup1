@@ -23,10 +23,10 @@ type DemoState = {
   entries: Record<string, DemoEntry>;
 };
 
-const STORAGE_KEY = "andika-demo-absensi-v2";
+const STORAGE_KEY = "andika-demo-absensi-v3";
 const INITIAL_STATE: DemoState = {
-  storeName: "Alfamart Contoh",
-  personnelName: "Andika",
+  storeName: "Toko Contoh",
+  personnelName: "Personil 1",
   personnelRole: "Crew",
   entries: {},
 };

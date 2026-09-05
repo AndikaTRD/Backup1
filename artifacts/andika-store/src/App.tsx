@@ -10,6 +10,7 @@ import { WelcomePopup } from "@/components/welcome-popup";
 import ProductSaya from "@/pages/ProductSaya";
 import Absensi from "@/pages/Absensi";
 import DemoAbsensi from "@/pages/DemoAbsensi";
+import FullAbsensi from "@/pages/FullAbsensi";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/product-saya" component={ProductSaya} />
       <Route path="/absensi" component={Absensi} />
       <Route path="/demo-absensi" component={DemoAbsensi} />
+      <Route path="/absensi/full" component={FullAbsensi} />
       <Route component={NotFound} />
     </Switch>
   );
