@@ -400,6 +400,7 @@ export const addToCart = async (cartItemInput: CartItemInput, options?: RequestI
 
 
 
+
 export const getAddToCartMutationOptions = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addToCart>>, TError,{data: BodyType<CartItemInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof addToCart>>, TError,{data: BodyType<CartItemInput>}, TContext> => {
@@ -468,6 +469,7 @@ export const removeFromCart = async (sessionId: string,
 
   }
 );}
+
 
 
 
@@ -542,6 +544,7 @@ export const clearCart = async (sessionId: string, options?: RequestInit): Promi
 
 
 
+
 export const getClearCartMutationOptions = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof clearCart>>, TError,{sessionId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof clearCart>>, TError,{sessionId: string}, TContext> => {
@@ -608,6 +611,7 @@ export const createOrder = async (orderInput: OrderInput, options?: RequestInit)
     body: JSON.stringify(orderInput)
   }
 );}
+
 
 
 
@@ -756,6 +760,7 @@ export const uploadPaymentProof = async (orderId: string,
     body: JSON.stringify(paymentProofInput)
   }
 );}
+
 
 
 
@@ -911,6 +916,7 @@ export const adminUpdateOrderStatus = async (orderId: string,
     body: JSON.stringify(orderStatusUpdate)
   }
 );}
+
 
 
 

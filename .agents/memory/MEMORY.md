@@ -1,1 +1,2 @@
 - [Railway deployment setup](railway-deployment.md) — Dockerfile, railway.toml, trust proxy, secure cookies, dynamic Replit plugin imports.
+- [API codegen compatibility](api-codegen-compatibility.md) — generated API files retain legacy order fields; review generator diffs before regenerating.

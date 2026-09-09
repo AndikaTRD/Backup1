@@ -28,13 +28,13 @@ export function OrderPopup({ open, onClose }: OrderPopupProps) {
   const qtyNum = parseInt(qty, 10) || 0;
   const unitPrice = qtyNum >= BULK_MIN ? PRICE_BULK : PRICE_REGULAR;
   const total = qtyNum > 0 ? unitPrice * qtyNum : 0;
-  const hasCalc = qtyNum >= 1 && kode.trim() && pin.trim();
+  const hasCalc = qtyNum >= 1 && kode.trim() && /^\d{6}$/.test(pin);
 
   function validate() {
     const e: Record<string, string> = {};
     if (!qty || qtyNum < 1) e.qty = "Jumlah member minimal 1.";
     if (!kode.trim()) e.kode = "Kode toko wajib diisi.";
-    if (!pin.trim()) e.pin = "PIN / Tanggal lahir wajib diisi.";
+    if (!/^\d{6}$/.test(pin)) e.pin = "PIN / Tanggal lahir harus tepat 6 digit angka.";
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -151,19 +151,11 @@ export function OrderPopup({ open, onClose }: OrderPopupProps) {
                   type="text"
                   value={pin}
                   onChange={(e) => {
-                    let val = e.target.value.replace(/\D/g, "");
-                    // Cap at 8 digits max
-                    if (val.length > 8) val = val.slice(0, 8);
-                    // Auto-convert 8-digit DDMMYYYY → 6-digit DDMMYY
-                    if (val.length === 8) {
-                      val = val.slice(0, 4) + val.slice(6, 8);
-                    }
-                    // Jangan izinkan 7 digit — potong ke 6
-                    if (val.length > 6) val = val.slice(0, 6);
-                    setPin(val);
+                    setPin(e.target.value.replace(/\D/g, "").slice(0, 6));
                   }}
                   placeholder="Contoh: 130999"
-                  maxLength={8}
+                  maxLength={6}
+                  inputMode="numeric"
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-violet-500/50 focus:bg-violet-500/5 transition-all font-mono tracking-widest"
                   data-testid="input-pin"
                 />

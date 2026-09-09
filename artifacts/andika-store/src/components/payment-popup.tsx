@@ -20,6 +20,7 @@ const EWALLET_ACCOUNTS = [
   { bank: "ShopeePay", rekening: "0895328068023", nama: "MUHAMMADANDIKA87" },
 ];
 
+const MEMBER_PRODUCT_NAME = "NEW MEMBER FRESH";
 type PaymentMethod = "QRIS" | "TRANSFER";
 
 function formatRp(n: number): string {
@@ -97,6 +98,13 @@ export function PaymentPopup({ open, onClose }: PaymentPopupProps) {
   async function handleConfirm() {
     if (!nama.trim()) { setError("Nama pemesan wajib diisi."); return; }
     if (!bukti) { setError("Silakan upload bukti pembayaran terlebih dahulu."); return; }
+    const hasInvalidMemberPin = items.some(
+      (item) => item.productName === MEMBER_PRODUCT_NAME && !/^\d{6}$/.test(item.pin),
+    );
+    if (hasInvalidMemberPin) {
+      setError("PIN / Tanggal lahir NEW MEMBER FRESH harus tepat 6 digit angka.");
+      return;
+    }
     setError("");
     setLoading(true);
 
@@ -121,7 +129,7 @@ export function PaymentPopup({ open, onClose }: PaymentPopupProps) {
 
     // Save order to database
     try {
-      await fetch("/api/orders/save", {
+      const saveResponse = await fetch("/api/orders/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -139,6 +147,12 @@ export function PaymentPopup({ open, onClose }: PaymentPopupProps) {
           total: grandTotal,
         }),
       });
+      if (!saveResponse.ok) {
+        const responseBody = await saveResponse.json().catch(() => null) as { error?: string } | null;
+        setError(responseBody?.error ?? "Order ditolak oleh server.");
+        setLoading(false);
+        return;
+      }
     } catch {
       // silent — order still proceeds via WhatsApp even if DB save fails
     }

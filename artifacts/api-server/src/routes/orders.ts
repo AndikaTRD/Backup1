@@ -15,6 +15,21 @@ import {
 import { logger } from "../lib/logger";
 
 const router: IRouter = Router();
+const MEMBER_PRODUCT_NAME = "NEW MEMBER FRESH";
+
+function isValidMemberPin(pin: unknown): pin is string {
+  return typeof pin === "string" && /^\d{6}$/.test(pin);
+}
+
+function hasInvalidMemberPin(items: unknown): boolean {
+  if (!Array.isArray(items)) return true;
+
+  return items.some((item) => {
+    if (!item || typeof item !== "object") return true;
+    const orderItem = item as { productName?: unknown; pin?: unknown };
+    return orderItem.productName === MEMBER_PRODUCT_NAME && !isValidMemberPin(orderItem.pin);
+  });
+}
 
 function generateOrderId(): string {
   const now = new Date();
@@ -59,6 +74,13 @@ router.post("/orders/save", async (req, res): Promise<void> => {
     return;
   }
 
+  if (hasInvalidMemberPin(items)) {
+    res.status(400).json({
+      error: "PIN / Tanggal lahir NEW MEMBER FRESH harus tepat 6 digit angka.",
+    });
+    return;
+  }
+
   const [order] = await db
     .insert(ordersTable)
     .values({
@@ -86,6 +108,14 @@ router.post("/orders", async (req, res): Promise<void> => {
   }
 
   const { customerName, customerEmail, customerPhone, items, paymentMethod, notes } = parsed.data;
+  const rawItems = req.body?.items;
+  if (hasInvalidMemberPin(rawItems)) {
+    res.status(400).json({
+      error: "PIN / Tanggal lahir NEW MEMBER FRESH harus tepat 6 digit angka.",
+    });
+    return;
+  }
+
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const orderId = generateOrderId();
 
@@ -96,7 +126,7 @@ router.post("/orders", async (req, res): Promise<void> => {
       customerName,
       customerEmail,
       customerPhone,
-      items,
+      items: rawItems,
       total,
       paymentMethod,
       status: "pending",
