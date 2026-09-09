@@ -1,7 +1,6 @@
-import { pgTable, text, serial, timestamp, real, jsonb, integer } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, timestamp, real, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
-import { customerUsersTable } from "./users";
 
 export const ordersTable = pgTable("orders", {
   id: serial("id").primaryKey(),
@@ -9,9 +8,6 @@ export const ordersTable = pgTable("orders", {
   customerName: text("customer_name").notNull(),
   customerEmail: text("customer_email").notNull(),
   customerPhone: text("customer_phone").notNull(),
-  customerUserId: integer("customer_user_id").references(() => customerUsersTable.id, {
-    onDelete: "set null",
-  }),
   items: jsonb("items").notNull(),
   total: real("total").notNull(),
   paymentMethod: text("payment_method").notNull(),

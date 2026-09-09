@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Layout } from "@/components/layout";
 import { OrderPopup } from "@/components/order-popup";
-import { AbsensiOrderPopup } from "@/components/absensi-order-popup";
-import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Shield, Zap, Clock, Headphones, ChevronRight, Star, Sparkles } from "lucide-react";
 
@@ -15,12 +13,10 @@ const FEATURES = [
 
 export default function Home() {
   const [popupOpen, setPopupOpen] = useState(false);
-  const [absensiOpen, setAbsensiOpen] = useState(false);
 
   return (
     <Layout>
       <OrderPopup open={popupOpen} onClose={() => setPopupOpen(false)} />
-      <AbsensiOrderPopup open={absensiOpen} onClose={() => setAbsensiOpen(false)} />
 
       {/* Hero */}
       <section className="w-full pt-14 pb-8 px-4 flex flex-col items-center text-center relative overflow-hidden">
@@ -81,7 +77,7 @@ export default function Home() {
       </section>
 
       {/* Product Card */}
-      <section id="products" className="w-full max-w-sm mx-auto px-4 pb-20">
+      <section className="w-full max-w-sm mx-auto px-4 pb-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -159,34 +155,6 @@ export default function Home() {
         >
           Admin akan konfirmasi via WhatsApp setelah pesanan dikirim.
         </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.28, duration: 0.45 }}
-          className="mt-5 rounded-2xl border border-fuchsia-500/20 bg-[#0c0c1a] overflow-hidden"
-        >
-          <div className="h-0.5 w-full bg-gradient-to-r from-fuchsia-600 via-violet-500 to-cyan-400" />
-          <div className="p-5">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <span className="inline-flex px-2.5 py-1 rounded-full bg-fuchsia-500/10 border border-fuchsia-500/20 text-[10px] font-bold uppercase tracking-widest text-fuchsia-300">Produk Digital</span>
-                <h2 className="text-xl font-black text-white mt-3">ABSENSI TOKO</h2>
-                <p className="text-xs text-white/40 mt-1">Kelola kehadiran karyawan secara praktis.</p>
-              </div>
-              <span className="text-lg font-black text-fuchsia-300">Rp25.000</span>
-            </div>
-            <div className="grid grid-cols-3 gap-2 mt-5 text-[10px] text-white/45">
-              <span className="rounded-lg bg-white/4 px-2 py-2 text-center">Kalender</span>
-              <span className="rounded-lg bg-white/4 px-2 py-2 text-center">Personil</span>
-              <span className="rounded-lg bg-white/4 px-2 py-2 text-center">Shift</span>
-            </div>
-            <div className="grid grid-cols-2 gap-2 mt-5">
-              <Link href="/demo-absensi" className="h-11 rounded-xl border border-cyan-400/25 bg-cyan-400/8 text-cyan-200 font-bold text-[11px] tracking-wider uppercase flex items-center justify-center hover:bg-cyan-400/15 transition-all">Lihat Demo</Link>
-              <button onClick={() => setAbsensiOpen(true)} className="h-11 rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/10 text-fuchsia-200 font-bold text-[11px] tracking-wider uppercase hover:bg-fuchsia-500/20 transition-all">Beli Absensi Toko</button>
-            </div>
-          </div>
-        </motion.div>
       </section>
       {/* Ulasan Singkat */}
       <section className="w-full max-w-sm mx-auto px-4 pb-20">

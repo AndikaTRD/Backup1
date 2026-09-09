@@ -5,8 +5,6 @@ import cartRouter from "./cart";
 import ordersRouter from "./orders";
 import adminRouter from "./admin";
 import uploadRouter from "./upload";
-import customerAuthRouter from "./customer-auth";
-import absensiRouter from "./absensi";
 
 const router: IRouter = Router();
 
@@ -16,7 +14,5 @@ router.use(cartRouter);
 router.use(ordersRouter);
 router.use(adminRouter);
 router.use(uploadRouter);
-router.use(customerAuthRouter);
-router.use(absensiRouter);
 
 export default router;
