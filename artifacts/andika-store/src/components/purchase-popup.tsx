@@ -1,15 +1,15 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Upload, CheckCircle2, Loader2 } from "lucide-react";
+import {
+  getNewMemberFreshUnitPrice,
+  NEW_MEMBER_FRESH_BULK_MIN,
+} from "@/lib/member-pricing";
 
 interface PurchasePopupProps {
   open: boolean;
   onClose: () => void;
 }
-
-const PRICE_REGULAR = 6000;
-const PRICE_BULK = 5500;
-const BULK_MIN = 10;
 
 function generateOrderId(): string {
   const now = new Date();
@@ -34,7 +34,7 @@ export function PurchasePopup({ open, onClose }: PurchasePopupProps) {
   const [error, setError] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const unitPrice = jumlah >= BULK_MIN ? PRICE_BULK : PRICE_REGULAR;
+  const unitPrice = getNewMemberFreshUnitPrice(jumlah);
   const total = unitPrice * jumlah;
 
   function handleJumlahChange(val: string) {
@@ -238,13 +238,13 @@ export function PurchasePopup({ open, onClose }: PurchasePopupProps) {
                     +
                   </button>
                 </div>
-                {jumlah >= BULK_MIN && (
+                {jumlah >= NEW_MEMBER_FRESH_BULK_MIN && (
                   <motion.p
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
                     className="text-xs text-violet-400 mt-1.5 font-medium"
                   >
-                    Harga bulk aktif: {formatRupiah(PRICE_BULK)}/member
+                    Harga bulk aktif: {formatRupiah(getNewMemberFreshUnitPrice(jumlah))}/member
                   </motion.p>
                 )}
               </div>

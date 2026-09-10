@@ -3,6 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Upload, CheckCircle2, Loader2, Copy } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useLocation } from "wouter";
+import {
+  getEffectiveLineTotal,
+  getEffectiveUnitPrice,
+  NEW_MEMBER_FRESH,
+} from "@/lib/member-pricing";
 
 interface PaymentPopupProps {
   open: boolean;
@@ -20,7 +25,6 @@ const EWALLET_ACCOUNTS = [
   { bank: "ShopeePay", rekening: "0895328068023", nama: "MUHAMMADANDIKA87" },
 ];
 
-const MEMBER_PRODUCT_NAME = "NEW MEMBER FRESH";
 type PaymentMethod = "QRIS" | "TRANSFER";
 
 function formatRp(n: number): string {
@@ -82,7 +86,10 @@ export function PaymentPopup({ open, onClose }: PaymentPopupProps) {
   const { items, clearCart } = useCart();
   const [, setLocation] = useLocation();
 
-  const grandTotal = items.reduce((s, i) => s + i.total, 0);
+  const grandTotal = items.reduce(
+    (s, i) => s + getEffectiveLineTotal(i.productName, i.qty, i.unitPrice),
+    0,
+  );
 
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
@@ -99,7 +106,7 @@ export function PaymentPopup({ open, onClose }: PaymentPopupProps) {
     if (!nama.trim()) { setError("Nama pemesan wajib diisi."); return; }
     if (!bukti) { setError("Silakan upload bukti pembayaran terlebih dahulu."); return; }
     const hasInvalidMemberPin = items.some(
-      (item) => item.productName === MEMBER_PRODUCT_NAME && !/^\d{6}$/.test(item.pin),
+      (item) => item.productName === NEW_MEMBER_FRESH && !/^\d{6}$/.test(item.pin),
     );
     if (hasInvalidMemberPin) {
       setError("PIN / Tanggal lahir NEW MEMBER FRESH harus tepat 6 digit angka.");
@@ -137,7 +144,7 @@ export function PaymentPopup({ open, onClose }: PaymentPopupProps) {
           customerName: nama.trim(),
           items: items.map(item => ({
             productName: item.productName,
-            price: item.unitPrice,
+            price: getEffectiveUnitPrice(item.productName, item.qty, item.unitPrice),
             quantity: item.qty,
             kode: item.kode,
             pin: item.pin,
@@ -163,7 +170,7 @@ export function PaymentPopup({ open, onClose }: PaymentPopupProps) {
         `AKTIVASI#${item.kode}`,
         `PIN / TGL LAHIR : ${item.pin}`,
         `JUMLAH QTY MEMBER : ${item.qty}`,
-        `TOTAL : ${formatRp(item.total)}`,
+        `TOTAL : ${formatRp(getEffectiveLineTotal(item.productName, item.qty, item.unitPrice))}`,
       ].join("\n")
     ).join("\n\n");
 

@@ -3,15 +3,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, ShoppingCart } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useLocation } from "wouter";
+import {
+  getNewMemberFreshUnitPrice,
+  NEW_MEMBER_FRESH_BULK_MIN,
+} from "@/lib/member-pricing";
 
 interface OrderPopupProps {
   open: boolean;
   onClose: () => void;
 }
-
-const PRICE_REGULAR = 6000;
-const PRICE_BULK = 5500;
-const BULK_MIN = 10;
 
 function formatRp(n: number): string {
   return "Rp" + n.toLocaleString("id-ID");
@@ -26,7 +26,7 @@ export function OrderPopup({ open, onClose }: OrderPopupProps) {
   const [, setLocation] = useLocation();
 
   const qtyNum = parseInt(qty, 10) || 0;
-  const unitPrice = qtyNum >= BULK_MIN ? PRICE_BULK : PRICE_REGULAR;
+  const unitPrice = getNewMemberFreshUnitPrice(qtyNum);
   const total = qtyNum > 0 ? unitPrice * qtyNum : 0;
   const hasCalc = qtyNum >= 1 && kode.trim() && /^\d{6}$/.test(pin);
 
@@ -188,7 +188,7 @@ export function OrderPopup({ open, onClose }: OrderPopupProps) {
                         <span className="text-white font-bold text-right">{qtyNum}</span>
                         <span className="text-white/40 font-medium">HARGA/MEMBER</span>
                         <span className="text-white font-bold text-right">{formatRp(unitPrice)}</span>
-                        {qtyNum >= BULK_MIN && (
+                        {qtyNum >= NEW_MEMBER_FRESH_BULK_MIN && (
                           <>
                             <span className="col-span-2 text-[10px] text-violet-400 font-semibold -mt-0.5">
                               ✓ Harga bulk aktif (≥10 member)

@@ -5,6 +5,10 @@ import { useCart } from "@/hooks/use-cart";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart, Trash2, ArrowLeft, CreditCard } from "lucide-react";
 import { Link } from "wouter";
+import {
+  getEffectiveLineTotal,
+  getEffectiveUnitPrice,
+} from "@/lib/member-pricing";
 
 function formatRp(n: number): string {
   return "Rp" + n.toLocaleString("id-ID");
@@ -14,7 +18,10 @@ export default function Cart() {
   const { items, removeItem } = useCart();
   const [paymentOpen, setPaymentOpen] = useState(false);
 
-  const grandTotal = items.reduce((s, i) => s + i.total, 0);
+  const grandTotal = items.reduce(
+    (s, i) => s + getEffectiveLineTotal(i.productName, i.qty, i.unitPrice),
+    0,
+  );
   const isEmpty = items.length === 0;
 
   return (
@@ -100,11 +107,15 @@ export default function Cart() {
                         </div>
                         <div className="rounded-lg bg-white/4 px-2.5 py-2 text-center">
                           <p className="text-white/35 text-[9px] uppercase tracking-wider mb-0.5">Harga</p>
-                          <p className="text-white font-bold">{formatRp(item.unitPrice)}</p>
+                            <p className="text-white font-bold">
+                              {formatRp(getEffectiveUnitPrice(item.productName, item.qty, item.unitPrice))}
+                            </p>
                         </div>
                         <div className="rounded-lg bg-violet-500/10 border border-violet-500/20 px-2.5 py-2 text-center">
                           <p className="text-violet-400/70 text-[9px] uppercase tracking-wider mb-0.5">Total</p>
-                          <p className="text-violet-300 font-black">{formatRp(item.total)}</p>
+                          <p className="text-violet-300 font-black">
+                            {formatRp(getEffectiveLineTotal(item.productName, item.qty, item.unitPrice))}
+                          </p>
                         </div>
                       </div>
                     </div>

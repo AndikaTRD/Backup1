@@ -11,6 +11,7 @@ import {
   ClearCartParams,
   ClearCartResponse,
 } from "@workspace/api-zod";
+import { getEffectiveUnitPrice } from "../lib/member-pricing";
 
 const router: IRouter = Router();
 
@@ -18,7 +19,10 @@ const router: IRouter = Router();
 const cartStore: Map<string, Array<{ productId: number; productName: string; price: number; quantity: number }>> = new Map();
 
 function buildCartResponse(sessionId: string) {
-  const items = cartStore.get(sessionId) ?? [];
+  const items = (cartStore.get(sessionId) ?? []).map((item) => ({
+    ...item,
+    price: getEffectiveUnitPrice(item.productName, item.quantity, item.price),
+  }));
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   return { sessionId, items, total };
 }
@@ -53,9 +57,23 @@ router.post("/cart", async (req, res): Promise<void> => {
   const existingIdx = items.findIndex((i) => i.productId === productId);
 
   if (existingIdx >= 0) {
-    items[existingIdx].quantity += quantity;
+    const nextQuantity = items[existingIdx].quantity + quantity;
+    items[existingIdx] = {
+      ...items[existingIdx],
+      quantity: nextQuantity,
+      price: getEffectiveUnitPrice(
+        items[existingIdx].productName,
+        nextQuantity,
+        items[existingIdx].price,
+      ),
+    };
   } else {
-    items.push({ productId, productName: product.name, price: product.price, quantity });
+    items.push({
+      productId,
+      productName: product.name,
+      price: getEffectiveUnitPrice(product.name, quantity, product.price),
+      quantity,
+    });
   }
 
   cartStore.set(sessionId, items);

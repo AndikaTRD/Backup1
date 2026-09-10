@@ -12,6 +12,7 @@ import { z } from "zod";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import { getEffectiveUnitPrice } from "@/lib/member-pricing";
 
 const checkoutSchema = z.object({
   customerName: z.string().min(2, "Name is required"),
@@ -53,7 +54,10 @@ export default function Checkout() {
         data: {
           ...data,
           sessionId,
-          items: cart.items,
+           items: cart.items.map(item => ({
+             ...item,
+             price: getEffectiveUnitPrice(item.productName, item.quantity, item.price),
+           })),
         }
       },
       {
@@ -153,24 +157,35 @@ export default function Checkout() {
               <h2 className="text-xl font-bold text-white mb-4">Order Summary</h2>
               
               <div className="space-y-4 mb-6 max-h-[300px] overflow-y-auto pr-2">
-                {cart.items.map(item => (
+                {cart.items.map(item => {
+                  const effectivePrice = getEffectiveUnitPrice(item.productName, item.quantity, item.price);
+                  return (
                   <div key={item.productId} className="flex justify-between items-center">
                     <div>
                       <p className="font-medium text-white">{item.productName}</p>
                       <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
                     </div>
                     <p className="font-medium text-primary">
-                      {item.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}
+                      {effectivePrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}
                     </p>
                   </div>
-                ))}
+                  );
+                })}
               </div>
 
               <div className="h-px w-full bg-border mb-4" />
               
               <div className="flex justify-between text-white font-bold text-xl mb-8">
                 <span>Total</span>
-                <span className="neon-text">{cart.total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</span>
+                <span className="neon-text">
+                  {cart.items
+                    .reduce(
+                      (sum, item) =>
+                        sum + getEffectiveUnitPrice(item.productName, item.quantity, item.price) * item.quantity,
+                      0,
+                    )
+                    .toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}
+                </span>
               </div>
 
               <Button 

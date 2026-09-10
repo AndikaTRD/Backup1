@@ -13,9 +13,16 @@ import {
   UploadPaymentProofResponse,
 } from "@workspace/api-zod";
 import { logger } from "../lib/logger";
+import { getEffectiveUnitPrice } from "../lib/member-pricing";
 
 const router: IRouter = Router();
 const MEMBER_PRODUCT_NAME = "NEW MEMBER FRESH";
+type OrderItem = {
+  productName: string;
+  price: number;
+  quantity: number;
+  [key: string]: unknown;
+};
 
 function isValidMemberPin(pin: unknown): pin is string {
   return typeof pin === "string" && /^\d{6}$/.test(pin);
@@ -29,6 +36,17 @@ function hasInvalidMemberPin(items: unknown): boolean {
     const orderItem = item as { productName?: unknown; pin?: unknown };
     return orderItem.productName === MEMBER_PRODUCT_NAME && !isValidMemberPin(orderItem.pin);
   });
+}
+
+function normalizeMemberPricing<T extends OrderItem>(items: T[]): T[] {
+  return items.map((item) => ({
+    ...item,
+    price: getEffectiveUnitPrice(item.productName, item.quantity, item.price),
+  }));
+}
+
+function calculateOrderTotal(items: OrderItem[]): number {
+  return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 }
 
 function generateOrderId(): string {
@@ -81,6 +99,9 @@ router.post("/orders/save", async (req, res): Promise<void> => {
     return;
   }
 
+  const normalizedItems = normalizeMemberPricing(items);
+  const normalizedTotal = calculateOrderTotal(normalizedItems);
+
   const [order] = await db
     .insert(ordersTable)
     .values({
@@ -88,8 +109,8 @@ router.post("/orders/save", async (req, res): Promise<void> => {
       customerName,
       customerEmail: "-",
       customerPhone: "-",
-      items,
-      total,
+      items: normalizedItems,
+      total: normalizedTotal,
       paymentMethod,
       status: "pending",
       paymentProofUrl: proofUrl ?? null,
@@ -107,7 +128,7 @@ router.post("/orders", async (req, res): Promise<void> => {
     return;
   }
 
-  const { customerName, customerEmail, customerPhone, items, paymentMethod, notes } = parsed.data;
+  const { customerName, customerEmail, customerPhone, paymentMethod, notes } = parsed.data;
   const rawItems = req.body?.items;
   if (hasInvalidMemberPin(rawItems)) {
     res.status(400).json({
@@ -116,7 +137,8 @@ router.post("/orders", async (req, res): Promise<void> => {
     return;
   }
 
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const normalizedItems = normalizeMemberPricing(rawItems as OrderItem[]);
+  const total = calculateOrderTotal(normalizedItems);
   const orderId = generateOrderId();
 
   const [order] = await db
@@ -126,7 +148,7 @@ router.post("/orders", async (req, res): Promise<void> => {
       customerName,
       customerEmail,
       customerPhone,
-      items: rawItems,
+      items: normalizedItems,
       total,
       paymentMethod,
       status: "pending",
