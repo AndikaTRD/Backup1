@@ -455,3 +455,11 @@ main section { scroll-margin-top: 84px; }
   html { scroll-behavior: auto; }
   .site-header { transition: none; }
 }
+
+
+/* Mobile admin app surfaces */
+.admin-app-surface { min-height: 100svh; padding-bottom: env(safe-area-inset-bottom, 0px); }
+@media (max-width: 480px) {
+  .admin-app-surface input, .admin-app-surface select, .admin-app-surface textarea { min-height: 44px; font-size: 16px; }
+  .admin-app-surface button { touch-action: manipulation; }
+}
