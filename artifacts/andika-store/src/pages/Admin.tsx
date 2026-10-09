@@ -19,6 +19,10 @@ import {
   ShoppingBag,
   Settings,
   ChevronRight,
+  TrendingUp,
+  Users,
+  DollarSign,
+  CalendarDays,
 } from "lucide-react";
 import {
   Accordion,
@@ -538,6 +542,14 @@ export default function Admin() {
     b.localeCompare(a)
   );
 
+  const todayKey = new Date().toLocaleDateString("en-CA");
+  const todayOrders = orders.filter((order) => new Date(order.createdAt).toLocaleDateString("en-CA") === todayKey);
+  const confirmedOrders = orders.filter((order) => order.status === "confirmed");
+  const pendingOrders = orders.filter((order) => order.status === "pending" || order.status === "proof_uploaded");
+  const cancelledOrders = orders.filter((order) => order.status === "cancelled");
+  const confirmedRevenue = confirmedOrders.reduce((sum, order) => sum + Number(order.total || 0), 0);
+  const membersSold = confirmedOrders.reduce((sum, order) => sum + (order.items || []).reduce((itemSum, item) => itemSum + Number(item.quantity || 0), 0), 0);
+
   // reset page when filter/search changes
   useEffect(() => {
     setPage(1);
@@ -671,25 +683,38 @@ export default function Admin() {
 
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
         {activeView === "home" && (
-          <section className="space-y-5 pb-20">
-            <div className="relative overflow-hidden rounded-3xl border border-violet-300/20 bg-gradient-to-br from-violet-700 via-violet-600 to-fuchsia-600 p-5 sm:p-7 shadow-xl shadow-violet-950/30">
-              <div className="absolute -right-8 -top-12 h-44 w-44 rounded-full bg-white/10 blur-2xl" />
+          <section className="space-y-5 pb-8">
+            <div className="relative overflow-hidden rounded-3xl border border-violet-300/20 bg-gradient-to-br from-violet-800 via-violet-600 to-fuchsia-600 p-5 shadow-xl shadow-violet-950/30 sm:p-7">
+              <div className="pointer-events-none absolute -right-8 -top-12 h-44 w-44 rounded-full bg-white/10 blur-2xl" />
+              <div className="pointer-events-none absolute -bottom-20 left-1/3 h-40 w-40 rounded-full bg-fuchsia-300/20 blur-3xl" />
               <div className="relative flex items-center gap-3">
-                <img src={storeLogo} alt="Logo toko" className="h-14 w-14 rounded-2xl border border-white/20 bg-white/10 object-contain p-1" />
-                <div><p className="text-xs font-semibold text-white/70">ADMIN PANEL</p><h2 className="mt-1 text-xl font-black text-white">{storeName}</h2><p className="mt-1 text-xs text-white/70">Halo, Admin 👋 Kelola tokomu dengan mudah.</p></div>
+                <img src={storeLogo} alt="Logo toko" className="h-14 w-14 rounded-2xl border border-white/25 bg-white/10 object-contain p-1.5" />
+                <div className="min-w-0"><p className="text-xs font-bold tracking-widest text-white/70">ADMIN DASHBOARD</p><h2 className="mt-1 truncate text-xl font-black text-white sm:text-2xl">{storeName}</h2><p className="mt-1 text-xs text-white/75">Halo, Admin 👋 Senang melihat tokomu kembali.</p></div>
               </div>
-              <p className="relative mt-5 max-w-sm text-sm leading-relaxed text-white/80">{storeDescription}</p>
+              <div className="relative mt-5 flex items-end justify-between gap-4"><div><p className="text-xs font-semibold text-white/70">Pendapatan terkonfirmasi</p><p className="mt-1 text-2xl font-black text-white sm:text-3xl">{formatRp(confirmedRevenue)}</p><p className="mt-1 text-[11px] text-white/65">Dihitung dari pesanan berstatus dikonfirmasi</p></div><div className="rounded-2xl border border-white/20 bg-white/10 p-3"><TrendingUp className="h-6 w-6 text-white"/></div></div>
             </div>
+            <div className="flex items-center justify-between"><div><h3 className="text-base font-extrabold text-white">Ringkasan Toko</h3><p className="mt-1 text-xs text-white/40">Statistik berdasarkan data pesanan</p></div><button onClick={() => void fetchData()} className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-bold text-white/70 hover:bg-white/10"><RefreshCw className="h-3.5 w-3.5"/> Perbarui</button></div>
             <div className="grid grid-cols-2 gap-3">
               {[
-                { key: "orders" as const, title: "Kelola Pesanan", desc: "Cari dan kelola pesanan pelanggan", icon: Package, tone: "from-violet-500 to-fuchsia-500" },
-                { key: "products" as const, title: "Kelola Produk", desc: "Lihat produk dan informasi harga", icon: ShoppingBag, tone: "from-blue-500 to-violet-500" },
-                { key: "settings" as const, title: "Pengaturan Toko", desc: "Logo, nama, dan tema toko", icon: Settings, tone: "from-fuchsia-500 to-pink-500" },
-              ].map(({ key, title, desc, icon: Icon, tone }) => (
-                <button key={key} onClick={() => setActiveView(key)} className="group min-h-36 rounded-2xl border border-white/10 bg-[#111020] p-4 text-left transition-all hover:-translate-y-0.5 hover:border-violet-400/40 hover:bg-[#17132a] active:scale-[0.98]">
-                  <span className={`mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${tone} text-white shadow-lg`}><Icon className="h-5 w-5" /></span>
-                  <span className="block text-sm font-extrabold text-white">{title}</span><span className="mt-1 block text-[11px] leading-relaxed text-white/45">{desc}</span>
-                  <ChevronRight className="mt-3 h-4 w-4 text-violet-300 transition-transform group-hover:translate-x-1" />
+                {label:"Total Pesanan",value:String(orders.length),icon:Package,tone:"from-violet-500 to-fuchsia-500"},
+                {label:"Menunggu",value:String(pendingOrders.length),icon:Clock,tone:"from-amber-400 to-orange-500"},
+                {label:"Dikonfirmasi",value:String(confirmedOrders.length),icon:CheckCircle2,tone:"from-emerald-400 to-teal-500"},
+                {label:"Dibatalkan",value:String(cancelledOrders.length),icon:XCircle,tone:"from-rose-500 to-red-500"},
+                {label:"Pesanan Hari Ini",value:String(todayOrders.length),icon:CalendarDays,tone:"from-blue-500 to-cyan-400"},
+                {label:"Member Terjual",value:String(membersSold),icon:Users,tone:"from-fuchsia-500 to-pink-500"},
+              ].map(({label,value,icon:Icon,tone})=><div key={label} className="rounded-2xl border border-white/10 bg-[#111020] p-4 shadow-lg shadow-black/10"><div className="flex items-center justify-between gap-2"><span className="text-[11px] font-bold text-white/45">{label}</span><span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${tone}`}><Icon className="h-4 w-4 text-white"/></span></div><p className="mt-3 text-2xl font-black tracking-tight text-white">{value}</p></div>)}
+            </div>
+            <div className="pt-1"><h3 className="text-base font-extrabold text-white">Menu Utama</h3><p className="mt-1 text-xs text-white/40">Pilih bagian yang ingin kamu kelola</p></div>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              {[
+                { key: "orders" as const, title: "Kelola Pesanan", desc: "Cari pesanan, periksa pembayaran, dan perbarui status", icon: Package, tone: "from-violet-500 to-fuchsia-500", count: String(orders.length) + " pesanan" },
+                { key: "products" as const, title: "Kelola Produk", desc: "Lihat produk dan informasi harga", icon: ShoppingBag, tone: "from-blue-500 to-violet-500", count: "Daftar produk" },
+                { key: "settings" as const, title: "Pengaturan Toko", desc: "Logo, nama toko, dan tampilan", icon: Settings, tone: "from-fuchsia-500 to-pink-500", count: "Preferensi toko" },
+              ].map(({ key, title, desc, icon: Icon, tone, count }) => (
+                <button key={key} onClick={() => setActiveView(key)} className="group flex min-h-28 items-center gap-4 rounded-2xl border border-white/10 bg-[#111020] p-4 text-left transition-all hover:border-violet-400/40 hover:bg-[#17132a] active:scale-[0.99]">
+                  <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${tone} text-white shadow-lg`}><Icon className="h-5 w-5" /></span>
+                  <span className="min-w-0 flex-1"><span className="block text-sm font-extrabold text-white">{title}</span><span className="mt-1 block text-xs leading-relaxed text-white/45">{desc}</span><span className="mt-2 block text-[10px] font-bold text-violet-300">{count}</span></span>
+                  <ChevronRight className="h-4 w-4 shrink-0 text-violet-300 transition-transform group-hover:translate-x-1" />
                 </button>
               ))}
             </div>
