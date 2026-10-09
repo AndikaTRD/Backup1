@@ -389,3 +389,36 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @media (prefers-reduced-motion: reduce) {
   main [data-testid="card-product-1"], main section .space-y-4 > div { transition: none; }
 }
+
+
+/* Mobile-app finish: safe areas, touch targets, and compact navigation on phones. */
+html { -webkit-tap-highlight-color: transparent; }
+body { overscroll-behavior-y: contain; }
+button, a, input, select, textarea { touch-action: manipulation; }
+.site-header > div { padding-top: env(safe-area-inset-top, 0px); }
+.site-header .logo-frame { transition: background 220ms ease, border-color 220ms ease, transform 220ms ease; }
+.site-header-scrolled .logo-frame {
+  background: linear-gradient(145deg, rgba(124,58,237,.10), rgba(217,70,239,.06));
+  border-color: rgba(124,58,237,.16);
+}
+.btn-primary { min-height: 48px; }
+@media (max-width: 480px) {
+  .andika-shell { min-height: 100dvh; }
+  .site-header > div { min-height: 62px; height: 62px; gap: 8px; }
+  .site-header [data-testid="link-logo"] { gap: 8px; }
+  .site-header .logo-frame { width: 36px; height: 36px; border-radius: 12px; }
+  .site-header .logo-frame img { width: 29px; height: 29px; }
+  .site-header [data-testid="link-logo"] span span:first-child { font-size: 10px; letter-spacing: .11em; }
+  .site-header nav { gap: 3px; }
+  .nav-pill { padding-inline: 8px; font-size: 9px; letter-spacing: .06em; }
+  .admin-link { padding-inline: 7px; font-size: 10px; }
+  .site-footer { padding-bottom: env(safe-area-inset-bottom, 0px); }
+  main section { scroll-margin-top: 76px; }
+  main [data-testid="button-beli"], main [data-testid="button-checkout"] { min-height: 50px; }
+}
+@media (max-width: 360px) {
+  .site-header [data-testid="link-logo"] { gap: 6px; }
+  .site-header [data-testid="link-logo"] span span:first-child { font-size: 9px; letter-spacing: .08em; }
+  .nav-pill { padding-inline: 6px; }
+  .admin-link { padding-inline: 5px; }
+}
