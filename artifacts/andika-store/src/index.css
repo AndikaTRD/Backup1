@@ -703,3 +703,33 @@ html, body, #root, .andika-shell { background: #080812; }
 }
 .site-header-top { box-shadow: none !important; }
 .site-header-scrolled { box-shadow: 0 5px 18px rgba(30,10,65,.18) !important; }
+
+
+/* v1.14 — polished dark app canvas and iPhone bottom safe area. */
+:root { --andika-app-bg: #080610; }
+html, body, #root {
+  background: var(--andika-app-bg) !important;
+  min-height: 100%;
+}
+body {
+  background: var(--andika-app-bg) !important;
+  overscroll-behavior-y: none;
+}
+.andika-shell {
+  min-height: 100vh;
+  min-height: 100svh;
+  background: var(--andika-app-bg) !important;
+  padding-bottom: 0 !important;
+}
+.site-footer {
+  background: #080610 !important;
+  border-top: 1px solid rgba(167,139,250,.12);
+}
+@supports (padding: env(safe-area-inset-bottom)) {
+  body, #root { background-color: #080610 !important; }
+  .andika-shell { padding-bottom: env(safe-area-inset-bottom, 0px) !important; }
+}
+@media (max-width: 480px) {
+  html, body, #root { background: #080610 !important; }
+  .andika-shell { min-height: 100svh; }
+}
