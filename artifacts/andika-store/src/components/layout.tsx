@@ -9,10 +9,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const { items } = useCart();
   const [location] = useLocation();
   const cartCount = items.reduce((s, i) => s + i.qty, 0);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [headerMode, setHeaderMode] = useState<"top" | "scrolling-up" | "scrolling-down">("top");
 
   useEffect(() => {
-    const updateHeader = () => setIsScrolled(window.scrollY > 24);
+    let previousY = window.scrollY;
+    const updateHeader = () => {
+      const currentY = window.scrollY;
+      if (currentY <= 24) {
+        setHeaderMode("top");
+      } else if (Math.abs(currentY - previousY) > 2) {
+        setHeaderMode(currentY < previousY ? "scrolling-up" : "scrolling-down");
+      }
+      previousY = currentY;
+    };
     updateHeader();
     window.addEventListener("scroll", updateHeader, { passive: true });
     return () => window.removeEventListener("scroll", updateHeader);
@@ -20,7 +29,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="andika-shell min-h-screen w-full flex flex-col">
-      <header className={`site-header sticky top-0 z-50 w-full ${isScrolled ? "site-header-scrolled" : "site-header-top"}`}>
+      <header className={`site-header sticky top-0 z-50 w-full ${headerMode === "top" ? "site-header-top" : headerMode === "scrolling-up" ? "site-header-scrolling-up" : "site-header-scrolling-down"}`}>
         <div className="mx-auto flex h-[72px] max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
           <Link href="/" className="group flex min-w-0 items-center gap-3" data-testid="link-logo">
             <span className="logo-frame flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl">
