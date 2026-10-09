@@ -379,7 +379,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(false);
 
   // ui
-  const [activeView, setActiveView] = useState<"home" | "orders" | "products" | "settings">("home");
+  const [activeView, setActiveView] = useState<"home" | "orders" | "products" | "settings" | "stats">("home");
   const [storeName, setStoreName] = useState(() => localStorage.getItem("andika_admin_store_name") || "ANDIKA STORE");
   const [storeDescription, setStoreDescription] = useState(() => localStorage.getItem("andika_admin_store_description") || "Layanan praktis untuk kebutuhan toko.");
   const [storeLogo, setStoreLogo] = useState(() => localStorage.getItem("andika_admin_store_logo") || "/logo.png");
@@ -550,6 +550,31 @@ export default function Admin() {
   const confirmedRevenue = confirmedOrders.reduce((sum, order) => sum + Number(order.total || 0), 0);
   const membersSold = confirmedOrders.reduce((sum, order) => sum + (order.items || []).reduce((itemSum, item) => { if (item.productName.trim().toUpperCase() !== "NEW MEMBER FRESH") return itemSum; const lineAmount = Math.max(0, Number(item.price) || 0) * Math.max(0, Number(item.quantity) || 0); const unitPrice = lineAmount >= 60000 ? 6000 : 6500; return itemSum + Math.max(0, Math.round(lineAmount / unitPrice)); }, 0), 0);
 
+  const monthlyStats = useMemo(() => {
+    const map: Record<string, { key: string; label: string; orders: number; confirmed: number; cancelled: number; pending: number; revenue: number; members: number }> = {};
+    for (const order of orders) {
+      const d = new Date(order.createdAt);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      if (!map[key]) {
+        map[key] = { key, label: d.toLocaleDateString("id-ID", { month: "long", year: "numeric" }), orders: 0, confirmed: 0, cancelled: 0, pending: 0, revenue: 0, members: 0 };
+      }
+      const row = map[key];
+      row.orders += 1;
+      if (order.status === "confirmed") {
+        row.confirmed += 1;
+        row.revenue += Number(order.total || 0);
+        row.members += (order.items || []).reduce((n, item) => {
+          if (String(item.productName || "").trim().toUpperCase() !== "NEW MEMBER FRESH") return n;
+          const amount = Math.max(0, Number(item.price) || 0) * Math.max(0, Number(item.quantity) || 0);
+          const unitPrice = amount >= 60000 ? 6000 : 6500;
+          return n + Math.max(0, Math.round(amount / unitPrice));
+        }, 0);
+      } else if (order.status === "cancelled") row.cancelled += 1;
+      else row.pending += 1;
+    }
+    return Object.values(map).sort((a, b) => b.key.localeCompare(a.key));
+  }, [orders]);
+
   // reset page when filter/search changes
   useEffect(() => {
     setPage(1);
@@ -691,7 +716,7 @@ export default function Admin() {
                 <img src={storeLogo} alt="Logo toko" className="h-14 w-14 rounded-2xl border border-white/25 bg-white/10 object-contain p-1.5" />
                 <div className="min-w-0"><p className="text-xs font-bold tracking-widest text-white/70">ADMIN DASHBOARD</p><h2 className="mt-1 truncate text-xl font-black text-white sm:text-2xl">{storeName}</h2><p className="mt-1 text-xs text-white/75">Halo, Admin 👋 Senang melihat tokomu kembali.</p></div>
               </div>
-              <div className="relative mt-5 flex items-end justify-between gap-4"><div><p className="text-xs font-semibold text-white/70">Pendapatan terkonfirmasi</p><p className="mt-1 text-2xl font-black text-white sm:text-3xl">{formatRp(confirmedRevenue)}</p><p className="mt-1 text-[11px] text-white/65">Dihitung dari pesanan berstatus dikonfirmasi</p></div><div className="rounded-2xl border border-white/20 bg-white/10 p-3"><TrendingUp className="h-6 w-6 text-white"/></div></div>
+              <div className="relative mt-5 flex items-end justify-between gap-4"><div><p className="text-xs font-semibold text-white/70">Pendapatan terkonfirmasi</p><p className="mt-1 text-2xl font-black text-white sm:text-3xl">{formatRp(confirmedRevenue)}</p><p className="mt-1 text-[11px] text-white/65">Dihitung dari pesanan berstatus dikonfirmasi</p></div><button type="button" onClick={() => setActiveView("stats")} aria-label="Buka statistik bulanan dan pendapatan" className="rounded-2xl border border-white/20 bg-white/10 p-3 transition hover:bg-white/20 active:scale-95"><TrendingUp className="h-6 w-6 text-white"/><span className="mt-1 block text-[9px] font-bold text-white/80">STATISTIK</span></button></div>
             </div>
             <div className="flex items-center justify-between"><div><h3 className="text-base font-extrabold text-white">Ringkasan Toko</h3><p className="mt-1 text-xs text-white/40">Statistik berdasarkan data pesanan</p></div><button onClick={() => void fetchData()} className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-bold text-white/70 hover:bg-white/10"><RefreshCw className="h-3.5 w-3.5"/> Perbarui</button></div>
             <div className="grid grid-cols-2 gap-3">
@@ -717,6 +742,18 @@ export default function Admin() {
                 </button>
               ))}
             </div>
+          </section>
+        )}
+
+        {activeView === "stats" && (
+          <section className="space-y-5 pb-24">
+            <div className="flex items-center gap-3"><button onClick={() => setActiveView("home")} className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/70"><ArrowLeft className="h-4 w-4" /></button><div><h2 className="text-lg font-black">Statistik Bulanan</h2><p className="text-xs text-white/40">Ringkasan pesanan dan pendapatan setiap bulan</p></div></div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-2xl border border-white/10 bg-[#111020] p-4"><p className="text-xs font-semibold text-white/45">Total Pendapatan</p><p className="mt-2 text-lg font-black text-violet-300">{formatRp(monthlyStats.reduce((sum, row) => sum + row.revenue, 0))}</p><p className="mt-1 text-[10px] text-white/30">Dari pesanan dikonfirmasi</p></div>
+              <div className="rounded-2xl border border-white/10 bg-[#111020] p-4"><p className="text-xs font-semibold text-white/45">Pesanan Terkonfirmasi</p><p className="mt-2 text-lg font-black text-emerald-300">{monthlyStats.reduce((sum, row) => sum + row.confirmed, 0)}</p><p className="mt-1 text-[10px] text-white/30">Seluruh bulan yang tersedia</p></div>
+            </div>
+            {monthlyStats.length === 0 ? <div className="rounded-2xl border border-white/10 bg-[#111020] p-8 text-center text-sm text-white/40">Belum ada data pesanan.</div> : <div className="space-y-3">{monthlyStats.map((row) => { const maxRevenue = Math.max(1, ...monthlyStats.map((item) => item.revenue)); return <article key={row.key} className="rounded-2xl border border-white/10 bg-[#111020] p-4"><div className="flex items-start justify-between gap-3"><div><h3 className="font-extrabold capitalize text-white">{row.label}</h3><p className="mt-1 text-xs text-white/40">{row.orders} pesanan · {row.members} member terjual</p></div><div className="text-right"><p className="text-sm font-black text-violet-300">{formatRp(row.revenue)}</p><p className="mt-1 text-[10px] text-white/35">pendapatan</p></div></div><div className="mt-3 h-2 overflow-hidden rounded-full bg-white/5"><div className="h-full rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500" style={{ width: `${Math.min(100, (row.revenue / maxRevenue) * 100)}%` }} /></div><div className="mt-3 grid grid-cols-3 gap-2 text-[10px]"><div className="rounded-lg bg-white/5 p-2"><span className="block text-white/35">Dikonfirmasi</span><strong className="mt-1 block text-emerald-300">{row.confirmed}</strong></div><div className="rounded-lg bg-white/5 p-2"><span className="block text-white/35">Menunggu</span><strong className="mt-1 block text-amber-300">{row.pending}</strong></div><div className="rounded-lg bg-white/5 p-2"><span className="block text-white/35">Dibatalkan</span><strong className="mt-1 block text-rose-300">{row.cancelled}</strong></div></div></article>; })}</div>}
+            <p className="text-[10px] leading-relaxed text-white/30">Statistik dihitung dari pesanan yang masih memiliki data di database. Pendapatan hanya menghitung pesanan berstatus dikonfirmasi.</p>
           </section>
         )}
 
