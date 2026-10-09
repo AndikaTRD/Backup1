@@ -1,6 +1,6 @@
 import { APP_CONFIG } from "@/config/app";
 import { Link, useLocation } from "wouter";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, CircleUserRound } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -39,7 +39,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
           <nav className="flex shrink-0 items-center gap-1.5 sm:gap-3">
             <Link href="/" className={`nav-pill ${location === "/" ? "nav-pill-active" : ""}`} data-testid="nav-member">
-              MEMBER
+              MENU
             </Link>
 
             <Link href="/cart" className={`cart-button relative ${location === "/cart" ? "cart-button-active" : ""}`} data-testid="nav-cart" aria-label="Keranjang belanja">
@@ -53,7 +53,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
               </AnimatePresence>
             </Link>
 
-            <Link href="/admin" className="admin-link" data-testid="nav-admin">Menu</Link>
+            <Link href="/admin" className="admin-link login-icon-button" data-testid="nav-admin" aria-label="Login admin" title="Login admin">
+              <CircleUserRound className="h-[20px] w-[20px]" aria-hidden="true" />
+            </Link>
           </nav>
         </div>
       </header>
