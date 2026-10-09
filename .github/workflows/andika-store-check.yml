@@ -1,0 +1,44 @@
+name: Andika Store checks
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "artifacts/andika-store/**"
+      - "lib/**"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "package.json"
+      - ".github/workflows/andika-store-check.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "artifacts/andika-store/**"
+      - "lib/**"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "package.json"
+      - ".github/workflows/andika-store-check.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.1
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build Andika Store
+        run: pnpm --filter @workspace/andika-store build
+      - name: Type-check Andika Store
+        run: pnpm --filter @workspace/andika-store typecheck
