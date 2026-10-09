@@ -519,3 +519,62 @@ main section { scroll-margin-top: 84px; }
 .site-header .cart-count { border-color: rgb(103,35,218); }
 .site-header { transition: background-color 220ms ease, box-shadow 220ms ease, border-color 220ms ease, backdrop-filter 220ms ease; }
 @media (prefers-reduced-motion: reduce) { .site-header { transition: none; } }
+
+
+/* v1.8 — simplify admin controls across the entire admin panel. */
+.admin-page button {
+  box-shadow: none !important;
+  text-shadow: none;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, opacity 150ms ease !important;
+}
+.admin-page button:not(:disabled) { cursor: pointer; }
+.admin-page button:active:not(:disabled) { transform: none !important; }
+.admin-page .shadow-lg,
+.admin-page .shadow-xl,
+.admin-page [class*="shadow-violet"] { box-shadow: none !important; }
+.admin-page button.rounded-xl,
+.admin-page button.rounded-2xl,
+.admin-page button.rounded-lg { border-radius: 10px !important; }
+.admin-page button[class*="bg-gradient-to-r"],
+.admin-page button[class*="bg-gradient-to-br"] {
+  background-image: none !important;
+  background-color: #6d28d9 !important;
+}
+.admin-page button[class*="bg-gradient-to-r"]:hover,
+.admin-page button[class*="bg-gradient-to-br"]:hover { background-color: #7c3aed !important; }
+.admin-page button[class*="bg-white/5"],
+.admin-page button[class*="bg-white/10"],
+.admin-page button[class*="bg-white/4"] {
+  border-color: rgba(255,255,255,.10);
+  background-color: rgba(255,255,255,.045);
+}
+.admin-page button[class*="bg-white/5"]:hover,
+.admin-page button[class*="bg-white/10"]:hover,
+.admin-page button[class*="bg-white/4"]:hover { background-color: rgba(255,255,255,.09); }
+.admin-page button[class*="shadow-lg"] { box-shadow: none !important; }
+.admin-page [role="tablist"] button,
+.admin-page .flex.items-center.gap-1.bg-white\/5 button {
+  min-height: 40px;
+  padding: 0 13px;
+  border-radius: 8px !important;
+  font-size: 12px;
+  box-shadow: none !important;
+}
+.admin-page button[class*="bg-violet-600"] {
+  background-image: none !important;
+  background-color: #6d28d9 !important;
+  box-shadow: none !important;
+}
+.admin-page button[class*="border-violet-500/50"] {
+  border-color: rgba(167,139,250,.45) !important;
+  background-color: rgba(124,58,237,.14) !important;
+  color: #c4b5fd !important;
+}
+.admin-page input,
+.admin-page textarea { border-radius: 10px !important; }
+@media (max-width: 480px) {
+  .admin-page button { min-height: 38px; }
+  .admin-page .flex.items-center.gap-1.bg-white\/5 { width: 100%; justify-content: space-between; gap: 3px; }
+  .admin-page .flex.items-center.gap-1.bg-white\/5 button { flex: 1; padding-inline: 6px; font-size: 11px; }
+  .admin-page .rounded-2xl.border.border-white\/8.bg-\[\#0d0d1b\] { border-radius: 16px !important; }
+}
