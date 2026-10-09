@@ -578,3 +578,48 @@ main section { scroll-margin-top: 84px; }
   .admin-page .flex.items-center.gap-1.bg-white\/5 button { flex: 1; padding-inline: 6px; font-size: 11px; }
   .admin-page .rounded-2xl.border.border-white\/8.bg-\[\#0d0d1b\] { border-radius: 16px !important; }
 }
+
+
+/* v1.9 — status-bar safe area blends with page; header only translucent at top. */
+:root { --andika-brand-purple: #6723da; }
+html, body, #root { background-color: #080812; }
+.andika-shell { background-color: #080812; }
+.site-header {
+  padding-top: 0 !important;
+  background: var(--andika-brand-purple) !important;
+  border-bottom: 1px solid rgba(255,255,255,.13);
+  box-shadow: 0 6px 20px rgba(30,10,65,.16);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+/* Only the top-of-page state uses translucency, over the content behind it. */
+.site-header-top {
+  background: rgba(103,35,218,.50) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: none;
+}
+/* Once scrolling starts, stay solid purple regardless of scroll direction. */
+.site-header-scrolled {
+  background: #6723da !important;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: 0 6px 20px rgba(30,10,65,.2);
+}
+.site-header .logo-frame { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.26); }
+.site-header .nav-pill,
+.site-header .nav-pill-active,
+.site-header .cart-button,
+.site-header .admin-link { color: #fff !important; }
+.site-header .nav-pill-active,
+.site-header .cart-button,
+.site-header .admin-link { border-color: rgba(255,255,255,.24); background-color: rgba(255,255,255,.10); }
+.site-header-top .nav-pill-active,
+.site-header-top .cart-button,
+.site-header-top .admin-link { background-color: rgba(255,255,255,.12); }
+.site-header .cart-count { border-color: #6723da; }
+@media (max-width: 480px) {
+  /* Extend the same brand purple behind the iPhone status indicators. */
+  .site-header { margin-top: calc(-1 * env(safe-area-inset-top, 0px)); }
+  .site-header > div { padding-top: 0 !important; }
+}
