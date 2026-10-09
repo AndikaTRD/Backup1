@@ -209,7 +209,7 @@ export function PaymentPopup({ open, onClose }: PaymentPopupProps) {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
           style={{ background: "rgba(4,4,16,0.92)", backdropFilter: "blur(10px)" }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -218,7 +218,7 @@ export function PaymentPopup({ open, onClose }: PaymentPopupProps) {
           data-testid="payment-popup-backdrop"
         >
           <motion.div
-            className="w-full sm:max-w-md rounded-t-3xl sm:rounded-2xl border border-violet-500/20 bg-[#0d0d1b] overflow-hidden"
+            className="w-full sm:max-w-md rounded-t-3xl sm:rounded-2xl border border-violet-500/20 bg-[#0d0d1b] overflow-hidden max-h-[94svh] sm:max-h-[90vh] flex flex-col"
             initial={{ opacity: 0, y: 60 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 40 }}
@@ -247,7 +247,7 @@ export function PaymentPopup({ open, onClose }: PaymentPopupProps) {
               </button>
             </div>
 
-            <div className="px-5 py-4 space-y-4 max-h-[72vh] overflow-y-auto">
+            <div className="px-5 py-4 space-y-4 flex-1 min-h-0 max-h-[72svh] overflow-y-auto overscroll-contain">
               {/* Nama */}
               <div>
                 <label className="block text-[10px] font-bold uppercase tracking-widest text-white/45 mb-1.5">
