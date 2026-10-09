@@ -662,3 +662,24 @@ html, body, #root, .andika-shell { background: #080812; }
 }
 .site-header .cart-count { border-color: var(--andika-brand-purple); }
 @media (prefers-reduced-motion: reduce) { .site-header { transition: none; } }
+
+
+/* v1.12 — compact home/menu label and recognizable account login icon. */
+.site-header .login-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  padding: 0;
+  border-radius: 14px;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.24);
+  background: rgba(255,255,255,.10);
+}
+.site-header .login-icon-button:hover,
+.site-header .login-icon-button:focus-visible {
+  background: rgba(255,255,255,.18);
+  outline: none;
+}
