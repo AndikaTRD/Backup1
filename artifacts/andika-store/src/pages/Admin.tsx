@@ -739,7 +739,7 @@ export default function Admin() {
 
         {activeView === "orders" && (
         <section className="space-y-5 pb-24">
-          <div className="flex items-center gap-3"><button onClick={() => setActiveView("home")} className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/70"><ArrowLeft className="h-4 w-4" /></button><div><h2 className="text-lg font-black">Kelola Pesanan</h2><p className="text-xs text-white/40">Cari dan kelola pesanan pelanggan</p></div></div>
+          <div className="flex items-center gap-3"><button onClick={() => setActiveView("home")} className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/70"><ArrowLeft className="h-4 w-4" /></button><div><h2 className="text-lg font-black">{filter === "all" ? "Total Pesanan" : filter === "pending" ? "Pesanan Menunggu" : filter === "confirmed" ? "Pesanan Dikonfirmasi" : "Pesanan Dibatalkan"}</h2><p className="text-xs text-white/40">{filtered.length} pesanan dalam kategori ini</p></div></div>
         {/* ── Search + Filter ── */}
         <div className="flex flex-col sm:flex-row gap-3">
           {/* Search */}
@@ -754,29 +754,7 @@ export default function Admin() {
             />
           </div>
 
-          {/* Filter tabs */}
-          <div className="flex items-center gap-1 bg-white/5 rounded-xl p-1 border border-white/8">
-            {(
-              [
-                { key: "all", label: "Semua" },
-                { key: "pending", label: "Pending" },
-                { key: "confirmed", label: "Confirmed" },
-                { key: "cancelled", label: "Cancelled" },
-              ] as const
-            ).map(({ key, label }) => (
-              <button
-                key={key}
-                onClick={() => setFilter(key)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
-                  filter === key
-                    ? "bg-violet-600 text-white shadow-lg shadow-violet-900/40"
-                    : "text-white/40 hover:text-white/70"
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+
         </div>
 
         {/* ── Orders section ── */}
