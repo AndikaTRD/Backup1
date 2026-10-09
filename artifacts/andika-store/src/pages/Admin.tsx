@@ -872,6 +872,7 @@ export default function Admin() {
               </button>
             </div>
           )}
+          </div>
         </section>
         )}
       </div>
