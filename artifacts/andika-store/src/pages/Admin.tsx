@@ -696,18 +696,17 @@ export default function Admin() {
             <div className="flex items-center justify-between"><div><h3 className="text-base font-extrabold text-white">Ringkasan Toko</h3><p className="mt-1 text-xs text-white/40">Statistik berdasarkan data pesanan</p></div><button onClick={() => void fetchData()} className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-bold text-white/70 hover:bg-white/10"><RefreshCw className="h-3.5 w-3.5"/> Perbarui</button></div>
             <div className="grid grid-cols-2 gap-3">
               {[
-                {label:"Total Pesanan",value:String(orders.length),icon:Package,tone:"from-violet-500 to-fuchsia-500"},
-                {label:"Menunggu",value:String(pendingOrders.length),icon:Clock,tone:"from-amber-400 to-orange-500"},
-                {label:"Dikonfirmasi",value:String(confirmedOrders.length),icon:CheckCircle2,tone:"from-emerald-400 to-teal-500"},
-                {label:"Dibatalkan",value:String(cancelledOrders.length),icon:XCircle,tone:"from-rose-500 to-red-500"},
-                {label:"Pesanan Hari Ini",value:String(todayOrders.length),icon:CalendarDays,tone:"from-blue-500 to-cyan-400"},
-                {label:"Member Terjual",value:String(membersSold),icon:Users,tone:"from-fuchsia-500 to-pink-500"},
-              ].map(({label,value,icon:Icon,tone})=><div key={label} className="rounded-2xl border border-white/10 bg-[#111020] p-4 shadow-lg shadow-black/10"><div className="flex items-center justify-between gap-2"><span className="text-[11px] font-bold text-white/45">{label}</span><span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${tone}`}><Icon className="h-4 w-4 text-white"/></span></div><p className="mt-3 text-2xl font-black tracking-tight text-white">{value}</p></div>)}
+                {label:"Total Pesanan",value:String(orders.length),icon:Package,tone:"from-violet-500 to-fuchsia-500",action:"all" as const,clickable:true},
+                {label:"Menunggu",value:String(pendingOrders.length),icon:Clock,tone:"from-amber-400 to-orange-500",action:"pending" as const,clickable:true},
+                {label:"Dikonfirmasi",value:String(confirmedOrders.length),icon:CheckCircle2,tone:"from-emerald-400 to-teal-500",action:"confirmed" as const,clickable:true},
+                {label:"Dibatalkan",value:String(cancelledOrders.length),icon:XCircle,tone:"from-rose-500 to-red-500",action:"cancelled" as const,clickable:true},
+                {label:"Pesanan Hari Ini",value:String(todayOrders.length),icon:CalendarDays,tone:"from-blue-500 to-cyan-400",clickable:false},
+                {label:"Member Terjual",value:String(membersSold),icon:Users,tone:"from-fuchsia-500 to-pink-500",clickable:false},
+              ].map(({label,value,icon:Icon,tone,action,clickable})=><button key={label} type="button" onClick={clickable ? () => { setFilter(action!); setSearch(""); setActiveView("orders"); } : undefined} aria-label={clickable ? `Lihat pesanan: ${label}` : undefined} className={`w-full rounded-2xl border border-white/10 bg-[#111020] p-4 text-left shadow-lg shadow-black/10 ${clickable ? "cursor-pointer transition-all hover:border-violet-400/40 hover:bg-[#17132a] active:scale-[0.99]" : "cursor-default"}`}><div className="flex items-center justify-between gap-2"><span className="text-[11px] font-bold text-white/55">{label}</span><span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${tone}`}><Icon className="h-4 w-4 text-white"/></span></div><p className="mt-3 text-2xl font-black tracking-tight text-white">{value}</p>{clickable && <p className="mt-1 text-[10px] font-semibold text-violet-300/70">Ketuk untuk melihat →</p>}</button>)}
             </div>
             <div className="pt-1"><h3 className="text-base font-extrabold text-white">Menu Utama</h3><p className="mt-1 text-xs text-white/40">Pilih bagian yang ingin kamu kelola</p></div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               {[
-                { key: "orders" as const, title: "Kelola Pesanan", desc: "Cari pesanan, periksa pembayaran, dan perbarui status", icon: Package, tone: "from-violet-500 to-fuchsia-500", count: String(orders.length) + " pesanan" },
                 { key: "products" as const, title: "Kelola Produk", desc: "Lihat produk dan informasi harga", icon: ShoppingBag, tone: "from-blue-500 to-violet-500", count: "Daftar produk" },
                 { key: "settings" as const, title: "Pengaturan Toko", desc: "Logo, nama toko, dan tampilan", icon: Settings, tone: "from-fuchsia-500 to-pink-500", count: "Preferensi toko" },
               ].map(({ key, title, desc, icon: Icon, tone, count }) => (
