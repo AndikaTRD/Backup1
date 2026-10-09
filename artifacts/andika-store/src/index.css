@@ -623,3 +623,42 @@ html, body, #root { background-color: #080812; }
   .site-header { margin-top: calc(-1 * env(safe-area-inset-top, 0px)); }
   .site-header > div { padding-top: 0 !important; }
 }
+
+
+/* v1.10 — align iPhone safe area and storefront header into one brand-color surface. */
+:root { --andika-brand-purple: #6723da; }
+html, body, #root, .andika-shell { background: #080812; }
+.site-header,
+.site-header-top,
+.site-header-scrolled {
+  background: var(--andika-brand-purple) !important;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 5px 18px rgba(30,10,65,.16);
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+/* Keep the exact same solid color behind the iPhone status icons and header. */
+.site-header {
+  padding-top: env(safe-area-inset-top, 0px) !important;
+  margin-top: 0 !important;
+  transition: box-shadow 180ms ease, border-color 180ms ease;
+}
+.site-header-top { box-shadow: none; }
+.site-header-scrolled { box-shadow: 0 5px 18px rgba(30,10,65,.2); }
+.site-header > div { padding-top: 0 !important; }
+.site-header .logo-frame {
+  background: rgba(255,255,255,.12);
+  border-color: rgba(255,255,255,.24);
+}
+.site-header .nav-pill,
+.site-header .nav-pill-active,
+.site-header .cart-button,
+.site-header .admin-link { color: #fff !important; }
+.site-header .nav-pill-active,
+.site-header .cart-button,
+.site-header .admin-link {
+  border-color: rgba(255,255,255,.24);
+  background-color: rgba(255,255,255,.10);
+}
+.site-header .cart-count { border-color: var(--andika-brand-purple); }
+@media (prefers-reduced-motion: reduce) { .site-header { transition: none; } }
