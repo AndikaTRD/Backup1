@@ -638,7 +638,7 @@ export default function Admin() {
      RENDER: dashboard
   ════════════════════════════════════════ */
   return (
-    <div className="min-h-screen bg-[#080812] text-white">
+    <div className="admin-page min-h-screen bg-[#080812] text-white">
       {/* ── Header ── */}
       <div className="sticky top-0 z-20 border-b border-white/5 bg-[#080812]/90 backdrop-blur-xl">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
