@@ -8,18 +8,13 @@ import {
   CheckCircle2,
   Clock,
   XCircle,
-  ShieldCheck,
   ArrowLeft,
   Search,
   Copy,
   FileText,
   ChevronDown,
   ChevronUp,
-  TrendingUp,
   Package,
-  Calendar,
-  DollarSign,
-  Users,
   ShoppingBag,
   Settings,
   ChevronRight,
@@ -105,17 +100,6 @@ type Order = {
   notes: string | null;
 };
 
-type Stats = {
-  totalOrders: number;
-  pendingOrders: number;
-  confirmedOrders: number;
-  cancelledOrders: number;
-  totalMembersSold: number;
-  totalRevenue: number;
-  todayOrders: number;
-  todayRevenue: number;
-};
-
 type FilterStatus = "all" | "pending" | "confirmed" | "cancelled";
 
 /* ─────────────────────── sub-components ─────────────────────── */
@@ -158,44 +142,6 @@ function StatusBadge({ status }: { status: string }) {
       {s.icon}
       {s.label}
     </span>
-  );
-}
-
-function StatCard({
-  label,
-  value,
-  accent,
-  icon,
-}: {
-  label: string;
-  value: string | number;
-  accent?: string;
-  icon: React.ReactNode;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="relative rounded-2xl border border-white/8 bg-[#0d0d1b] px-4 py-4 overflow-hidden group"
-    >
-      {/* Glow */}
-      <div
-        className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl ${accent ?? "bg-violet-500/5"}`}
-      />
-      <div className="relative">
-        <div className="flex items-start justify-between mb-2">
-          <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold leading-tight">
-            {label}
-          </p>
-          <span className="text-white/20">{icon}</span>
-        </div>
-        <p
-          className={`text-xl font-black ${typeof value === "string" && value.startsWith("Rp") ? "text-violet-300" : "text-white"}`}
-        >
-          {value}
-        </p>
-      </div>
-    </motion.div>
   );
 }
 
@@ -426,7 +372,6 @@ export default function Admin() {
 
   // data
   const [orders, setOrders] = useState<Order[]>([]);
-  const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(false);
 
   // ui
@@ -456,10 +401,7 @@ export default function Admin() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [oRes, sRes] = await Promise.all([
-        fetch(`${API}/api/admin/orders`, { credentials: "include" }),
-        fetch(`${API}/api/admin/stats`, { credentials: "include" }),
-      ]);
+      const oRes = await fetch(`${API}/api/admin/orders`, { credentials: "include" });
       if (oRes.ok) {
         const raw = (await oRes.json()) as Array<{
           id: number;
@@ -482,7 +424,6 @@ export default function Admin() {
           }))
         );
       }
-      if (sRes.ok) setStats((await sRes.json()) as Stats);
     } finally {
       setLoading(false);
     }
@@ -544,7 +485,6 @@ export default function Admin() {
     });
     setIsAdmin(false);
     setOrders([]);
-    setStats(null);
   }
 
   /* ── status update ── */
