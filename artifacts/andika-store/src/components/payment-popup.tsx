@@ -209,8 +209,8 @@ export function PaymentPopup({ open, onClose }: PaymentPopupProps) {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
-          style={{ background: "rgba(4,4,16,0.92)", backdropFilter: "blur(10px)" }}
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+          style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)", background: "rgba(4,4,16,0.92)", backdropFilter: "blur(10px)" }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
