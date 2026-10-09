@@ -9,14 +9,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const { items } = useCart();
   const [location] = useLocation();
   const cartCount = items.reduce((s, i) => s + i.qty, 0);
-  const [isAtTop, setIsAtTop] = useState(true);
+  const [isAtTop, setIsAtTop] = useState(() => typeof window !== "undefined" && window.scrollY <= 2);
 
   useEffect(() => {
-    let previousY = window.scrollY;
+    let ticking = false;
     const updateHeader = () => {
-      const currentY = window.scrollY;
-      setIsAtTop(currentY <= 2);
-      previousY = currentY;
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        const atTop = window.scrollY <= 2;
+        setIsAtTop((current) => current === atTop ? current : atTop);
+        ticking = false;
+      });
     };
     updateHeader();
     window.addEventListener("scroll", updateHeader, { passive: true });
