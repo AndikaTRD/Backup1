@@ -10,87 +10,53 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const cartCount = items.reduce((s, i) => s + i.qty, 0);
 
   return (
-    <div className="min-h-screen w-full flex flex-col bg-background">
-        <header className="sticky top-0 z-50 w-full border-b border-violet-500/10 bg-[#080812]/85 backdrop-blur-2xl">
-          <div className="max-w-lg mx-auto px-4 h-16 flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5" data-testid="link-logo">
-            <img
-              src="/logo.png"
-              alt="Andika Store"
-              className="w-9 h-9 rounded-xl bg-white p-1 object-contain border border-violet-500/20 shadow-lg shadow-violet-500/20"
-            />
-
-            <span className="font-black text-xs sm:text-sm tracking-wide uppercase text-white">
-              ANDIKA STORE
+    <div className="andika-shell min-h-screen w-full flex flex-col">
+      <header className="site-header sticky top-0 z-50 w-full">
+        <div className="mx-auto flex h-[72px] max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
+          <Link href="/" className="group flex min-w-0 items-center gap-3" data-testid="link-logo">
+            <span className="logo-frame flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl">
+              <img src="/logo.png" alt="Andika Store" className="h-8 w-8 rounded-xl bg-white p-1 object-contain" />
+            </span>
+            <span className="min-w-0">
+              <span className="block truncate text-xs font-black tracking-[0.16em] text-white sm:text-sm">ANDIKA STORE</span>
+              <span className="mt-0.5 hidden text-[10px] font-medium tracking-wide text-violet-200/60 sm:block">Solusi member fresh tokomu</span>
             </span>
           </Link>
 
-          {/* Nav */}
-          <nav className="flex items-center gap-3">
-            <Link
-              href="/"
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold tracking-widest uppercase transition-all duration-200 ${
-                location === "/"
-                  ? "bg-violet-600/25 text-violet-300 border border-violet-500/40"
-                  : "text-white/40 hover:text-white/70 hover:bg-white/5"
-              }`}
-              data-testid="nav-member"
-            >
+          <nav className="flex shrink-0 items-center gap-1.5 sm:gap-3">
+            <Link href="/" className={`nav-pill ${location === "/" ? "nav-pill-active" : ""}`} data-testid="nav-member">
               MEMBER
             </Link>
 
-            {/* Cart icon */}
-            <Link href="/cart" className="relative" data-testid="nav-cart">
-              <div
-                className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
-                  location === "/cart"
-                    ? "bg-violet-600/25 text-violet-300"
-                    : "text-white/40 hover:text-white/70 hover:bg-white/5"
-                }`}
-              >
-                <ShoppingCart className="w-4 h-4" />
-              </div>
+            <Link href="/cart" className={`cart-button relative ${location === "/cart" ? "cart-button-active" : ""}`} data-testid="nav-cart" aria-label="Keranjang belanja">
+              <ShoppingCart className="h-[18px] w-[18px]" />
               <AnimatePresence>
                 {cartCount > 0 && (
-                  <motion.div
-                    key="badge"
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
-                    className="absolute -top-1 -right-1 w-4.5 h-4 min-w-[18px] rounded-full bg-pink-500 flex items-center justify-center text-[9px] font-black text-white px-1"
-                    data-testid="cart-badge"
-                  >
+                  <motion.span key="badge" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="cart-count" data-testid="cart-badge">
                     {cartCount > 99 ? "99+" : cartCount}
-                  </motion.div>
+                  </motion.span>
                 )}
               </AnimatePresence>
             </Link>
 
-            <Link
-              href="/admin"
-              className="px-2 py-1.5 rounded-lg text-[10px] font-medium text-white/20 hover:text-white/40 transition-colors"
-              data-testid="nav-admin"
-            >
-              Admin
-            </Link>
+            <Link href="/admin" className="admin-link" data-testid="nav-admin">Admin</Link>
           </nav>
         </div>
       </header>
 
-          <main className="flex-1 flex flex-col">{children}</main>
+      <main className="relative z-0 flex flex-1 flex-col">{children}</main>
 
-          <footer className="border-t border-white/5 py-5">
-            <div className="max-w-lg mx-auto px-4 text-center space-y-1">
-              <p className="text-xs text-white/60 font-medium">
-                © {APP_CONFIG.copyrightYear} {APP_CONFIG.name}
-              </p>
-
-              <p className="text-[11px] text-violet-400 font-semibold">
-                Version {APP_CONFIG.version}
-              </p>
-            </div>
-          </footer>
+      <footer className="site-footer mt-auto">
+        <div className="mx-auto max-w-5xl px-4 py-7 text-center sm:px-6">
+          <div className="mx-auto mb-3 h-px max-w-xs bg-gradient-to-r from-transparent via-violet-400/30 to-transparent" />
+          <p className="text-xs font-semibold text-white/55">
+            © {APP_CONFIG.copyrightYear} {APP_CONFIG.name}
+          </p>
+          <p className="mt-1 text-[10px] font-medium tracking-wider text-violet-300/65">
+            VERSION {APP_CONFIG.version}
+          </p>
         </div>
-      );
+      </footer>
+    </div>
+  );
     }
