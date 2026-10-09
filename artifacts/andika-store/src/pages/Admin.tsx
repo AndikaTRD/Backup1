@@ -8,18 +8,17 @@ import {
   CheckCircle2,
   Clock,
   XCircle,
-  ShieldCheck,
   ArrowLeft,
   Search,
   Copy,
   FileText,
   ChevronDown,
   ChevronUp,
-  TrendingUp,
   Package,
-  Calendar,
-  DollarSign,
-  Users,
+  ShoppingBag,
+  Settings,
+  ChevronRight,
+  Home as HomeIcon,
 } from "lucide-react";
 import {
   Accordion,
@@ -101,17 +100,6 @@ type Order = {
   notes: string | null;
 };
 
-type Stats = {
-  totalOrders: number;
-  pendingOrders: number;
-  confirmedOrders: number;
-  cancelledOrders: number;
-  totalMembersSold: number;
-  totalRevenue: number;
-  todayOrders: number;
-  todayRevenue: number;
-};
-
 type FilterStatus = "all" | "pending" | "confirmed" | "cancelled";
 
 /* ─────────────────────── sub-components ─────────────────────── */
@@ -154,44 +142,6 @@ function StatusBadge({ status }: { status: string }) {
       {s.icon}
       {s.label}
     </span>
-  );
-}
-
-function StatCard({
-  label,
-  value,
-  accent,
-  icon,
-}: {
-  label: string;
-  value: string | number;
-  accent?: string;
-  icon: React.ReactNode;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="relative rounded-2xl border border-white/8 bg-[#0d0d1b] px-4 py-4 overflow-hidden group"
-    >
-      {/* Glow */}
-      <div
-        className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl ${accent ?? "bg-violet-500/5"}`}
-      />
-      <div className="relative">
-        <div className="flex items-start justify-between mb-2">
-          <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold leading-tight">
-            {label}
-          </p>
-          <span className="text-white/20">{icon}</span>
-        </div>
-        <p
-          className={`text-xl font-black ${typeof value === "string" && value.startsWith("Rp") ? "text-violet-300" : "text-white"}`}
-        >
-          {value}
-        </p>
-      </div>
-    </motion.div>
   );
 }
 
@@ -422,10 +372,14 @@ export default function Admin() {
 
   // data
   const [orders, setOrders] = useState<Order[]>([]);
-  const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(false);
 
   // ui
+  const [activeView, setActiveView] = useState<"home" | "orders" | "products" | "settings">("home");
+  const [storeName, setStoreName] = useState(() => localStorage.getItem("andika_admin_store_name") || "ANDIKA STORE");
+  const [storeDescription, setStoreDescription] = useState(() => localStorage.getItem("andika_admin_store_description") || "Layanan praktis untuk kebutuhan toko.");
+  const [storeLogo, setStoreLogo] = useState(() => localStorage.getItem("andika_admin_store_logo") || "/logo.png");
+  const [themeColor, setThemeColor] = useState(() => localStorage.getItem("andika_admin_theme") || "purple");
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<FilterStatus>("all");
   const [page, setPage] = useState(1);
@@ -447,10 +401,7 @@ export default function Admin() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [oRes, sRes] = await Promise.all([
-        fetch(`${API}/api/admin/orders`, { credentials: "include" }),
-        fetch(`${API}/api/admin/stats`, { credentials: "include" }),
-      ]);
+      const oRes = await fetch(`${API}/api/admin/orders`, { credentials: "include" });
       if (oRes.ok) {
         const raw = (await oRes.json()) as Array<{
           id: number;
@@ -473,7 +424,6 @@ export default function Admin() {
           }))
         );
       }
-      if (sRes.ok) setStats((await sRes.json()) as Stats);
     } finally {
       setLoading(false);
     }
@@ -535,7 +485,6 @@ export default function Admin() {
     });
     setIsAdmin(false);
     setOrders([]);
-    setStats(null);
   }
 
   /* ── status update ── */
@@ -721,60 +670,52 @@ export default function Admin() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
-        {/* ── Stats Grid ── */}
-        {stats && (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <StatCard
-              label="Total Order"
-              value={stats.totalOrders}
-              icon={<Package className="w-4 h-4" />}
-              accent="bg-violet-500/5"
-            />
-            <StatCard
-              label="Pending"
-              value={stats.pendingOrders}
-              icon={<Clock className="w-4 h-4" />}
-              accent="bg-yellow-500/5"
-            />
-            <StatCard
-              label="Confirmed"
-              value={stats.confirmedOrders}
-              icon={<CheckCircle2 className="w-4 h-4" />}
-              accent="bg-emerald-500/5"
-            />
-            <StatCard
-              label="Total Member Terjual"
-              value={stats.totalMembersSold}
-              icon={<Users className="w-4 h-4" />}
-              accent="bg-cyan-500/5"
-            />
-            <StatCard
-              label="Cancelled"
-              value={stats.cancelledOrders}
-              icon={<XCircle className="w-4 h-4" />}
-              accent="bg-red-500/5"
-            />
-            <StatCard
-              label="Order Hari Ini"
-              value={stats.todayOrders}
-              icon={<Calendar className="w-4 h-4" />}
-              accent="bg-fuchsia-500/5"
-            />
-            <StatCard
-              label="Revenue Hari Ini"
-              value={formatRp(stats.todayRevenue)}
-              icon={<TrendingUp className="w-4 h-4" />}
-              accent="bg-fuchsia-500/5"
-            />
-            <StatCard
-              label="Total Revenue"
-              value={formatRp(stats.totalRevenue)}
-              icon={<DollarSign className="w-4 h-4" />}
-              accent="bg-violet-500/8"
-            />
-          </div>
+        {activeView === "home" && (
+          <section className="space-y-5 pb-20">
+            <div className="relative overflow-hidden rounded-3xl border border-violet-300/20 bg-gradient-to-br from-violet-700 via-violet-600 to-fuchsia-600 p-5 sm:p-7 shadow-xl shadow-violet-950/30">
+              <div className="absolute -right-8 -top-12 h-44 w-44 rounded-full bg-white/10 blur-2xl" />
+              <div className="relative flex items-center gap-3">
+                <img src={storeLogo} alt="Logo toko" className="h-14 w-14 rounded-2xl border border-white/20 bg-white/10 object-contain p-1" />
+                <div><p className="text-xs font-semibold text-white/70">ADMIN PANEL</p><h2 className="mt-1 text-xl font-black text-white">{storeName}</h2><p className="mt-1 text-xs text-white/70">Halo, Admin 👋 Kelola tokomu dengan mudah.</p></div>
+              </div>
+              <p className="relative mt-5 max-w-sm text-sm leading-relaxed text-white/80">{storeDescription}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { key: "orders" as const, title: "Kelola Pesanan", desc: "Cari dan kelola pesanan pelanggan", icon: Package, tone: "from-violet-500 to-fuchsia-500" },
+                { key: "products" as const, title: "Kelola Produk", desc: "Lihat produk dan informasi harga", icon: ShoppingBag, tone: "from-blue-500 to-violet-500" },
+                { key: "settings" as const, title: "Pengaturan Toko", desc: "Logo, nama, dan tema toko", icon: Settings, tone: "from-fuchsia-500 to-pink-500" },
+              ].map(({ key, title, desc, icon: Icon, tone }) => (
+                <button key={key} onClick={() => setActiveView(key)} className="group min-h-36 rounded-2xl border border-white/10 bg-[#111020] p-4 text-left transition-all hover:-translate-y-0.5 hover:border-violet-400/40 hover:bg-[#17132a] active:scale-[0.98]">
+                  <span className={`mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${tone} text-white shadow-lg`}><Icon className="h-5 w-5" /></span>
+                  <span className="block text-sm font-extrabold text-white">{title}</span><span className="mt-1 block text-[11px] leading-relaxed text-white/45">{desc}</span>
+                  <ChevronRight className="mt-3 h-4 w-4 text-violet-300 transition-transform group-hover:translate-x-1" />
+                </button>
+              ))}
+            </div>
+          </section>
         )}
 
+        {activeView === "settings" && (
+          <section className="space-y-4 pb-24">
+            <div className="flex items-center gap-3"><button onClick={() => setActiveView("home")} className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/70"><ArrowLeft className="h-4 w-4" /></button><div><h2 className="text-lg font-black">Pengaturan Toko</h2><p className="text-xs text-white/40">Atur identitas dan tampilan toko</p></div></div>
+            <div className="space-y-5 rounded-2xl border border-white/10 bg-[#111020] p-4 sm:p-5">
+              <div><label className="mb-2 block text-xs font-bold text-white/65">Logo toko</label><div className="flex items-center gap-4"><img src={storeLogo} alt="Pratinjau logo" className="h-16 w-16 rounded-2xl border border-white/10 bg-white/5 object-contain p-1" /><label className="cursor-pointer rounded-xl border border-violet-400/30 bg-violet-500/10 px-4 py-2.5 text-xs font-bold text-violet-200 hover:bg-violet-500/20">Ganti Foto<input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={(e) => { const file=e.target.files?.[0]; if (!file) return; if(file.size>2*1024*1024){toast({title:"Ukuran foto maksimal 2 MB",variant:"destructive"});return;} const reader=new FileReader(); reader.onload=()=>{ const value=String(reader.result); setStoreLogo(value); localStorage.setItem("andika_admin_store_logo",value); toast({title:"Foto logo diperbarui di perangkat ini"}); }; reader.readAsDataURL(file); }} /></label></div><p className="mt-2 text-[11px] text-amber-200/70">Catatan: foto saat ini tersimpan di browser/perangkat ini, belum disinkronkan ke semua pengunjung.</p></div>
+              <div><label className="mb-2 block text-xs font-bold text-white/65">Nama toko</label><input value={storeName} onChange={(e)=>setStoreName(e.target.value)} className="w-full rounded-xl border border-white/10 bg-black/20 px-3 py-3 text-sm text-white outline-none focus:border-violet-400/50" /></div>
+              <div><label className="mb-2 block text-xs font-bold text-white/65">Deskripsi toko</label><textarea value={storeDescription} onChange={(e)=>setStoreDescription(e.target.value)} rows={3} className="w-full resize-y rounded-xl border border-white/10 bg-black/20 px-3 py-3 text-sm text-white outline-none focus:border-violet-400/50" /></div>
+              <div><label className="mb-2 block text-xs font-bold text-white/65">Tema warna</label><div className="grid grid-cols-3 gap-2">{[{id:"purple",label:"Ungu",cls:"from-violet-600 to-fuchsia-500"},{id:"blue",label:"Biru",cls:"from-blue-600 to-cyan-400"},{id:"green",label:"Hijau",cls:"from-emerald-600 to-teal-400"}].map(t=><button key={t.id} onClick={()=>setThemeColor(t.id)} className={`rounded-xl border p-2 text-xs font-bold ${themeColor===t.id?"border-white/70 bg-white/10":"border-white/10 bg-black/10"}`}><span className={`mb-2 block h-6 rounded-lg bg-gradient-to-r ${t.cls}`}/>{t.label}{themeColor===t.id?" ✓":""}</button>)}</div><p className="mt-2 text-[11px] text-white/35">Pilihan tema disimpan untuk panel admin ini.</p></div>
+              <button onClick={()=>{localStorage.setItem("andika_admin_store_name",storeName.trim()||"ANDIKA STORE");localStorage.setItem("andika_admin_store_description",storeDescription);localStorage.setItem("andika_admin_theme",themeColor);toast({title:"Pengaturan disimpan di perangkat ini"});}} className="w-full rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-4 py-3 text-sm font-extrabold text-white shadow-lg shadow-violet-950/30">Simpan Pengaturan</button>
+            </div>
+          </section>
+        )}
+
+        {activeView === "products" && (
+          <section className="space-y-4 pb-24"><div className="flex items-center gap-3"><button onClick={()=>setActiveView("home")} className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/70"><ArrowLeft className="h-4 w-4"/></button><div><h2 className="text-lg font-black">Kelola Produk</h2><p className="text-xs text-white/40">Ringkasan produk toko</p></div></div><div className="rounded-2xl border border-white/10 bg-[#111020] p-4"><div className="flex items-center gap-3"><div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500"><Package className="h-5 w-5"/></div><div className="min-w-0 flex-1"><p className="font-bold">NEW MEMBER FRESH</p><p className="mt-1 text-xs text-white/45">Member Fresh Alfamart</p></div><span className="rounded-full bg-emerald-500/10 px-2 py-1 text-[10px] font-bold text-emerald-300">Aktif</span></div><div className="mt-4 space-y-2 border-t border-white/10 pt-4 text-sm"><div className="flex justify-between gap-3"><span className="text-white/50">Harga 1–9 member</span><strong>Rp6.500/member</strong></div><div className="flex justify-between gap-3"><span className="text-white/50">Harga 10+ member</span><strong>Rp6.000/member</strong></div></div><p className="mt-4 rounded-xl bg-amber-500/10 p-3 text-xs leading-relaxed text-amber-100/80">Pengubahan harga belum diaktifkan di halaman ini agar tidak mengubah harga checkout tanpa dukungan API penyimpanan yang sesuai.</p></div></section>
+        )}
+
+        {activeView === "orders" && (
+        <section className="space-y-5 pb-24">
+          <div className="flex items-center gap-3"><button onClick={() => setActiveView("home")} className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/70"><ArrowLeft className="h-4 w-4" /></button><div><h2 className="text-lg font-black">Kelola Pesanan</h2><p className="text-xs text-white/40">Cari dan kelola pesanan pelanggan</p></div></div>
         {/* ── Search + Filter ── */}
         <div className="flex flex-col sm:flex-row gap-3">
           {/* Search */}
@@ -932,7 +873,9 @@ export default function Admin() {
             </div>
           )}
         </div>
+        )}
       </div>
+      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-white/10 bg-[#0a0914]/95 px-3 pb-[max(env(safe-area-inset-bottom),10px)] pt-2 backdrop-blur-xl"><div className="mx-auto grid max-w-md grid-cols-4 gap-1">{[{key:"home" as const,label:"Beranda",icon:HomeIcon},{key:"orders" as const,label:"Pesanan",icon:Package},{key:"products" as const,label:"Produk",icon:ShoppingBag},{key:"settings" as const,label:"Pengaturan",icon:Settings}].map(({key,label,icon:Icon})=><button key={key} onClick={()=>setActiveView(key)} className={`flex flex-col items-center gap-1 rounded-xl py-2 text-[10px] font-bold transition-all ${activeView===key?"bg-violet-600/25 text-violet-200":"text-white/40 hover:text-white/70"}`}><Icon className="h-4 w-4"/>{label}</button>)}</div></nav>
     </div>
   );
 }
