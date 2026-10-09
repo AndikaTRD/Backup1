@@ -1,6 +1,6 @@
 export const APP_CONFIG = {
   name: "ANDIKA STORE",
-  version: "v1.17",
+  version: "v1.18",
   copyrightYear: "2026",
   author: "AndikaTRD",
   website: "www.andikastore.online",
