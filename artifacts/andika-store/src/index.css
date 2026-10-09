@@ -683,3 +683,23 @@ html, body, #root, .andika-shell { background: #080812; }
   background: rgba(255,255,255,.18);
   outline: none;
 }
+
+
+/* v1.13 — prevent header flicker while scrolling on iOS Safari. */
+.site-header {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: auto;
+  transition: none !important;
+}
+.site-header-top,
+.site-header-scrolled {
+  background-color: #6723da !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  transition: none !important;
+}
+.site-header-top { box-shadow: none !important; }
+.site-header-scrolled { box-shadow: 0 5px 18px rgba(30,10,65,.18) !important; }
