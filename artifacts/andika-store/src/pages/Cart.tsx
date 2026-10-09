@@ -28,7 +28,7 @@ export default function Cart() {
     <Layout>
       <PaymentPopup open={paymentOpen} onClose={() => setPaymentOpen(false)} />
 
-      <div className="max-w-md mx-auto w-full px-4 py-8">
+      <div className="mobile-app-page max-w-md mx-auto w-full px-4 pt-5 pb-8 sm:py-8">
         {/* Back */}
         <Link
           href="/"
@@ -94,7 +94,7 @@ export default function Cart() {
                         </div>
                         <button
                           onClick={() => removeItem(item.id)}
-                          className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-white/25 hover:text-pink-400 hover:bg-pink-500/10 transition-all shrink-0"
+                          className="min-h-10 min-w-10 rounded-xl bg-white/5 flex items-center justify-center text-white/45 hover:text-pink-400 hover:bg-pink-500/10 transition-all shrink-0"
                           data-testid={`button-remove-${item.id}`}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -133,7 +133,7 @@ export default function Cart() {
             {/* Checkout */}
             <button
               onClick={() => setPaymentOpen(true)}
-              className="w-full h-12 rounded-xl btn-primary text-white font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-2"
+              className="w-full min-h-14 rounded-2xl btn-primary text-white font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-2 shadow-lg shadow-violet-950/30"
               data-testid="button-checkout"
             >
               <CreditCard className="w-4 h-4" />
