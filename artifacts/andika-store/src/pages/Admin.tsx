@@ -872,7 +872,7 @@ export default function Admin() {
               </button>
             </div>
           )}
-        </div>
+        </section>
         )}
       </div>
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-white/10 bg-[#0a0914]/95 px-3 pb-[max(env(safe-area-inset-bottom),10px)] pt-2 backdrop-blur-xl"><div className="mx-auto grid max-w-md grid-cols-4 gap-1">{[{key:"home" as const,label:"Beranda",icon:HomeIcon},{key:"orders" as const,label:"Pesanan",icon:Package},{key:"products" as const,label:"Produk",icon:ShoppingBag},{key:"settings" as const,label:"Pengaturan",icon:Settings}].map(({key,label,icon:Icon})=><button key={key} onClick={()=>setActiveView(key)} className={`flex flex-col items-center gap-1 rounded-xl py-2 text-[10px] font-bold transition-all ${activeView===key?"bg-violet-600/25 text-violet-200":"text-white/40 hover:text-white/70"}`}><Icon className="h-4 w-4"/>{label}</button>)}</div></nav>
