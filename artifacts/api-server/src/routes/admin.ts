@@ -159,35 +159,11 @@ router.get("/admin/stats", requireAdmin, async (_req, res): Promise<void> => {
   );
 });
 
+// Data-preserving cleanup endpoint. Older orders must retain their items and history.
+// Keep the endpoint for compatibility with existing admin clients, but do not
+// delete or overwrite order data automatically.
 router.delete("/admin/cleanup", requireAdmin, async (_req, res): Promise<void> => {
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-  // Only clean orders older than 30 days that are confirmed or cancelled
-  const { lt } = await import("drizzle-orm");
-  const toClean = await db
-    .select()
-    .from(ordersTable)
-    .where(lt(ordersTable.createdAt, thirtyDaysAgo));
-
-  let cleaned = 0;
-  for (const o of toClean) {
-    if (o.status === "confirmed" || o.status === "cancelled") {
-      await db
-        .update(ordersTable)
-        .set({
-          items: [],
-          notes: null,
-          paymentProofUrl: null,
-          customerEmail: "-",
-          customerPhone: "-",
-        })
-        .where(eq(ordersTable.id, o.id));
-      cleaned++;
-    }
-  }
-
-  res.json({ ok: true, cleaned });
+  res.json({ ok: true, cleaned: 0, message: "Automatic order cleanup is disabled to preserve transaction history." });
 });
 
 export default router;
