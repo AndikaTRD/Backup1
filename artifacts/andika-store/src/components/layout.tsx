@@ -9,7 +9,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const { items } = useCart();
   const [location] = useLocation();
   const cartCount = items.reduce((s, i) => s + i.qty, 0);
-  const [headerMode, setHeaderMode] = useState<"top" | "scrolling-up" | "scrolling-down">("top");
+  const [headerMode, setHeaderMode] = useState<"top" | "scrolled">("top");
 
   useEffect(() => {
     let previousY = window.scrollY;
@@ -17,8 +17,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
       const currentY = window.scrollY;
       if (currentY <= 24) {
         setHeaderMode("top");
-      } else if (Math.abs(currentY - previousY) > 2) {
-        setHeaderMode(currentY < previousY ? "scrolling-up" : "scrolling-down");
+      } else {
+        setHeaderMode("scrolled");
       }
       previousY = currentY;
     };
@@ -29,7 +29,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="andika-shell min-h-screen w-full flex flex-col">
-      <header className={`site-header sticky top-0 z-50 w-full ${headerMode === "top" ? "site-header-top" : headerMode === "scrolling-up" ? "site-header-scrolling-up" : "site-header-scrolling-down"}`}>
+      <header className={`site-header sticky top-0 z-50 w-full ${headerMode === "top" ? "site-header-top" : "site-header-scrolled"}`}>
         <div className="mx-auto flex h-[72px] max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
           <Link href="/" className="group flex min-w-0 items-center gap-3" data-testid="link-logo">
             <span className="logo-frame flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl">
