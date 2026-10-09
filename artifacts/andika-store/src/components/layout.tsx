@@ -1,6 +1,6 @@
 import { APP_CONFIG } from "@/config/app";
 import { Link, useLocation } from "wouter";
-import { ShoppingCart, CircleUserRound } from "lucide-react";
+import { ShoppingCart, CircleUserRound, MessageCircle, Mail, Clock3, ShieldCheck } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -67,16 +67,76 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <main className="relative z-0 flex flex-1 flex-col">{children}</main>
 
       <footer className="site-footer mt-auto">
-        <div className="mx-auto max-w-5xl px-4 py-7 text-center sm:px-6">
-          <div className="mx-auto mb-3 h-px max-w-xs bg-gradient-to-r from-transparent via-violet-400/30 to-transparent" />
-          <p className="text-xs font-semibold text-white/55">
-            © {APP_CONFIG.copyrightYear} {APP_CONFIG.name}
-          </p>
-          <p className="mt-1 text-[10px] font-medium tracking-wider text-violet-300/65">
-            VERSION {APP_CONFIG.version}
-          </p>
+        <div className="mx-auto max-w-5xl px-5 pb-5 pt-8 sm:px-6 sm:pt-10">
+          <div className="grid gap-8 border-b border-violet-300/10 pb-7 sm:grid-cols-[1.15fr_1fr] sm:gap-12 sm:pb-8">
+            <div>
+              <Link href="/" className="inline-flex items-center gap-3" aria-label="ANDIKA STORE beranda">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-violet-300/20 bg-violet-500/10">
+                  <img src="/logo.png" alt="" className="h-7 w-7 rounded-lg bg-white p-1 object-contain" />
+                </span>
+                <span className="text-sm font-black tracking-[0.16em] text-white">ANDIKA STORE</span>
+              </Link>
+              <p className="mt-3 max-w-sm text-sm leading-6 text-white/55">
+                Solusi praktis untuk kebutuhan member fresh tokomu. Pesan dengan mudah melalui website.
+              </p>
+              <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-emerald-400/15 bg-emerald-400/[0.06] px-3 py-1.5 text-[11px] font-medium text-emerald-200/80">
+                <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                Pemesanan praktis dan mudah
+              </div>
+            </div>
+
+            <div>
+              <h2 className="text-xs font-extrabold tracking-[0.16em] text-white/85">HUBUNGI KAMI</h2>
+              <p className="mt-2 text-xs leading-5 text-white/45">Butuh bantuan atau ingin bertanya tentang pesanan? Hubungi admin melalui kontak berikut.</p>
+              <div className="mt-4 grid gap-3">
+                <a
+                  href={`https://wa.me/${APP_CONFIG.whatsapp}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group flex min-h-12 items-center gap-3 rounded-xl border border-emerald-400/15 bg-white/[0.025] px-3.5 py-3 transition-colors hover:border-emerald-400/30 hover:bg-emerald-400/[0.06]"
+                  aria-label="Hubungi admin melalui WhatsApp"
+                >
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-400/10 text-emerald-300">
+                    <MessageCircle className="h-4 w-4" aria-hidden="true" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[10px] font-bold uppercase tracking-wider text-white/40">WhatsApp Admin</span>
+                    <span className="mt-0.5 block truncate text-sm font-semibold text-white/85">0895328068023</span>
+                  </span>
+                  <span className="text-xs text-emerald-300">Hubungi →</span>
+                </a>
+                <a
+                  href={`mailto:${APP_CONFIG.email}`}
+                  className="group flex min-h-12 items-center gap-3 rounded-xl border border-violet-300/10 bg-white/[0.025] px-3.5 py-3 transition-colors hover:border-violet-300/25 hover:bg-violet-400/[0.05]"
+                  aria-label="Kirim email ke ANDIKA STORE"
+                >
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-violet-400/10 text-violet-300">
+                    <Mail className="h-4 w-4" aria-hidden="true" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[10px] font-bold uppercase tracking-wider text-white/40">Email</span>
+                    <span className="mt-0.5 block break-all text-sm font-semibold text-white/85">{APP_CONFIG.email}</span>
+                  </span>
+                  <span className="text-xs text-violet-300">Email →</span>
+                </a>
+              </div>
+              <p className="mt-3 flex items-center gap-2 text-[11px] text-white/40">
+                <Clock3 className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                Waktu respons admin dapat bervariasi.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center justify-between gap-2 pt-5 text-center sm:flex-row sm:text-left">
+            <p className="text-xs font-medium text-white/50">
+              © {APP_CONFIG.copyrightYear} {APP_CONFIG.name}. Hak cipta dilindungi.
+            </p>
+            <p className="text-[10px] font-semibold tracking-[0.14em] text-violet-300/60">
+              {APP_CONFIG.version}
+            </p>
+          </div>
         </div>
       </footer>
     </div>
   );
-    }
+}
