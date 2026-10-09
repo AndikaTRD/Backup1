@@ -548,7 +548,7 @@ export default function Admin() {
   const pendingOrders = orders.filter((order) => order.status === "pending" || order.status === "proof_uploaded");
   const cancelledOrders = orders.filter((order) => order.status === "cancelled");
   const confirmedRevenue = confirmedOrders.reduce((sum, order) => sum + Number(order.total || 0), 0);
-  const membersSold = confirmedOrders.reduce((sum, order) => sum + (order.items || []).reduce((itemSum, item) => item.productName.trim().toUpperCase() === "NEW MEMBER FRESH" ? itemSum + Math.max(0, Number(item.quantity) || 0) : itemSum, 0), 0);
+  const membersSold = confirmedOrders.reduce((sum, order) => sum + (order.items || []).reduce((itemSum, item) => { if (item.productName.trim().toUpperCase() !== "NEW MEMBER FRESH") return itemSum; const lineAmount = Math.max(0, Number(item.price) || 0) * Math.max(0, Number(item.quantity) || 0); const unitPrice = lineAmount >= 60000 ? 6000 : 6500; return itemSum + Math.max(0, Math.round(lineAmount / unitPrice)); }, 0), 0);
 
   // reset page when filter/search changes
   useEffect(() => {
