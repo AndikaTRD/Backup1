@@ -296,3 +296,49 @@ a:hover .logo-frame {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* Andika Store visual refresh — responsive polish only; checkout logic untouched. */
+.site-header nav { gap: 8px; }
+.nav-pill { min-height: 40px; padding-inline: 15px; }
+.admin-link { padding: 9px 11px; border: 1px solid rgba(196,181,253,.1); }
+main section { scroll-margin-top: 90px; }
+main section h1 { letter-spacing: -.045em; }
+main section h2 { letter-spacing: -.025em; }
+main [data-testid="card-product-1"] {
+  border-color: rgba(167,139,250,.3) !important;
+  border-radius: 24px !important;
+  background: linear-gradient(160deg, rgba(24,18,43,.98), rgba(12,10,23,.98)) !important;
+  box-shadow: 0 24px 70px rgba(0,0,0,.34), 0 0 45px rgba(124,58,237,.1) !important;
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+main [data-testid="card-product-1"]:hover {
+  border-color: rgba(192,132,252,.48) !important;
+  box-shadow: 0 28px 80px rgba(0,0,0,.4), 0 0 50px rgba(124,58,237,.16) !important;
+}
+main [data-testid="card-product-1"] .p-5 { padding: 24px; }
+main [data-testid="card-product-1"] button[data-testid="button-beli"] {
+  min-height: 48px; border-radius: 14px; letter-spacing: .08em;
+}
+main [data-testid="card-product-1"] .rounded-xl { border-radius: 14px; }
+main section .space-y-4 > div {
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(22,17,38,.94), rgba(12,10,22,.96));
+  transition: transform .2s ease, border-color .2s ease;
+}
+main section .space-y-4 > div:hover { transform: translateY(-2px); }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid rgba(196,181,253,.9); outline-offset: 3px;
+}
+@media (max-width: 480px) {
+  .site-header > div { height: 66px; padding-inline: 12px; }
+  .site-header nav { gap: 3px; }
+  .nav-pill { min-height: 36px; padding-inline: 9px; font-size: 9px; }
+  .cart-button { width: 36px; height: 36px; border-radius: 11px; }
+  .admin-link { padding: 8px 6px; font-size: 9px; }
+  main section h1 { font-size: clamp(2.35rem, 10vw, 3rem); }
+  main [data-testid="card-product-1"] .p-5 { padding: 19px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  main [data-testid="card-product-1"], main section .space-y-4 > div { transition: none; }
+}
