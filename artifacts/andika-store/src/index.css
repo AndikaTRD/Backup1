@@ -422,3 +422,36 @@ button, a, input, select, textarea { touch-action: manipulation; }
   .nav-pill { padding-inline: 6px; }
   .admin-link { padding-inline: 5px; }
 }
+
+
+/* Mobile-app experience polish across storefront and cart. */
+:root { color-scheme: dark; }
+html { scroll-padding-top: 76px; -webkit-text-size-adjust: 100%; }
+body { min-width: 320px; overscroll-behavior-y: contain; }
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+button, a { touch-action: manipulation; }
+.andika-shell { min-height: 100svh; padding-bottom: env(safe-area-inset-bottom, 0px); }
+.site-header { padding-top: env(safe-area-inset-top, 0px); }
+.site-header > div { min-height: 64px; }
+.site-header nav { flex-wrap: nowrap; }
+main { width: 100%; }
+main section { scroll-margin-top: 84px; }
+[data-testid="cart-empty"] { box-shadow: 0 16px 48px rgba(0,0,0,.18); }
+@media (max-width: 480px) {
+  .site-header > div { min-height: 60px; height: 60px; }
+  .site-header [data-testid="link-logo"] { gap: 8px; }
+  .site-header .logo-frame { width: 36px; height: 36px; border-radius: 12px; }
+  .site-header .logo-frame img { width: 29px; height: 29px; }
+  .site-header [data-testid="link-logo"] span span:first-child { font-size: 10px; letter-spacing: .12em; }
+  .site-header nav { gap: 2px; }
+  .site-header .nav-pill { padding-inline: 7px; font-size: 8px; letter-spacing: .06em; }
+  .site-header .admin-link { padding-inline: 5px; font-size: 9px; }
+  main section { scroll-margin-top: 72px; }
+  main [data-testid="card-product-1"] { border-radius: 22px !important; }
+  main [data-testid="card-product-1"] button { min-height: 46px; }
+  input, select, textarea { font-size: 16px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .site-header { transition: none; }
+}
