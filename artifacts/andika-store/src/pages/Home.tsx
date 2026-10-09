@@ -158,12 +158,7 @@ export default function Home() {
       </section>
       {/* Ulasan Singkat */}
       <section className="w-full max-w-sm mx-auto px-4 pb-20">
-        <motion.div
-          initial={{ opacity: 0, y: 25 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
+        <div>
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-2 mb-2">
               <Sparkles className="w-5 h-5 text-violet-400" />
@@ -196,13 +191,9 @@ export default function Home() {
                 text: "Harga terjangkau dan pelayanan profesional. Sangat membantu saat mengejar target member."
               }
             ].map((item, index) => (
-              <motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.15 }}
-                className="rounded-2xl border border-violet-500/20 bg-[#0c0c1a] p-5 transition-all duration-300 hover:border-violet-400/40 hover:-translate-y-1"
+                className="rounded-2xl border border-violet-500/20 bg-[#0c0c1a] p-5 transition-colors duration-200 hover:border-violet-400/40"
                 style={{
                   boxShadow:
                     "0 0 25px rgba(124,58,237,.08), inset 0 1px 0 rgba(255,255,255,.03)"
@@ -233,11 +224,11 @@ export default function Home() {
                     {item.role}
                   </p>
                 </div>
-              </motion.div>
+              </div>
             ))}
 
           </div>
-        </motion.div>
+        </div>
       </section>
     </Layout>
   );
