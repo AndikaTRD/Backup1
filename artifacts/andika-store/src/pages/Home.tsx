@@ -19,7 +19,7 @@ export default function Home() {
       <OrderPopup open={popupOpen} onClose={() => setPopupOpen(false)} />
 
       {/* Hero */}
-      <section className="w-full pt-16 sm:pt-20 pb-10 px-4 flex flex-col items-center text-center relative overflow-hidden">
+      <section className="w-full pt-11 sm:pt-16 pb-8 sm:pb-10 px-4 flex flex-col items-center text-center relative overflow-hidden">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -29,7 +29,7 @@ export default function Home() {
         />
         <div
           className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
-          style={{ background: "linear-gradient(to top, rgba(8,8,20,1), transparent)" }}
+          style={{ background: "linear-gradient(to top, rgba(8,6,16,1), transparent)" }}
         />
 
         <motion.div
@@ -43,7 +43,7 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.1 }}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-violet-500/25 bg-violet-500/8 mb-6"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-violet-400/25 bg-violet-500/[0.08] mb-5 shadow-[0_4px_24px_rgba(124,58,237,0.08)]"
           >
             <Sparkles className="w-3 h-3 text-violet-400" />
             <span className="text-[10px] font-bold text-violet-300 uppercase tracking-widest">
@@ -51,7 +51,7 @@ export default function Home() {
             </span>
           </motion.div>
 
-          <h1 className="text-4xl sm:text-6xl font-black tracking-tight leading-[0.98] mb-5">
+          <h1 className="text-[2.45rem] sm:text-6xl font-black tracking-[-0.055em] leading-[0.98] mb-4">
             <span
               style={{
                 background: "linear-gradient(135deg, #a855f7 0%, #ec4899 100%)",
@@ -66,7 +66,7 @@ export default function Home() {
             <span className="text-white">FRESH</span>
           </h1>
 
-          <p className="text-sm text-white/60 max-w-sm mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base text-white/65 max-w-sm mx-auto leading-relaxed">
             Solusi praktis membantu kebutuhan member toko.
             <br />
             Pesan dengan mudah, harga jelas, dan layanan responsif.
@@ -77,11 +77,11 @@ export default function Home() {
       {/* Store benefits */}
       <section className="relative z-10 mx-auto -mt-1 mb-10 grid w-full max-w-2xl grid-cols-3 gap-2 px-4 sm:gap-3">
         {[
-          { value: "Rp6.000", label: "Harga mulai", icon: Star },
-          { value: "Mudah", label: "Proses pemesanan", icon: Zap },
+          { value: "Rp6.500", label: "Harga 1–9 member", icon: Star },
+          { value: "Rp6.000", label: "Mulai 10 member", icon: Zap },
           { value: "Responsif", label: "Bantuan admin", icon: Headphones },
         ].map(({ value, label, icon: Icon }) => (
-          <div key={label} className="rounded-2xl border border-violet-400/15 bg-white/[0.025] px-2 py-4 text-center shadow-[0_8px_30px_rgba(0,0,0,0.12)] sm:px-4">
+          <div key={label} className="rounded-2xl border border-violet-300/15 bg-gradient-to-b from-white/[0.045] to-white/[0.015] px-2 py-4 text-center shadow-[0_8px_28px_rgba(0,0,0,0.16)] sm:px-4">
             <Icon className="mx-auto mb-2 h-4 w-4 text-violet-300" />
             <p className="text-xs font-black text-white sm:text-sm">{value}</p>
             <p className="mt-1 text-[9px] leading-tight text-white/45 sm:text-[10px]">{label}</p>
@@ -90,13 +90,13 @@ export default function Home() {
       </section>
 
       {/* Product Card */}
-      <section className="w-full max-w-md mx-auto px-4 pb-16">
+      <section className="w-full max-w-md mx-auto px-4 pb-14 sm:pb-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.18, duration: 0.45 }}
-          className="rounded-2xl border border-violet-500/20 bg-[#0c0c1a] overflow-hidden"
-          style={{ boxShadow: "0 0 40px rgba(124,58,237,0.12), 0 4px 24px rgba(0,0,0,0.6)" }}
+          className="rounded-[24px] border border-violet-300/20 bg-[#100c1b] overflow-hidden"
+          style={{ boxShadow: "0 22px 60px rgba(0,0,0,0.34), 0 0 36px rgba(124,58,237,0.09)" }}
           data-testid="card-product-1"
         >
           <div className="h-0.5 w-full bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500" />
@@ -116,10 +116,13 @@ export default function Home() {
             <p className="text-xs text-white/40 mb-5">Aktivasi Member Baru</p>
 
             {/* Pricing table */}
-            <div className="mb-5 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3">
-              <p className="text-xs text-emerald-300 text-center leading-relaxed">
-                Hemat Rp500/member
-                Berlaku untuk pembelian mulai 10 member.
+            <div className="mb-5 flex items-center gap-2.5 rounded-xl border border-emerald-400/20 bg-emerald-400/[0.06] p-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-400/10">
+                <Zap className="h-4 w-4 text-emerald-300" />
+              </div>
+              <p className="text-xs text-emerald-200/90 leading-relaxed text-left">
+                <span className="font-bold">Lebih hemat Rp500 per member.</span>
+                <br />Harga Rp6.000/member untuk pembelian 10 member atau lebih.
               </p>
             </div>
             <div className="rounded-xl border border-white/6 bg-white/3 overflow-hidden mb-5">
@@ -151,7 +154,7 @@ export default function Home() {
             {/* CTA */}
             <button
               onClick={() => setPopupOpen(true)}
-              className="w-full h-11 rounded-xl btn-primary text-white font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-1.5 group"
+              className="w-full min-h-12 rounded-xl btn-primary text-white font-bold text-sm tracking-wide uppercase flex items-center justify-center gap-2 group shadow-[0_8px_22px_rgba(109,40,217,0.18)]"
               data-testid="button-beli"
             >
               BELI SEKARANG
@@ -164,7 +167,7 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="text-center text-[10px] text-white/18 mt-4 tracking-wider"
+          className="text-center text-[11px] text-white/40 mt-4 leading-relaxed"
         >
           Admin akan konfirmasi via WhatsApp setelah pesanan dikirim.
         </motion.p>
