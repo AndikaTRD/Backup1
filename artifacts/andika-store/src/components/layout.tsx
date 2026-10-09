@@ -53,7 +53,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               </AnimatePresence>
             </Link>
 
-            <Link href="/admin" className="admin-link" data-testid="nav-admin">Admin</Link>
+            <Link href="/admin" className="admin-link" data-testid="nav-admin">Menu</Link>
           </nav>
         </div>
       </header>
