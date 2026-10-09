@@ -19,7 +19,7 @@ export default function Home() {
       <OrderPopup open={popupOpen} onClose={() => setPopupOpen(false)} />
 
       {/* Hero */}
-      <section className="w-full pt-14 pb-8 px-4 flex flex-col items-center text-center relative overflow-hidden">
+      <section className="w-full pt-16 sm:pt-20 pb-10 px-4 flex flex-col items-center text-center relative overflow-hidden">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -47,11 +47,11 @@ export default function Home() {
           >
             <Sparkles className="w-3 h-3 text-violet-400" />
             <span className="text-[10px] font-bold text-violet-300 uppercase tracking-widest">
-              Terpercaya & Profesional
+              Layanan Praktis untuk Kebutuhan Toko
             </span>
           </motion.div>
 
-          <h1 className="text-4xl sm:text-5xl font-black tracking-tight leading-none mb-3">
+          <h1 className="text-4xl sm:text-6xl font-black tracking-tight leading-[0.98] mb-5">
             <span
               style={{
                 background: "linear-gradient(135deg, #a855f7 0%, #ec4899 100%)",
@@ -67,17 +67,30 @@ export default function Home() {
           </h1>
 
           <p className="text-sm text-white/60 max-w-sm mx-auto leading-relaxed">
-            Bantu Target Member Tokomu Tercapai
+            Solusi praktis membantu kebutuhan member toko.
             <br />
-            Dengan Layanan Aman,Terpercaya
-            <br />
-            Hingga Member Berhasil Aktif.
+            Pesan dengan mudah, harga jelas, dan layanan responsif.
           </p>
         </motion.div>
       </section>
 
+      {/* Store benefits */}
+      <section className="relative z-10 mx-auto -mt-1 mb-10 grid w-full max-w-2xl grid-cols-3 gap-2 px-4 sm:gap-3">
+        {[
+          { value: "Rp6.000", label: "Harga mulai", icon: Star },
+          { value: "Mudah", label: "Proses pemesanan", icon: Zap },
+          { value: "Responsif", label: "Bantuan admin", icon: Headphones },
+        ].map(({ value, label, icon: Icon }) => (
+          <div key={label} className="rounded-2xl border border-violet-400/15 bg-white/[0.025] px-2 py-4 text-center shadow-[0_8px_30px_rgba(0,0,0,0.12)] sm:px-4">
+            <Icon className="mx-auto mb-2 h-4 w-4 text-violet-300" />
+            <p className="text-xs font-black text-white sm:text-sm">{value}</p>
+            <p className="mt-1 text-[9px] leading-tight text-white/45 sm:text-[10px]">{label}</p>
+          </div>
+        ))}
+      </section>
+
       {/* Product Card */}
-      <section className="w-full max-w-sm mx-auto px-4 pb-20">
+      <section className="w-full max-w-md mx-auto px-4 pb-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
