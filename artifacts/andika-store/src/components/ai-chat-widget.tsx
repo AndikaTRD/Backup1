@@ -178,7 +178,7 @@ export function AIChatWidget() {
             </div>
             <button
               type="button"
-              onClick={() => setOpen(false)}
+              onClick={() => { setOpen(false); setLabelVisible(false); }}
               className="flex h-9 w-9 items-center justify-center rounded-xl text-white/80 transition hover:bg-white/15 hover:text-white"
               aria-label="Tutup chat"
             >
@@ -260,6 +260,7 @@ export function AIChatWidget() {
         </section>
       )}
 
+      {!open && (
       <button
         type="button"
         ref={buttonRef}
@@ -277,6 +278,7 @@ export function AIChatWidget() {
           <span className="text-xs font-bold">{open ? "Tutup chat" : "Tanya DAU"}</span>
         )}
       </button>
+      )}
     </div>
   );
 }
