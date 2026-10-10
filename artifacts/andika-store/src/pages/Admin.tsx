@@ -23,6 +23,7 @@ import {
   Users,
   DollarSign,
   CalendarDays,
+  MessageSquare,
 } from "lucide-react";
 import {
   Accordion,
@@ -380,7 +381,7 @@ export default function Admin() {
   const knownOrderIdsRef = useRef<Set<string> | null>(null);
 
   // ui
-  const [activeView, setActiveView] = useState<"home" | "orders" | "products" | "settings" | "stats">("home");
+  const [activeView, setActiveView] = useState<"home" | "orders" | "products" | "settings" | "stats" | "reviews">("home");
   const [storeName, setStoreName] = useState(() => localStorage.getItem("andika_admin_store_name") || "ANDIKA STORE");
   const [storeDescription, setStoreDescription] = useState(() => localStorage.getItem("andika_admin_store_description") || "Layanan praktis untuk kebutuhan toko.");
   const [storeLogo, setStoreLogo] = useState(() => localStorage.getItem("andika_admin_store_logo") || "/logo.png");
@@ -388,6 +389,8 @@ export default function Admin() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<FilterStatus>("all");
   const [page, setPage] = useState(1);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviewStatus, setReviewStatus] = useState("pending");
 
   /* ── session check ── */
   async function checkSession() {
@@ -446,6 +449,21 @@ export default function Admin() {
       setLoading(false);
     }
   }, [toast]);
+
+  async function fetchReviews(status = reviewStatus) {
+    const response = await fetch(`${API}/api/admin/reviews?status=${status}`, { credentials: "include" });
+    if (response.ok) setReviews(await response.json());
+  }
+  async function moderateReview(id: number, status: "published" | "rejected") {
+    const response = await fetch(`${API}/api/admin/reviews/${id}`, { method: "PATCH", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) });
+    if (response.ok) { toast({ title: status === "published" ? "Ulasan dipublikasikan" : "Ulasan ditolak" }); void fetchReviews(); }
+    else toast({ title: "Gagal memperbarui ulasan", variant: "destructive" });
+  }
+  async function deleteReview(id: number) {
+    const response = await fetch(`${API}/api/admin/reviews/${id}`, { method: "DELETE", credentials: "include" });
+    if (response.ok) { toast({ title: "Ulasan dihapus" }); void fetchReviews(); }
+    else toast({ title: "Gagal menghapus ulasan", variant: "destructive" });
+  }
 
   /* ── auto-clean (orders > 30 days) — at most once per 24 h ── */
   async function runCleanupIfDue() {
@@ -750,6 +768,7 @@ export default function Admin() {
               {[
                 { key: "products" as const, title: "Kelola Produk", desc: "Lihat produk dan informasi harga", icon: ShoppingBag, tone: "from-blue-500 to-violet-500", count: "Daftar produk" },
                 { key: "settings" as const, title: "Pengaturan Toko", desc: "Logo, nama toko, dan tampilan", icon: Settings, tone: "from-fuchsia-500 to-pink-500", count: "Preferensi toko" },
+                { key: "reviews" as const, title: "Kelola Ulasan", desc: "Moderasi komentar pelanggan", icon: MessageSquare, tone: "from-emerald-500 to-teal-500", count: "Ulasan pelanggan" },
               ].map(({ key, title, desc, icon: Icon, tone, count }) => (
                 <button key={key} onClick={() => setActiveView(key)} className="group flex min-h-28 items-center gap-4 rounded-2xl border border-white/10 bg-[#111020] p-4 text-left transition-all hover:border-violet-400/40 hover:bg-[#17132a] active:scale-[0.99]">
                   <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${tone} text-white shadow-lg`}><Icon className="h-5 w-5" /></span>
@@ -758,6 +777,14 @@ export default function Admin() {
                 </button>
               ))}
             </div>
+          </section>
+        )}
+
+        {activeView === "reviews" && (
+          <section className="space-y-5 pb-24">
+            <div className="flex items-center gap-3"><button onClick={() => setActiveView("home")} className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/70"><ArrowLeft className="h-4 w-4" /></button><div><h2 className="text-lg font-black text-white">Kelola Ulasan</h2><p className="text-xs text-white/40">Periksa komentar sebelum ditampilkan ke pelanggan.</p></div></div>
+            <div className="flex flex-wrap gap-2">{[{value:"pending",label:"Menunggu"},{value:"published",label:"Dipublikasikan"},{value:"rejected",label:"Ditolak"}].map(item=><button key={item.value} onClick={()=>{setReviewStatus(item.value);void fetchReviews(item.value)}} className={`rounded-xl border px-3 py-2 text-xs font-bold ${reviewStatus===item.value?"border-violet-400/40 bg-violet-500/15 text-violet-200":"border-white/10 bg-white/5 text-white/50"}`}>{item.label}</button>)}</div>
+            {reviews.length===0?<div className="rounded-2xl border border-white/10 bg-[#111020] p-8 text-center text-sm text-white/40">Belum ada ulasan pada kategori ini. Tekan kategori untuk memuat data.</div>:<div className="space-y-3">{reviews.map((review:any)=><article key={review.id} className="rounded-2xl border border-white/10 bg-[#111020] p-4"><div className="flex items-start justify-between gap-3"><div><h3 className="font-bold text-white">{review.customerName}</h3><p className="mt-1 text-xs text-yellow-300">{ "★".repeat(review.rating)}{"☆".repeat(5-review.rating)}</p></div><span className="text-[10px] text-white/35">{new Date(review.createdAt).toLocaleDateString("id-ID")}</span></div><p className="mt-3 whitespace-pre-wrap break-words text-sm text-white/70">{review.comment}</p><div className="mt-4 flex flex-wrap gap-2">{reviewStatus!=="published"&&<button onClick={()=>void moderateReview(review.id,"published")} className="rounded-lg bg-emerald-500/15 px-3 py-2 text-xs font-bold text-emerald-300">Publikasikan</button>}{reviewStatus!=="rejected"&&<button onClick={()=>void moderateReview(review.id,"rejected")} className="rounded-lg bg-amber-500/15 px-3 py-2 text-xs font-bold text-amber-300">Tolak</button>}<button onClick={()=>void deleteReview(review.id)} className="rounded-lg bg-red-500/15 px-3 py-2 text-xs font-bold text-red-300">Hapus</button></div></article>)}</div>}
           </section>
         )}
 
