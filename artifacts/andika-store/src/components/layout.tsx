@@ -33,7 +33,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <div className="mx-auto flex h-[72px] max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
           <Link href="/" className="group flex min-w-0 items-center gap-3" data-testid="link-logo">
             <span className="logo-frame flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl">
-              <img src="/logo.png" alt="Andika Store" className="h-8 w-8 rounded-xl bg-white p-1 object-contain" />
+              <img src="/logo.png" alt="Andika Store" className="h-8 w-8 rounded-xl object-contain" />
             </span>
             <span className="min-w-0">
               <span className="block truncate text-xs font-black tracking-[0.16em] text-white sm:text-sm">ANDIKA STORE</span>
@@ -70,8 +70,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <div className="mx-auto max-w-5xl px-5 py-7 sm:px-6 sm:py-8">
           <div className="flex flex-col items-center text-center">
             <Link href="/" className="inline-flex items-center gap-3" aria-label="ANDIKA STORE beranda">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-violet-300/20 bg-violet-500/10">
-                <img src="/logo.png" alt="" className="h-7 w-7 rounded-lg bg-white p-1 object-contain" />
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-transparent">
+                <img src="/logo.png" alt="" className="h-7 w-7 rounded-lg object-contain" />
               </span>
               <span className="text-sm font-black tracking-[0.16em] text-white">ANDIKA STORE</span>
             </Link>
