@@ -17,7 +17,7 @@ export function AIChatWidget() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: "assistant",
-      content: "Halo! 👋 Aku ANDI AI, asisten ANDIKA STORE. Mau tanya harga, cara pesan, atau informasi pesanan? Aku siap bantu.",
+      content: "Halo! 👋 Aku DAU AI, asisten ANDIKA STORE. Mau tanya harga, cara pesan, atau informasi pesanan? Aku siap bantu.",
     },
   ]);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -87,7 +87,7 @@ export function AIChatWidget() {
       {open && (
         <section
           className="mb-3 flex h-[min(600px,calc(100dvh-115px))] w-[min(360px,calc(100vw-32px))] flex-col overflow-hidden rounded-3xl border border-violet-300/20 bg-[#0c0916] shadow-[0_24px_80px_rgba(0,0,0,.65),0_0_35px_rgba(124,58,237,.18)]"
-          aria-label="Chat ANDI AI"
+          aria-label="Chat DAU AI"
         >
           <header className="flex items-center justify-between border-b border-white/10 bg-gradient-to-r from-violet-700 to-fuchsia-700 px-4 py-3.5">
             <div className="flex items-center gap-3">
@@ -95,7 +95,7 @@ export function AIChatWidget() {
                 <Bot className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-sm font-extrabold text-white">ANDI AI</p>
+                <p className="text-sm font-extrabold text-white">DAU AI</p>
                 <p className="mt-0.5 flex items-center gap-1.5 text-[11px] text-violet-100/85">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
                   Asisten ANDIKA STORE
@@ -154,7 +154,7 @@ export function AIChatWidget() {
               <div className="flex justify-start">
                 <div className="flex items-center gap-2 rounded-2xl rounded-bl-md border border-white/[0.07] bg-white/[0.055] px-3.5 py-2.5 text-xs text-white/60">
                   <LoaderCircle className="h-3.5 w-3.5 animate-spin text-violet-300" />
-                  ANDI AI sedang mengetik...
+                  DAU AI sedang mengetik...
                 </div>
               </div>
             )}
@@ -169,7 +169,7 @@ export function AIChatWidget() {
                 onKeyDown={handleKeyDown}
                 maxLength={1000}
                 placeholder="Tulis pertanyaan..."
-                aria-label="Pesan untuk ANDI AI"
+                aria-label="Pesan untuk DAU AI"
                 className="min-w-0 flex-1 bg-transparent px-2 py-2 text-sm text-white outline-none placeholder:text-white/35"
               />
               <button
@@ -190,7 +190,7 @@ export function AIChatWidget() {
         type="button"
         onClick={() => setOpen((current) => !current)}
         className="ml-auto flex h-14 items-center gap-2.5 rounded-full border border-white/20 bg-gradient-to-r from-violet-600 to-fuchsia-600 px-4 text-white shadow-[0_10px_35px_rgba(109,40,217,.45)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_40px_rgba(109,40,217,.55)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-300"
-        aria-label={open ? "Tutup ANDI AI" : "Chat dengan ANDI AI"}
+        aria-label={open ? "Tutup DAU AI" : "Chat dengan DAU AI"}
       >
         {open ? <X className="h-5 w-5" /> : <MessageCircle className="h-5 w-5" />}
         <span className="text-sm font-extrabold">{open ? "Tutup chat" : "Tanya AI"}</span>
