@@ -191,7 +191,12 @@ export function AIChatWidget() {
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
-        onPointerDown={startDrag}\n        onPointerMove={moveDrag}\n        onPointerUp={endDrag}\n        onPointerCancel={endDrag}\n        style={{ transform: `translate(${position.x}px, ${position.y}px)` , touchAction: "none" }}\n        className="ml-auto flex h-12 items-center gap-2 rounded-full border border-white/20 bg-gradient-to-r from-violet-600 to-fuchsia-600 px-3.5 text-white shadow-[0_10px_35px_rgba(109,40,217,.45)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_40px_rgba(109,40,217,.55)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-300"
+        onPointerDown={startDrag}
+        onPointerMove={moveDrag}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        style={{ transform: `translate(${position.x}px, ${position.y}px)`, touchAction: "none" }}
+        className="ml-auto flex h-12 items-center gap-2 rounded-full border border-white/20 bg-gradient-to-r from-violet-600 to-fuchsia-600 px-3.5 text-white shadow-[0_10px_35px_rgba(109,40,217,.45)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_40px_rgba(109,40,217,.55)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-300"
         aria-label={open ? "Tutup DAU AI" : "Chat dengan DAU AI"}
       >
         {open ? <X className="h-5 w-5" /> : <MessageCircle className="h-5 w-5" />}
