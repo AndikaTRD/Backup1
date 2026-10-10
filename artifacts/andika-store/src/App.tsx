@@ -7,6 +7,7 @@ import Home from "@/pages/Home";
 import Cart from "@/pages/Cart";
 import Admin from "@/pages/Admin";
 import { WelcomePopup } from "@/components/welcome-popup";
+import { AIChatWidget } from "@/components/ai-chat-widget";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ function App() {
           <Router />
         </WouterRouter>
         <WelcomePopup />
+        <AIChatWidget />
         <Toaster />
       </TooltipProvider>
     </QueryClientProvider>
