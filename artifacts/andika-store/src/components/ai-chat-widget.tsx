@@ -81,6 +81,22 @@ export function AIChatWidget() {
       return "Produk yang informasinya tersedia untukku saat ini adalah NEW MEMBER FRESH. Harganya Rp6.500 per member untuk 1–9 member, atau Rp6.000 per member untuk pembelian 10 member atau lebih. Untuk informasi produk terbaru, periksa katalog di website.";
     }
 
+    if (has("jam operasional", "buka jam", "jam buka", "operasional")) {
+      return "Untuk jam layanan dan ketersediaan admin terbaru, silakan hubungi admin melalui WhatsApp.\n\nWhatsApp: https://wa.me/62895328068023";
+    }
+
+    if (has("diskon", "promo", "voucher", "potongan")) {
+      return "Harga yang tersedia saat ini:\n• 1–9 member: Rp6.500/member.\n• Minimal 10 member: Rp6.000/member.\n\nJika ada promo khusus, konfirmasikan langsung kepada admin melalui WhatsApp: https://wa.me/62895328068023";
+    }
+
+    if (has("komplain", "keluhan", "masalah", "gagal", "error", "kendala")) {
+      return "Maaf kalau kamu mengalami kendala. 😊 Supaya bisa diperiksa langsung, silakan hubungi admin ANDIKA STORE melalui WhatsApp: https://wa.me/62895328068023. Sertakan nomor pesanan jika ada, tetapi jangan kirim PIN, OTP, atau kata sandi.";
+    }
+
+    if (has("selesai", "berapa lama", "lama proses", "kapan diproses", "estimasi")) {
+      return "Waktu penyelesaian dapat bergantung pada pemeriksaan pesanan. Aku tidak akan menebak estimasi. Untuk kepastian proses pesananmu, silakan konfirmasi langsung kepada admin melalui WhatsApp: https://wa.me/62895328068023.";
+    }
+
     if (has("terima kasih", "makasih", "thanks", "thank you")) {
       return "Sama-sama! 😊 Senang bisa membantu. Kalau ada pertanyaan tentang harga, pemesanan, pembayaran, atau pengecekan pesanan, tanyakan saja.";
     }
