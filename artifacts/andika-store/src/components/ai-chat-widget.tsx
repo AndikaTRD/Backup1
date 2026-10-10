@@ -126,27 +126,43 @@ export function AIChatWidget() {
     if (!drag || (event && drag.pointerId !== event.pointerId)) return;
     dragRef.current = null;
     if (drag.moved) {
-      const finalPosition = { ...positionRef.current };
-      setPosition(finalPosition);
+      const button = buttonRef.current;
+      if (!button) return;
 
-      // A short spring-like bounce on release, without animating every drag frame.
-      requestAnimationFrame(() => {
-        const button = buttonRef.current;
-        if (!button || typeof button.animate !== "function") return;
-        const transform = `translate3d(${finalPosition.x}px, ${finalPosition.y}px, 0)`;
+      // Snap to the nearest screen edge and keep the user's chosen vertical position.
+      const rect = button.getBoundingClientRect();
+      const goLeft = rect.left + rect.width / 2 < window.innerWidth / 2;
+      const targetLeft = goLeft ? 8 : window.innerWidth - rect.width - 8;
+      const targetX = positionRef.current.x + targetLeft - rect.left;
+      const targetY = Math.min(
+        Math.max(positionRef.current.y, 8 - (rect.top - positionRef.current.y)),
+        window.innerHeight - rect.height - 8 - (rect.top - positionRef.current.y),
+      );
+      const start = { ...positionRef.current };
+      const targetTransform = `translate3d(${targetX}px, ${targetY}px, 0)`;
+      const overshootX = targetX + (goLeft ? -10 : 10);
+
+      // Animate a small overshoot, then settle against the screen edge.
+      if (typeof button.animate === "function") {
         const animation = button.animate(
           [
-            { transform: `${transform} scale(1)` },
-            { transform: `translate3d(${finalPosition.x}px, ${finalPosition.y - 6}px, 0) scale(1.05)`, offset: 0.38 },
-            { transform: `translate3d(${finalPosition.x}px, ${finalPosition.y + 2}px, 0) scale(0.97)`, offset: 0.72 },
-            { transform: `${transform} scale(1)` },
+            { transform: `translate3d(${start.x}px, ${start.y}px, 0) scale(1)` },
+            { transform: `translate3d(${overshootX}px, ${targetY}px, 0) scale(1.04)`, offset: 0.72 },
+            { transform: `translate3d(${targetX}px, ${targetY}px, 0) scale(0.98)`, offset: 0.88 },
+            { transform: `${targetTransform} scale(1)` },
           ],
-          { duration: 360, easing: "cubic-bezier(0.22, 1.4, 0.36, 1)", fill: "none" },
+          { duration: 460, easing: "cubic-bezier(0.22, 1.25, 0.36, 1)", fill: "none" },
         );
         animation.onfinish = () => {
-          button.style.transform = transform;
+          positionRef.current = { x: targetX, y: targetY };
+          setPosition({ x: targetX, y: targetY });
+          button.style.transform = targetTransform;
         };
-      });
+      } else {
+        positionRef.current = { x: targetX, y: targetY };
+        setPosition({ x: targetX, y: targetY });
+        button.style.transform = targetTransform;
+      }
     }
   }
 
