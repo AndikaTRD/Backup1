@@ -195,7 +195,7 @@ export function AIChatWidget() {
         aria-label={open ? "Tutup DAU AI" : "Chat dengan DAU AI"}
       >
         {open ? <X className="h-5 w-5" /> : <MessageCircle className="h-5 w-5" />}
-        <span className="text-sm font-extrabold">{open ? "Tutup chat" : "Tanya DAU"}</span>
+        <span className="text-sm font-extrabold">{open ? "Tutup chat" : "Chat DAU"}</span>
       </button>
     </div>
   );
