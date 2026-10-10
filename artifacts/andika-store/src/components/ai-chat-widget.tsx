@@ -73,8 +73,8 @@ export function AIChatWidget() {
       return "Demi keamanan, jangan kirim PIN, OTP, kata sandi, tanggal lahir, atau data rahasia melalui chat. Jika formulir pemesanan resmi meminta data tertentu, masukkan hanya di formulir tersebut dan pastikan kamu berada di website ANDIKA STORE yang benar.";
     }
 
-    if (has("admin", "whatsapp", "wa", "hubungi", "kontak", "bantuan", "komplain", "keluhan")) {
-      return "Aku bisa membantu pertanyaan umum tentang harga dan cara pemesanan. Untuk pemeriksaan manual atau keluhan pesanan, gunakan kontak admin yang tercantum di website ANDIKA STORE. Aku tidak dapat menghubungi admin atau memeriksa pesanan secara langsung dari chat ini.";
+    if (has("admin", "whatsapp", "wa", "hubungi", "kontak", "bantuan", "komplain", "keluhan", "email", "cs", "customer service", "kontak admin", "bicara dengan orang")) {
+      return "Perlu bantuan lebih lanjut dari admin ANDIKA STORE? 😊\n\nWhatsApp: https://wa.me/62895328068023\nEmail: mailto:andikaotakunimerz@gmail.com\n\nSilakan jelaskan kebutuhanmu kepada admin. Demi keamanan, jangan kirim PIN, OTP, kata sandi, atau data rahasia.";
     }
 
     if (has("produk", "jual", "menyediakan", "layanan", "member fresh", "new member")) {
@@ -85,7 +85,7 @@ export function AIChatWidget() {
       return "Sama-sama! 😊 Senang bisa membantu. Kalau ada pertanyaan tentang harga, pemesanan, pembayaran, atau pengecekan pesanan, tanyakan saja.";
     }
 
-    return "Maaf, aku belum menemukan jawaban yang cocok untuk pertanyaan itu. 😊 Aku bisa bantu untuk topik harga member, cara memesan, pembayaran, dan cara mengecek pesanan. Coba tanyakan salah satu topik tersebut atau periksa informasi resmi di website ANDIKA STORE.";
+    return "Maaf, aku belum menemukan jawaban yang cocok untuk pertanyaan itu. 😊 Aku bisa bantu tentang harga member, cara memesan, pembayaran, dan pengecekan pesanan.\n\nKalau perlu bantuan lebih lanjut, hubungi admin ANDIKA STORE:\nWhatsApp: https://wa.me/62895328068023\nEmail: mailto:andikaotakunimerz@gmail.com";
   }
 
   async function sendMessage(text = input) {
@@ -261,7 +261,15 @@ export function AIChatWidget() {
                       : "rounded-bl-md border border-white/[0.07] bg-white/[0.055] text-white/85"
                   }`}
                 >
-                  {message.content}
+                  {message.content.split(/(https:\/\/wa\.me\/\d+|mailto:[^\s]+)/g).map((part, partIndex) => {
+                    if (part.startsWith("https://wa.me/")) {
+                      return <a key={partIndex} href={part} target="_blank" rel="noreferrer" className="font-semibold text-violet-300 underline underline-offset-2 hover:text-violet-200">Chat WhatsApp admin</a>;
+                    }
+                    if (part.startsWith("mailto:")) {
+                      return <a key={partIndex} href={part} className="font-semibold text-violet-300 underline underline-offset-2 hover:text-violet-200">Kirim email ke admin</a>;
+                    }
+                    return part;
+                  })}
                 </div>
               </div>
             ))}
