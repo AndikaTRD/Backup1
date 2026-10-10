@@ -44,43 +44,63 @@ export function AIChatWidget() {
     if (open) inputRef.current?.focus();
   }, [open]);
 
+  function getAutoReply(rawText: string): string {
+    const text = rawText.toLocaleLowerCase("id-ID").replace(/[!?.,]/g, " ").replace(/\s+/g, " ").trim();
+
+    const has = (...keywords: string[]) => keywords.some((keyword) => text.includes(keyword));
+
+    if (has("halo", "hai", "hallo", "hello", "assalamualaikum", "selamat pagi", "selamat siang", "selamat sore", "selamat malam")) {
+      return "Halo! 👋 Aku DAU, asisten ANDIKA STORE. Aku bisa bantu menjelaskan harga member, cara memesan, pembayaran, dan cara mengecek pesanan. Mau tanya apa?";
+    }
+
+    if (has("harga", "berapa", "tarif", "biaya", "price", "murah")) {
+      return "Harga NEW MEMBER FRESH di ANDIKA STORE:\n• 1–9 member: Rp6.500 per member.\n• 10 member atau lebih: Rp6.000 per member.\n\nContoh: 10 member = Rp60.000. Untuk memesan, tekan BELI SEKARANG lalu ikuti petunjuk di website.";
+    }
+
+    if (has("pesan", "order", "beli", "pemesanan", "checkout", "keranjang", "cara membeli", "cara order")) {
+      return "Cara memesan di ANDIKA STORE:\n1. Pilih produk NEW MEMBER FRESH dan tekan BELI SEKARANG/tambahkan ke keranjang.\n2. Isi data yang diminta pada formulir website.\n3. Periksa kembali pesanan, lalu lanjutkan checkout.\n4. Ikuti instruksi pembayaran yang tampil di website.\n\nJangan kirim PIN atau data rahasia lewat chat.";
+    }
+
+    if (has("status", "cek pesanan", "lacak", "tracking", "pesanan saya", "order id", "nomor pesanan", "sudah bayar", "pembayaran saya")) {
+      return "Untuk mengecek pesanan, buka bagian pesanan di website dan gunakan informasi atau ID pesanan yang ditampilkan. Aku tidak bisa melihat status pesanan pribadi dari chat ini, jadi jangan menganggap pesanan sudah diproses sebelum ada konfirmasi di website.";
+    }
+
+    if (has("bayar", "pembayaran", "qris", "transfer", "rekening", "metode pembayaran")) {
+      return "Silakan ikuti metode dan instruksi pembayaran yang ditampilkan saat checkout di ANDIKA STORE. Metode yang tersedia dapat mengikuti informasi di halaman checkout. Jangan mengirim data rekening atau bukti rahasia melalui chat ini.";
+    }
+
+    if (has("pin", "otp", "kata sandi", "password", "tanggal lahir", "data pribadi", "privasi")) {
+      return "Demi keamanan, jangan kirim PIN, OTP, kata sandi, tanggal lahir, atau data rahasia melalui chat. Jika formulir pemesanan resmi meminta data tertentu, masukkan hanya di formulir tersebut dan pastikan kamu berada di website ANDIKA STORE yang benar.";
+    }
+
+    if (has("admin", "whatsapp", "wa", "hubungi", "kontak", "bantuan", "komplain", "keluhan")) {
+      return "Aku bisa membantu pertanyaan umum tentang harga dan cara pemesanan. Untuk pemeriksaan manual atau keluhan pesanan, gunakan kontak admin yang tercantum di website ANDIKA STORE. Aku tidak dapat menghubungi admin atau memeriksa pesanan secara langsung dari chat ini.";
+    }
+
+    if (has("produk", "jual", "menyediakan", "layanan", "member fresh", "new member")) {
+      return "Produk yang informasinya tersedia untukku saat ini adalah NEW MEMBER FRESH. Harganya Rp6.500 per member untuk 1–9 member, atau Rp6.000 per member untuk pembelian 10 member atau lebih. Untuk informasi produk terbaru, periksa katalog di website.";
+    }
+
+    if (has("terima kasih", "makasih", "thanks", "thank you")) {
+      return "Sama-sama! 😊 Senang bisa membantu. Kalau ada pertanyaan tentang harga, pemesanan, pembayaran, atau pengecekan pesanan, tanyakan saja.";
+    }
+
+    return "Maaf, aku belum menemukan jawaban yang cocok untuk pertanyaan itu. 😊 Aku bisa bantu untuk topik harga member, cara memesan, pembayaran, dan cara mengecek pesanan. Coba tanyakan salah satu topik tersebut atau periksa informasi resmi di website ANDIKA STORE.";
+  }
+
   async function sendMessage(text = input) {
     const content = text.trim();
     if (!content || loading) return;
-    const nextMessages: ChatMessage[] = [...messages, { role: "user", content }];
-    setMessages(nextMessages);
+
+    setMessages((current) => [...current, { role: "user", content }]);
     setInput("");
     setLoading(true);
 
-    try {
-      const response = await fetch("/api/ai/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: nextMessages
-            .filter((message, index) => index > 0 || message.role === "user")
-            .slice(-8)
-            .map(({ role, content }) => ({ role, content })),
-        }),
-      });
-      const data = await response.json() as { reply?: string; error?: string };
-      if (!response.ok || !data.reply) {
-        throw new Error(data.error || "Maaf, chat belum dapat digunakan. Coba lagi sebentar ya.");
-      }
-      setMessages((current) => [...current, { role: "assistant", content: data.reply! }]);
-    } catch (error) {
-      setMessages((current) => [
-        ...current,
-        {
-          role: "assistant",
-          content: error instanceof Error
-            ? error.message
-            : "Koneksi asisten sedang bermasalah. Coba lagi sebentar ya.",
-        },
-      ]);
-    } finally {
-      setLoading(false);
-    }
+    // Local FAQ replies: no external AI API, API key, or paid credits required.
+    await new Promise((resolve) => window.setTimeout(resolve, 350));
+    const reply = getAutoReply(content);
+    setMessages((current) => [...current, { role: "assistant", content: reply }]);
+    setLoading(false);
   }
 
   function startDrag(event: PointerEvent<HTMLButtonElement>) {
