@@ -125,7 +125,29 @@ export function AIChatWidget() {
     const drag = dragRef.current;
     if (!drag || (event && drag.pointerId !== event.pointerId)) return;
     dragRef.current = null;
-    if (drag.moved) setPosition({ ...positionRef.current });
+    if (drag.moved) {
+      const finalPosition = { ...positionRef.current };
+      setPosition(finalPosition);
+
+      // A short spring-like bounce on release, without animating every drag frame.
+      requestAnimationFrame(() => {
+        const button = buttonRef.current;
+        if (!button || typeof button.animate !== "function") return;
+        const transform = `translate3d(${finalPosition.x}px, ${finalPosition.y}px, 0)`;
+        const animation = button.animate(
+          [
+            { transform: `${transform} scale(1)` },
+            { transform: `translate3d(${finalPosition.x}px, ${finalPosition.y - 6}px, 0) scale(1.05)`, offset: 0.38 },
+            { transform: `translate3d(${finalPosition.x}px, ${finalPosition.y + 2}px, 0) scale(0.97)`, offset: 0.72 },
+            { transform: `${transform} scale(1)` },
+          ],
+          { duration: 360, easing: "cubic-bezier(0.22, 1.4, 0.36, 1)", fill: "none" },
+        );
+        animation.onfinish = () => {
+          button.style.transform = transform;
+        };
+      });
+    }
   }
 
   function handleButtonClick() {
