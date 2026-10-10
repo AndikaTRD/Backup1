@@ -733,3 +733,21 @@ body {
   html, body, #root { background: #080610 !important; }
   .andika-shell { min-height: 100svh; }
 }
+
+
+/* App-like website polish: transparent logo frame and hidden scrollbar chrome. */
+.logo-frame {
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.logo-frame img { background: transparent !important; }
+html, body, * {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
