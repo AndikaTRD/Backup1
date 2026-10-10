@@ -13,7 +13,17 @@ const STARTER_PROMPTS = [
 export function AIChatWidget() {
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const dragRef = useRef<{ startX: number; startY: number; originX: number; originY: number } | null>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const positionRef = useRef({ x: 0, y: 0 });
+  const dragRef = useRef<{
+    pointerId: number;
+    startX: number;
+    startY: number;
+    originX: number;
+    originY: number;
+    moved: boolean;
+  } | null>(null);
+  const suppressClickRef = useRef(false);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -73,27 +83,56 @@ export function AIChatWidget() {
   }
 
   function startDrag(event: PointerEvent<HTMLButtonElement>) {
+    if (event.button !== 0) return;
+    const current = positionRef.current;
     dragRef.current = {
+      pointerId: event.pointerId,
       startX: event.clientX,
       startY: event.clientY,
-      originX: position.x,
-      originY: position.y,
+      originX: current.x,
+      originY: current.y,
+      moved: false,
     };
     event.currentTarget.setPointerCapture(event.pointerId);
   }
 
   function moveDrag(event: PointerEvent<HTMLButtonElement>) {
     const drag = dragRef.current;
-    if (!drag) return;
+    const button = buttonRef.current;
+    if (!drag || !button || drag.pointerId !== event.pointerId) return;
 
-    setPosition({
-      x: drag.originX + event.clientX - drag.startX,
-      y: drag.originY + event.clientY - drag.startY,
-    });
+    const dx = event.clientX - drag.startX;
+    const dy = event.clientY - drag.startY;
+    if (!drag.moved && Math.hypot(dx, dy) < 5) return;
+    drag.moved = true;
+    suppressClickRef.current = true;
+
+    const rect = button.getBoundingClientRect();
+    const minX = 8 - (rect.left - positionRef.current.x);
+    const maxX = window.innerWidth - 8 - rect.right + positionRef.current.x;
+    const minY = 8 - (rect.top - positionRef.current.y);
+    const maxY = window.innerHeight - 8 - rect.bottom + positionRef.current.y;
+    const x = Math.min(maxX, Math.max(minX, drag.originX + dx));
+    const y = Math.min(maxY, Math.max(minY, drag.originY + dy));
+
+    // Update only the compositor transform while dragging; avoid React renders per pointer event.
+    positionRef.current = { x, y };
+    button.style.transform = `translate3d(${x}px, ${y}px, 0)`;
   }
 
-  function endDrag() {
+  function endDrag(event?: PointerEvent<HTMLButtonElement>) {
+    const drag = dragRef.current;
+    if (!drag || (event && drag.pointerId !== event.pointerId)) return;
     dragRef.current = null;
+    if (drag.moved) setPosition({ ...positionRef.current });
+  }
+
+  function handleButtonClick() {
+    if (suppressClickRef.current) {
+      suppressClickRef.current = false;
+      return;
+    }
+    setOpen((current) => !current);
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -214,13 +253,14 @@ export function AIChatWidget() {
 
       <button
         type="button"
-        onClick={() => setOpen((current) => !current)}
+        ref={buttonRef}
+        onClick={handleButtonClick}
         onPointerDown={startDrag}
         onPointerMove={moveDrag}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
-        style={{ transform: `translate(${position.x}px, ${position.y}px)`, touchAction: "none" }}
-        className="ml-auto flex h-12 items-center gap-2 rounded-full border border-white/20 bg-gradient-to-r from-violet-600 to-fuchsia-600 px-3.5 text-white shadow-[0_10px_35px_rgba(109,40,217,.45)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_40px_rgba(109,40,217,.55)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-300"
+        style={{ transform: `translate3d(${position.x}px, ${position.y}px, 0)`, touchAction: "none", willChange: "transform" }}
+        className="ml-auto flex h-12 items-center gap-2 rounded-full border border-white/20 bg-gradient-to-r from-violet-600 to-fuchsia-600 px-3.5 text-white shadow-[0_10px_35px_rgba(109,40,217,.45)] transition-colors transition-shadow hover:shadow-[0_14px_40px_rgba(109,40,217,.55)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-300"
         aria-label={open ? "Tutup DAU AI" : "Chat dengan DAU AI"}
       >
         {open ? <X className="h-5 w-5" /> : <MessageCircle className="h-5 w-5" />}
