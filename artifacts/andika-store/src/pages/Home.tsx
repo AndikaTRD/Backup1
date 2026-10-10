@@ -172,80 +172,29 @@ export default function Home() {
           Admin akan konfirmasi via WhatsApp setelah pesanan dikirim.
         </motion.p>
       </section>
-      {/* Ulasan Singkat */}
+      {/* Ulasan pelanggan */}
       <section className="w-full max-w-sm mx-auto px-4 pb-20">
-        <div>
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Sparkles className="w-5 h-5 text-violet-400" />
-              <h2 className="text-2xl font-black text-white">
-                Ulasan Singkat
-              </h2>
-            </div>
-
-            <p className="text-sm text-white/50 mt-2">
-              Ringkasan pengalaman pelanggan yang telah menggunakan layanan.
-            </p>
+        <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-[#121020] to-[#0b0a13] p-6 text-center">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-violet-300/15 bg-violet-500/10">
+            <Star className="h-5 w-5 text-violet-300" />
           </div>
-
-          <div className="space-y-4">
-
-            {[
-              {
-                name: "R***",
-                role: "Crew",
-                text: "Target member toko akhirnya tercapai. Admin cepat merespons dan selalu update progress."
-              },
-              {
-                name: "A***",
-                role: "Assistant Chief of Store",
-                text: "Sudah beberapa kali order. Proses cepat, aman, dan hasil sesuai harapan."
-              },
-              {
-                name: "N***",
-                role: "Chief of Store",
-                text: "Harga terjangkau dan pelayanan profesional. Sangat membantu saat mengejar target member."
-              }
-            ].map((item, index) => (
-              <div
-                key={index}
-                className="rounded-2xl border border-violet-500/20 bg-[#0c0c1a] p-5 transition-colors duration-200 hover:border-violet-400/40"
-                style={{
-                  boxShadow:
-                    "0 0 25px rgba(124,58,237,.08), inset 0 1px 0 rgba(255,255,255,.03)"
-                }}
-              >
-                <div className="flex gap-1 mb-3">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star
-                      key={i}
-                      className="w-4 h-4 text-yellow-400 fill-yellow-400"
-                    />
-                  ))}
-                </div>
-
-                <div className="text-4xl text-violet-400/20 font-black leading-none mb-2">
-                  "
-                </div>
-                <p className="text-sm text-white/70 leading-relaxed italic">
-                  "{item.text}"
-                </p>
-
-                <div className="mt-5 pt-4 border-t border-white/5">
-                  <h4 className="text-white font-semibold">
-                    {item.name}
-                  </h4>
-
-                  <p className="text-xs text-violet-300 mt-1">
-                    {item.role}
-                  </p>
-                </div>
-              </div>
-            ))}
-
-          </div>
+          <h2 className="text-xl font-black text-white">Ulasan Pelanggan</h2>
+          <p className="mt-2 text-sm leading-relaxed text-white/55">
+            Sudah pernah memesan di ANDIKA STORE? Bagikan pengalamanmu kepada admin agar masukan pelanggan dapat kami kumpulkan dan ditampilkan dengan benar.
+          </p>
+          <a
+            href="https://wa.me/62895328068023?text=Halo%20admin%20ANDIKA%20STORE%2C%20saya%20ingin%20memberikan%20ulasan%20pesanan."
+            target="_blank"
+            rel="noreferrer"
+            className="btn-primary mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl px-4 text-sm font-bold text-white"
+          >
+            Kirim Ulasan ke Admin
+          </a>
+          <p className="mt-3 text-[10px] leading-relaxed text-white/35">
+            Ulasan publik terverifikasi akan ditampilkan setelah sistem verifikasi pesanan dan ulasan tersedia.
+          </p>
         </div>
       </section>
-    </Layout>
+      </Layout>
   );
 }
