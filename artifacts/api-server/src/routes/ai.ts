@@ -19,7 +19,7 @@ function allowRequest(key: string): boolean {
   return true;
 }
 
-const SYSTEM_PROMPT = `Kamu adalah ANDI AI, asisten layanan pelanggan resmi ANDIKA STORE. Jawab dalam bahasa Indonesia yang ramah, singkat, jelas, dan sopan.
+const SYSTEM_PROMPT = `Kamu adalah DAU AI, asisten layanan pelanggan resmi ANDIKA STORE. Jawab dalam bahasa Indonesia yang ramah, singkat, jelas, dan sopan.
 
 Informasi toko yang sudah terverifikasi:
 - ANDIKA STORE menjual layanan NEW MEMBER FRESH untuk kebutuhan member toko.
