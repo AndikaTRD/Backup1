@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Lock,
@@ -377,6 +377,7 @@ export default function Admin() {
   // data
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
+  const knownOrderIdsRef = useRef<Set<string> | null>(null);
 
   // ui
   const [activeView, setActiveView] = useState<"home" | "orders" | "products" | "settings" | "stats">("home");
@@ -420,18 +421,31 @@ export default function Admin() {
           createdAt: string;
           notes?: string | null;
         }>;
-        setOrders(
-          raw.map((o) => ({
-            ...o,
-            proofUrl: o.paymentProofUrl ?? null,
-            notes: o.notes ?? null,
-          }))
-        );
+        const nextOrders = raw.map((o) => ({
+          ...o,
+          proofUrl: o.paymentProofUrl ?? null,
+          notes: o.notes ?? null,
+        }));
+        const nextIds = new Set(nextOrders.map((order) => order.orderId));
+        const previousIds = knownOrderIdsRef.current;
+        if (previousIds) {
+          const newlyCreated = nextOrders.filter((order) => !previousIds.has(order.orderId));
+          if (newlyCreated.length > 0) {
+            toast({
+              title: "Pesanan baru masuk!",
+              description: newlyCreated.length === 1
+                ? `${newlyCreated[0].orderId} · ${newlyCreated[0].customerName}`
+                : `${newlyCreated.length} pesanan baru menunggu diperiksa.`,
+            });
+          }
+        }
+        knownOrderIdsRef.current = nextIds;
+        setOrders(nextOrders);
       }
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [toast]);
 
   /* ── auto-clean (orders > 30 days) — at most once per 24 h ── */
   async function runCleanupIfDue() {
@@ -455,10 +469,12 @@ export default function Admin() {
   }, []);
 
   useEffect(() => {
-    if (isAdmin) {
-      void fetchData();
-      void runCleanupIfDue();
-    }
+    if (!isAdmin) return;
+    void fetchData();
+    void runCleanupIfDue();
+    // Check for new orders while the admin dashboard is open.
+    const intervalId = window.setInterval(() => void fetchData(), 30000);
+    return () => window.clearInterval(intervalId);
   }, [isAdmin, fetchData]);
 
   /* ── login ── */
