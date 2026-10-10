@@ -72,6 +72,30 @@ export function AIChatWidget() {
     }
   }
 
+  function startDrag(event: PointerEvent<HTMLButtonElement>) {
+    dragRef.current = {
+      startX: event.clientX,
+      startY: event.clientY,
+      originX: position.x,
+      originY: position.y,
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function moveDrag(event: PointerEvent<HTMLButtonElement>) {
+    const drag = dragRef.current;
+    if (!drag) return;
+
+    setPosition({
+      x: drag.originX + event.clientX - drag.startX,
+      y: drag.originY + event.clientY - drag.startY,
+    });
+  }
+
+  function endDrag() {
+    dragRef.current = null;
+  }
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     void sendMessage();
