@@ -169,13 +169,13 @@ button, a {
   transition: background-color 240ms ease, color 240ms ease, box-shadow 240ms ease, border-color 240ms ease, backdrop-filter 240ms ease;
 }
 .site-header-top {
-  background: rgba(18, 10, 43, 0.9);
-  border-bottom-color: rgba(196, 181, 253, 0.14);
+  background: rgba(8, 7, 14, 0.96);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 .site-header-scrolled {
-  background: rgba(250, 248, 255, 0.96);
-  border-bottom-color: rgba(91, 33, 182, 0.12);
-  box-shadow: 0 8px 28px rgba(29, 14, 58, 0.12);
+  background: rgba(8, 7, 14, 0.97);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
   -webkit-backdrop-filter: blur(18px);
   backdrop-filter: blur(18px);
 }
