@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent, KeyboardEvent, PointerEvent } from "react";
-import { Bot, MessageCircle, Send, Sparkles, X, LoaderCircle } from "lucide-react";
+import { Bot, Send, Sparkles, X, LoaderCircle } from "lucide-react";
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
 
@@ -12,6 +12,7 @@ const STARTER_PROMPTS = [
 
 export function AIChatWidget() {
   const [open, setOpen] = useState(false);
+  const [labelVisible, setLabelVisible] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);
   const positionRef = useRef({ x: 0, y: 0 });
@@ -132,7 +133,15 @@ export function AIChatWidget() {
       suppressClickRef.current = false;
       return;
     }
-    setOpen((current) => !current);
+    if (open) {
+      setOpen(false);
+      return;
+    }
+    if (!labelVisible) {
+      setLabelVisible(true);
+      return;
+    }
+    setOpen(true);
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -263,8 +272,10 @@ export function AIChatWidget() {
         className="ml-auto flex h-12 items-center gap-2 rounded-full border border-white/20 bg-gradient-to-r from-violet-600 to-fuchsia-600 px-3.5 text-white shadow-[0_10px_35px_rgba(109,40,217,.45)] transition-colors transition-shadow hover:shadow-[0_14px_40px_rgba(109,40,217,.55)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-300"
         aria-label={open ? "Tutup DAU AI" : "Chat dengan DAU AI"}
       >
-        {open ? <X className="h-5 w-5" /> : <MessageCircle className="h-5 w-5" />}
-        <span className="text-sm font-extrabold">{open ? "Tutup chat" : "Tanya DAU"}</span>
+        {open ? <X className="h-5 w-5" /> : <Bot className="h-5 w-5" />}
+        {(labelVisible || open) && (
+          <span className="text-xs font-bold">{open ? "Tutup chat" : "Tanya DAU"}</span>
+        )}
       </button>
     </div>
   );
