@@ -751,3 +751,61 @@ html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar {
   width: 0;
   height: 0;
 }
+
+
+/* v1.43 — match the iPhone status-bar area with the dark storefront header. */
+:root {
+  --andika-brand-purple: #080610;
+  --andika-header-dark: #080610;
+}
+html,
+body,
+#root,
+.andika-shell {
+  background: #080610 !important;
+}
+.site-header,
+.site-header-top,
+.site-header-scrolled,
+.site-header-scrolling-up,
+.site-header-scrolling-down {
+  background: #080610 !important;
+  background-color: #080610 !important;
+  border-bottom: 1px solid rgba(255,255,255,.07) !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+@supports (padding-top: env(safe-area-inset-top)) {
+  .site-header {
+    padding-top: env(safe-area-inset-top, 0px) !important;
+    margin-top: 0 !important;
+  }
+}
+.site-header .nav-pill,
+.site-header .nav-pill-active,
+.site-header .cart-button,
+.site-header .admin-link,
+.site-header .login-icon-button {
+  color: rgba(255,255,255,.88) !important;
+}
+.site-header .nav-pill-active,
+.site-header .cart-button,
+.site-header .admin-link,
+.site-header .login-icon-button {
+  border-color: rgba(255,255,255,.12) !important;
+  background: rgba(255,255,255,.045) !important;
+}
+.site-header .nav-pill:hover,
+.site-header .cart-button:hover,
+.site-header .login-icon-button:hover {
+  background: rgba(255,255,255,.09) !important;
+}
+.site-header .cart-count {
+  border-color: #080610 !important;
+}
+@media (max-width: 480px) {
+  .site-header > div {
+    padding-top: 0 !important;
+  }
+}
