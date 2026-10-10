@@ -10,6 +10,8 @@ const STARTER_PROMPTS = [
   "Bagaimana cek pesanan?",
 ];
 
+const CHAT_WIDGET_STYLES = `.chat-scrollbar-hidden { scrollbar-width: none; -ms-overflow-style: none; } .chat-scrollbar-hidden::-webkit-scrollbar { display: none; width: 0; height: 0; }`;
+
 export function AIChatWidget() {
   const [open, setOpen] = useState(false);
   const [labelVisible, setLabelVisible] = useState(false);
@@ -215,15 +217,17 @@ export function AIChatWidget() {
   }
 
   return (
+    <>
+    <style>{CHAT_WIDGET_STYLES}</style>
     <div className="fixed bottom-5 right-4 z-[100] sm:bottom-6 sm:right-6">
       {open && (
         <section
           className="mb-2 flex h-[min(500px,calc(100dvh-125px))] w-[min(320px,calc(100vw-40px))] flex-col overflow-hidden rounded-3xl border border-violet-300/20 bg-[#0c0916] shadow-[0_24px_80px_rgba(0,0,0,.65),0_0_35px_rgba(124,58,237,.18)]"
           aria-label="Chat DAU AI"
         >
-          <header className="flex items-center justify-between border-b border-white/10 bg-gradient-to-r from-violet-700 to-fuchsia-700 px-4 py-3.5">
+          <header className="flex items-center justify-between border-b border-white/10 bg-transparent px-4 py-3.5">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/10">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-transparent">
                 <Bot className="h-5 w-5 text-white" />
               </div>
               <div>
@@ -244,7 +248,7 @@ export function AIChatWidget() {
             </button>
           </header>
 
-          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-3.5 py-4">
+          <div ref={scrollRef} className="chat-scrollbar-hidden flex-1 space-y-3 overflow-y-auto px-3.5 py-4">
             <div className="mb-3 flex items-start gap-2 rounded-2xl border border-violet-300/10 bg-violet-500/[0.07] p-3">
               <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-violet-300" />
               <p className="text-[11px] leading-relaxed text-white/55">
@@ -346,5 +350,6 @@ export function AIChatWidget() {
       </button>
       )}
     </div>
+    </>
   );
 }
