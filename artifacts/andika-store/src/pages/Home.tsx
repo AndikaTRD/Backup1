@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout";
 import { OrderPopup } from "@/components/order-popup";
 import { motion } from "framer-motion";
@@ -13,6 +13,26 @@ const FEATURES = [
 
 export default function Home() {
   const [popupOpen, setPopupOpen] = useState(false);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviewName, setReviewName] = useState("");
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewMessage, setReviewMessage] = useState("");
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
+  useEffect(() => { fetch("/api/reviews").then(r => r.ok ? r.json() : []).then(setReviews).catch(() => setReviews([])); }, []);
+  async function submitReview(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (reviewSubmitting) return;
+    setReviewSubmitting(true); setReviewMessage("");
+    try {
+      const response = await fetch("/api/reviews", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: reviewName, rating: reviewRating, comment: reviewComment }) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Ulasan gagal dikirim.");
+      setReviewMessage(data.message || "Terima kasih! Ulasan menunggu pemeriksaan admin.");
+      setReviewName(""); setReviewComment(""); setReviewRating(5);
+    } catch (error) { setReviewMessage(error instanceof Error ? error.message : "Ulasan gagal dikirim."); }
+    finally { setReviewSubmitting(false); }
+  }
 
   return (
     <Layout>
@@ -172,28 +192,18 @@ export default function Home() {
           Admin akan konfirmasi via WhatsApp setelah pesanan dikirim.
         </motion.p>
       </section>
-      {/* Ulasan pelanggan */}
-      <section className="w-full max-w-sm mx-auto px-4 pb-20">
-        <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-[#121020] to-[#0b0a13] p-6 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-violet-300/15 bg-violet-500/10">
-            <Star className="h-5 w-5 text-violet-300" />
-          </div>
-          <h2 className="text-xl font-black text-white">Ulasan Pelanggan</h2>
-          <p className="mt-2 text-sm leading-relaxed text-white/55">
-            Sudah pernah memesan di ANDIKA STORE? Bagikan pengalamanmu kepada admin agar masukan pelanggan dapat kami kumpulkan dan ditampilkan dengan benar.
-          </p>
-          <a
-            href="https://wa.me/62895328068023?text=Halo%20admin%20ANDIKA%20STORE%2C%20saya%20ingin%20memberikan%20ulasan%20pesanan."
-            target="_blank"
-            rel="noreferrer"
-            className="btn-primary mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl px-4 text-sm font-bold text-white"
-          >
-            Kirim Ulasan ke Admin
-          </a>
-          <p className="mt-3 text-[10px] leading-relaxed text-white/35">
-            Ulasan publik terverifikasi akan ditampilkan setelah sistem verifikasi pesanan dan ulasan tersedia.
-          </p>
-        </div>
+      {/* Ulasan Pelanggan */}
+      <section className="mx-auto w-full max-w-xl px-4 pb-20">
+        <div className="mb-6 text-center"><div className="mb-2 flex items-center justify-center gap-2"><Star className="h-5 w-5 text-violet-300" /><h2 className="text-2xl font-black text-white">Ulasan Pelanggan</h2></div><p className="text-sm text-white/50">Ceritakan pengalamanmu menggunakan layanan ANDIKA STORE.</p></div>
+        <form onSubmit={submitReview} className="space-y-4 rounded-3xl border border-white/10 bg-[#10101c] p-5">
+          <label className="block text-xs font-semibold text-white/70">Nama atau nama panggilan<input value={reviewName} onChange={e=>setReviewName(e.target.value)} required minLength={2} maxLength={60} className="mt-2 min-h-11 w-full rounded-xl border border-white/10 bg-black/30 px-3 text-sm text-white outline-none focus:border-violet-400" placeholder="Contoh: Andi R." /></label>
+          <div><p className="mb-2 text-xs font-semibold text-white/70">Rating layanan</p><div className="flex gap-2">{[1,2,3,4,5].map(star=><button key={star} type="button" onClick={()=>setReviewRating(star)} aria-label={star+" bintang"} className="rounded-lg p-1"><Star className={"h-7 w-7 "+(star<=reviewRating?"fill-yellow-400 text-yellow-400":"text-white/20")} /></button>)}</div></div>
+          <label className="block text-xs font-semibold text-white/70">Komentar<textarea value={reviewComment} onChange={e=>setReviewComment(e.target.value)} required minLength={8} maxLength={600} rows={4} className="mt-2 w-full rounded-xl border border-white/10 bg-black/30 p-3 text-sm text-white outline-none focus:border-violet-400" placeholder="Bagaimana pengalamanmu? (8–600 karakter)" /><span className="mt-1 block text-right text-[10px] text-white/35">{reviewComment.length}/600</span></label>
+          <button disabled={reviewSubmitting} type="submit" className="btn-primary min-h-11 w-full rounded-xl px-4 text-sm font-bold text-white disabled:opacity-50">{reviewSubmitting?"Mengirim...":"Kirim Komentar"}</button>
+          {reviewMessage && <p role="status" className="rounded-xl border border-violet-400/20 bg-violet-500/10 p-3 text-xs text-violet-200">{reviewMessage}</p>}
+          <p className="text-[10px] leading-relaxed text-white/35">Komentar diperiksa admin sebelum ditampilkan. Jangan cantumkan PIN, OTP, atau informasi rahasia.</p>
+        </form>
+        <div className="mt-6 space-y-3">{reviews.map((review:any)=><article key={review.id} className="rounded-2xl border border-white/10 bg-[#0c0c16] p-4"><div className="flex items-start justify-between gap-3"><p className="text-sm font-bold text-white">{review.customerName}</p><div className="flex">{[1,2,3,4,5].map(star=><Star key={star} className={"h-3.5 w-3.5 "+(star<=review.rating?"fill-yellow-400 text-yellow-400":"text-white/15")}/>)}</div></div><p className="mt-2 whitespace-pre-wrap break-words text-sm text-white/65">{review.comment}</p><p className="mt-3 text-[10px] text-white/30">{new Date(review.createdAt).toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"})}</p></article>)}{reviews.length===0 && <p className="py-4 text-center text-xs text-white/35">Belum ada ulasan yang dipublikasikan.</p>}</div>
       </section>
       </Layout>
   );
