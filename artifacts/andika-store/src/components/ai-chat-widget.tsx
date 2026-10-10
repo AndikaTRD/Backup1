@@ -12,6 +12,8 @@ const STARTER_PROMPTS = [
 
 export function AIChatWidget() {
   const [open, setOpen] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const dragRef = useRef<{ startX: number; startY: number; originX: number; originY: number } | null>(null);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -86,7 +88,7 @@ export function AIChatWidget() {
     <div className="fixed bottom-5 right-4 z-[100] sm:bottom-6 sm:right-6">
       {open && (
         <section
-          className="mb-3 flex h-[min(600px,calc(100dvh-115px))] w-[min(360px,calc(100vw-32px))] flex-col overflow-hidden rounded-3xl border border-violet-300/20 bg-[#0c0916] shadow-[0_24px_80px_rgba(0,0,0,.65),0_0_35px_rgba(124,58,237,.18)]"
+          className="mb-2 flex h-[min(500px,calc(100dvh-125px))] w-[min(320px,calc(100vw-40px))] flex-col overflow-hidden rounded-3xl border border-violet-300/20 bg-[#0c0916] shadow-[0_24px_80px_rgba(0,0,0,.65),0_0_35px_rgba(124,58,237,.18)]"
           aria-label="Chat DAU AI"
         >
           <header className="flex items-center justify-between border-b border-white/10 bg-gradient-to-r from-violet-700 to-fuchsia-700 px-4 py-3.5">
@@ -189,11 +191,11 @@ export function AIChatWidget() {
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
-        className="ml-auto flex h-14 items-center gap-2.5 rounded-full border border-white/20 bg-gradient-to-r from-violet-600 to-fuchsia-600 px-4 text-white shadow-[0_10px_35px_rgba(109,40,217,.45)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_40px_rgba(109,40,217,.55)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-300"
+        onPointerDown={startDrag}\n        onPointerMove={moveDrag}\n        onPointerUp={endDrag}\n        onPointerCancel={endDrag}\n        style={{ transform: `translate(${position.x}px, ${position.y}px)` , touchAction: "none" }}\n        className="ml-auto flex h-12 items-center gap-2 rounded-full border border-white/20 bg-gradient-to-r from-violet-600 to-fuchsia-600 px-3.5 text-white shadow-[0_10px_35px_rgba(109,40,217,.45)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_40px_rgba(109,40,217,.55)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-300"
         aria-label={open ? "Tutup DAU AI" : "Chat dengan DAU AI"}
       >
         {open ? <X className="h-5 w-5" /> : <MessageCircle className="h-5 w-5" />}
-        <span className="text-sm font-extrabold">{open ? "Tutup chat" : "Tanya AI"}</span>
+        <span className="text-sm font-extrabold">{open ? "Tutup chat" : "Tanya DAU"}</span>
       </button>
     </div>
   );
