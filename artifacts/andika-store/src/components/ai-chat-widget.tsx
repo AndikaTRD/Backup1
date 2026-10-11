@@ -44,6 +44,13 @@ export function AIChatWidget() {
     if (open) inputRef.current?.focus();
   }, [open]);
 
+  // Automatically collapse the "Tanya DAU" label back to the robot icon when idle.
+  useEffect(() => {
+    if (!labelVisible || open) return;
+    const timeout = window.setTimeout(() => setLabelVisible(false), 3500);
+    return () => window.clearTimeout(timeout);
+  }, [labelVisible, open]);
+
   async function sendMessage(text = input) {
     const content = text.trim();
     if (!content || loading) return;
