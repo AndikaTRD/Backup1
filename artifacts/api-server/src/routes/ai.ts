@@ -66,27 +66,26 @@ router.post("/ai/chat", async (req, res): Promise<void> => {
     return;
   }
 
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     res.status(503).json({ error: "Asisten AI sedang disiapkan. Silakan coba lagi nanti." });
     return;
   }
 
   try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        "x-goog-api-key": apiKey,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: process.env.OPENAI_MODEL || "gpt-4o-mini",
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          ...messages.map(({ role, content }) => ({ role, content: content.trim() })),
-        ],
-        temperature: 0.3,
-        max_tokens: 350,
+        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        contents: messages.map(({ role, content }) => ({
+          role: role === "assistant" ? "model" : "user",
+          parts: [{ text: content.trim() }],
+        })),
+        generationConfig: { temperature: 0.3, maxOutputTokens: 350 },
       }),
       signal: AbortSignal.timeout(20000),
     });
@@ -99,9 +98,9 @@ router.post("/ai/chat", async (req, res): Promise<void> => {
     }
 
     const data = await response.json() as {
-      choices?: Array<{ message?: { content?: string | null } }>;
+      candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
     };
-    const reply = data.choices?.[0]?.message?.content?.trim();
+    const reply = data.candidates?.[0]?.content?.parts?.map((part) => part.text ?? "").join("").trim();
     if (!reply) {
       res.status(502).json({ error: "Maaf, jawaban belum tersedia. Silakan coba lagi." });
       return;
