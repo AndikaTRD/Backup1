@@ -44,6 +44,26 @@ export function AIChatWidget() {
     if (open) inputRef.current?.focus();
   }, [open]);
 
+  // Keep the expanded label fully inside the viewport when the button is near an edge.
+  useEffect(() => {
+    if (!labelVisible || open) return;
+    const frame = window.requestAnimationFrame(() => {
+      const button = buttonRef.current;
+      if (!button) return;
+      const rect = button.getBoundingClientRect();
+      const minX = 8 - (rect.left - positionRef.current.x);
+      const maxX = window.innerWidth - 8 - rect.right + positionRef.current.x;
+      const safeX = Math.min(maxX, Math.max(minX, positionRef.current.x));
+      if (safeX !== positionRef.current.x) {
+        const next = { x: safeX, y: positionRef.current.y };
+        positionRef.current = next;
+        setPosition(next);
+        button.style.transform = `translate3d(${next.x}px, ${next.y}px, 0)`;
+      }
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [labelVisible, open]);
+
   // Automatically collapse the "Tanya DAU" label back to the robot icon when idle.
   useEffect(() => {
     if (!labelVisible || open) return;
