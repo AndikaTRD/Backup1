@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent, KeyboardEvent, PointerEvent } from "react";
-import { Bot, Send, Sparkles, X, LoaderCircle } from "lucide-react";
+import { Send, Sparkles, X, LoaderCircle } from "lucide-react";
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
 
@@ -9,6 +9,48 @@ const STARTER_PROMPTS = [
   "Bagaimana cara memesan?",
   "Bagaimana cek pesanan?",
 ];
+
+
+function DAUHeadIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 64 64"
+      fill="none"
+      role="img"
+      aria-label="Kepala robot DAU AI"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <linearGradient id="dau-shell" x1="8" y1="6" x2="55" y2="60" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#FFFFFF" />
+          <stop offset="0.58" stopColor="#E9E5FF" />
+          <stop offset="1" stopColor="#A78BFA" />
+        </linearGradient>
+        <linearGradient id="dau-visor" x1="13" y1="20" x2="51" y2="48" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#21103F" />
+          <stop offset="1" stopColor="#080516" />
+        </linearGradient>
+        <linearGradient id="dau-glow" x1="19" y1="27" x2="47" y2="42" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#E9D5FF" />
+          <stop offset="1" stopColor="#A855F7" />
+        </linearGradient>
+      </defs>
+      <path d="M31.5 7V4.8a4.5 4.5 0 1 1 4.5 4.5h-1" stroke="#7C3AED" strokeWidth="3.5" strokeLinecap="round"/>
+      <circle cx="32" cy="5" r="3.2" fill="#C084FC" stroke="#7C3AED" strokeWidth="1.5"/>
+      <path d="M8 25a7 7 0 0 1 7-7h34a7 7 0 0 1 7 7v18a7 7 0 0 1-7 7H15a7 7 0 0 1-7-7V25Z" fill="url(#dau-shell)" stroke="#5B21B6" strokeWidth="2.5"/>
+      <rect x="3.5" y="27" width="7" height="14" rx="3.5" fill="#C4B5FD" stroke="#6D28D9" strokeWidth="2"/>
+      <rect x="53.5" y="27" width="7" height="14" rx="3.5" fill="#C4B5FD" stroke="#6D28D9" strokeWidth="2"/>
+      <path d="M14 27.5a5.5 5.5 0 0 1 5.5-5.5h25a5.5 5.5 0 0 1 5.5 5.5v13a5.5 5.5 0 0 1-5.5 5.5h-25a5.5 5.5 0 0 1-5.5-5.5v-13Z" fill="url(#dau-visor)" stroke="#8B5CF6" strokeWidth="2"/>
+      <path d="M21 32.5c2.2-3.4 5.3-3.4 7.5 0" stroke="url(#dau-glow)" strokeWidth="3.5" strokeLinecap="round"/>
+      <path d="M35.5 32.5c2.2-3.4 5.3-3.4 7.5 0" stroke="url(#dau-glow)" strokeWidth="3.5" strokeLinecap="round"/>
+      <path d="M26 38.5c3.8 4.3 8.2 4.3 12 0" stroke="#C084FC" strokeWidth="3" strokeLinecap="round"/>
+      <path d="M20 16.5c3.5-3.4 7.5-4.8 12-4.8s8.5 1.4 12 4.8" stroke="#A78BFA" strokeWidth="2.5" strokeLinecap="round"/>
+      <path d="M25 52h14" stroke="#7C3AED" strokeWidth="3" strokeLinecap="round"/>
+      <path d="M29 55.5h6" stroke="#C4B5FD" strokeWidth="2.5" strokeLinecap="round"/>
+    </svg>
+  );
+}
 
 export function AIChatWidget() {
   const [open, setOpen] = useState(false);
@@ -228,7 +270,7 @@ export function AIChatWidget() {
           <header className="flex items-center justify-between border-b border-white/10 bg-gradient-to-r from-violet-700 to-fuchsia-700 px-4 py-3.5">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/10">
-                <Bot className="h-5 w-5 text-white" />
+                <DAUHeadIcon className="h-8 w-8" />
               </div>
               <div>
                 <p className="text-sm font-extrabold text-white">DAU AI</p>
@@ -343,7 +385,7 @@ export function AIChatWidget() {
         className="ml-auto flex h-12 items-center gap-2 rounded-full border border-white/20 bg-gradient-to-r from-violet-600 to-fuchsia-600 px-3.5 text-white shadow-[0_10px_35px_rgba(109,40,217,.45)] transition-colors transition-shadow hover:shadow-[0_14px_40px_rgba(109,40,217,.55)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-300"
         aria-label={open ? "Tutup DAU AI" : "Chat dengan DAU AI"}
       >
-        {open ? <X className="h-5 w-5" /> : <Bot className="h-5 w-5" />}
+        {open ? <X className="h-5 w-5" /> : <DAUHeadIcon className="h-8 w-8" />}
         {(labelVisible || open) && (
           <span className="text-xs font-bold">{open ? "Tutup chat" : "Tanya DAU"}</span>
         )}
