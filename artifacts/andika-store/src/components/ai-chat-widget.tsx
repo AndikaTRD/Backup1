@@ -220,28 +220,28 @@ export function AIChatWidget() {
       );
       const start = { ...positionRef.current };
       const targetTransform = `translate3d(${targetX}px, ${targetY}px, 0)`;
-      const overshootX = targetX + (goLeft ? -10 : 10);
+      // Keep the elastic overshoot INSIDE the viewport. Overshooting beyond the edge
+      // can make the floating button appear to vanish on narrow mobile screens.
+      const overshootX = targetX + (goLeft ? 6 : -6);
+      const finalPosition = { x: targetX, y: targetY };
 
-      // Animate a small overshoot, then settle against the screen edge.
+      // Persist the destination immediately so React state and the visual transform
+      // cannot diverge if an animation is interrupted by another interaction.
+      positionRef.current = finalPosition;
+      setPosition(finalPosition);
+      button.style.transform = targetTransform;
+
       if (typeof button.animate === "function") {
-        const animation = button.animate(
+        button.getAnimations().forEach((animation) => animation.cancel());
+        button.animate(
           [
             { transform: `translate3d(${start.x}px, ${start.y}px, 0) scale(1)` },
-            { transform: `translate3d(${overshootX}px, ${targetY}px, 0) scale(1.04)`, offset: 0.72 },
-            { transform: `translate3d(${targetX}px, ${targetY}px, 0) scale(0.98)`, offset: 0.88 },
+            { transform: `translate3d(${overshootX}px, ${targetY}px, 0) scale(1.035)`, offset: 0.72 },
+            { transform: `translate3d(${targetX}px, ${targetY}px, 0) scale(0.985)`, offset: 0.88 },
             { transform: `${targetTransform} scale(1)` },
           ],
-          { duration: 460, easing: "cubic-bezier(0.22, 1.25, 0.36, 1)", fill: "none" },
+          { duration: 420, easing: "cubic-bezier(0.22, 1.15, 0.36, 1)", fill: "none" },
         );
-        animation.onfinish = () => {
-          positionRef.current = { x: targetX, y: targetY };
-          setPosition({ x: targetX, y: targetY });
-          button.style.transform = targetTransform;
-        };
-      } else {
-        positionRef.current = { x: targetX, y: targetY };
-        setPosition({ x: targetX, y: targetY });
-        button.style.transform = targetTransform;
       }
     }
   }
@@ -396,7 +396,7 @@ export function AIChatWidget() {
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
         style={{ transform: `translate3d(${position.x}px, ${position.y}px, 0)`, touchAction: "none", willChange: "transform" }}
-        className={`ml-auto flex h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-[0_10px_35px_rgba(109,40,217,.45)] transition-all hover:shadow-[0_14px_40px_rgba(109,40,217,.55)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-300 ${labelVisible ? "px-3.5" : "w-12 px-0"}`}
+        className={`ml-auto flex h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-[0_10px_35px_rgba(109,40,217,.45)] transition-[box-shadow,background-color] duration-200 hover:shadow-[0_14px_40px_rgba(109,40,217,.55)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-300 ${labelVisible ? "px-3.5" : "w-12 px-0"}`}
         aria-label={open ? "Tutup DAU AI" : "Chat dengan DAU AI"}
       >
         {open ? <X className="h-5 w-5" /> : <DAUHeadIcon className="h-8 w-8" />}
