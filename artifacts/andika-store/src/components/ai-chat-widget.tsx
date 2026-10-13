@@ -86,24 +86,38 @@ export function AIChatWidget() {
     if (open) inputRef.current?.focus();
   }, [open]);
 
-  // Keep the expanded label fully inside the viewport when the button is near an edge.
+  // Re-clamp after the button changes width (label expands/collapses) or the viewport changes.
+  // This prevents a previously valid drag offset from pushing the smaller button off-screen.
   useEffect(() => {
-    if (!labelVisible || open) return;
-    const frame = window.requestAnimationFrame(() => {
+    if (open) return;
+    const clampButton = () => {
       const button = buttonRef.current;
       if (!button) return;
       const rect = button.getBoundingClientRect();
-      const minX = 8 - (rect.left - positionRef.current.x);
-      const maxX = window.innerWidth - 8 - rect.right + positionRef.current.x;
-      const safeX = Math.min(maxX, Math.max(minX, positionRef.current.x));
-      if (safeX !== positionRef.current.x) {
-        const next = { x: safeX, y: positionRef.current.y };
+      const current = positionRef.current;
+      // Recover the button's untransformed layout position before calculating safe offsets.
+      const baseLeft = rect.left - current.x;
+      const baseTop = rect.top - current.y;
+      const minX = 8 - baseLeft;
+      const maxX = window.innerWidth - 8 - rect.width - baseLeft;
+      const minY = 8 - baseTop;
+      const maxY = window.innerHeight - 8 - rect.height - baseTop;
+      const next = {
+        x: Math.min(maxX, Math.max(minX, current.x)),
+        y: Math.min(maxY, Math.max(minY, current.y)),
+      };
+      if (next.x !== current.x || next.y !== current.y) {
         positionRef.current = next;
         setPosition(next);
         button.style.transform = `translate3d(${next.x}px, ${next.y}px, 0)`;
       }
-    });
-    return () => window.cancelAnimationFrame(frame);
+    };
+    const frame = window.requestAnimationFrame(clampButton);
+    window.addEventListener("resize", clampButton);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", clampButton);
+    };
   }, [labelVisible, open]);
 
   // Automatically collapse the "Tanya DAU" label back to the robot icon when idle.
