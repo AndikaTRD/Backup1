@@ -382,7 +382,7 @@ export function AIChatWidget() {
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
         style={{ transform: `translate3d(${position.x}px, ${position.y}px, 0)`, touchAction: "none", willChange: "transform" }}
-        className="ml-auto flex h-12 items-center gap-2 rounded-full border border-white/20 bg-gradient-to-r from-violet-600 to-fuchsia-600 px-3.5 text-white shadow-[0_10px_35px_rgba(109,40,217,.45)] transition-colors transition-shadow hover:shadow-[0_14px_40px_rgba(109,40,217,.55)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-300"
+        className={`ml-auto flex h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-[0_10px_35px_rgba(109,40,217,.45)] transition-all hover:shadow-[0_14px_40px_rgba(109,40,217,.55)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-300 ${labelVisible ? "px-3.5" : "w-12 px-0"}`}
         aria-label={open ? "Tutup DAU AI" : "Chat dengan DAU AI"}
       >
         {open ? <X className="h-5 w-5" /> : <DAUHeadIcon className="h-8 w-8" />}
