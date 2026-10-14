@@ -1,5 +1,5 @@
-import { Router, type IRouter } from "express";
-import { db, ordersTable } from "@workspace/db";
+import { Router, type IRouter, type Response } from "express";
+import { db, ordersTable, productsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import path from "path";
 import fs from "fs";
@@ -36,6 +36,26 @@ function hasInvalidMemberPin(items: unknown): boolean {
     const orderItem = item as { productName?: unknown; pin?: unknown };
     return orderItem.productName === MEMBER_PRODUCT_NAME && !isValidMemberPin(orderItem.pin);
   });
+}
+
+async function rejectIfMemberServiceClosed(items: unknown, res: Response): Promise<boolean> {
+  if (!Array.isArray(items) || !items.some((item) =>
+    item && typeof item === "object" &&
+    (item as { productName?: unknown }).productName === MEMBER_PRODUCT_NAME
+  )) return false;
+
+  const [product] = await db.select({ isActive: productsTable.isActive })
+    .from(productsTable)
+    .where(eq(productsTable.name, MEMBER_PRODUCT_NAME));
+
+  if (!product || !product.isActive) {
+    res.status(503).json({
+      error: "Layanan NEW MEMBER FRESH sedang ditutup sementara. Silakan coba kembali saat admin membuka layanan.",
+      code: "SALES_TEMPORARILY_PAUSED",
+    });
+    return true;
+  }
+  return false;
 }
 
 function normalizeMemberPricing<T extends OrderItem>(items: T[]): T[] {
@@ -78,12 +98,6 @@ function serializeOrder(order: typeof ordersTable.$inferSelect) {
 }
 
 router.post("/orders/save", async (req, res): Promise<void> => {
-  res.status(503).json({
-    error: "Penjualan NEW MEMBER FRESH ditutup sementara karena layanan pendaftaran WhatsApp belum tersedia. Mohon jangan melakukan pembayaran.",
-    code: "SALES_TEMPORARILY_PAUSED",
-  });
-  return;
-
   const { orderId, customerName, items, paymentMethod, proofUrl, total } = req.body as {
     orderId: string;
     customerName: string;
@@ -97,6 +111,8 @@ router.post("/orders/save", async (req, res): Promise<void> => {
     res.status(400).json({ error: "Data tidak lengkap" });
     return;
   }
+
+  if (await rejectIfMemberServiceClosed(items, res)) return;
 
   if (hasInvalidMemberPin(items)) {
     res.status(400).json({
@@ -128,12 +144,6 @@ router.post("/orders/save", async (req, res): Promise<void> => {
 });
 
 router.post("/orders", async (req, res): Promise<void> => {
-  res.status(503).json({
-    error: "Penjualan NEW MEMBER FRESH ditutup sementara karena layanan pendaftaran WhatsApp belum tersedia. Mohon jangan melakukan pembayaran.",
-    code: "SALES_TEMPORARILY_PAUSED",
-  });
-  return;
-
   const parsed = CreateOrderBody.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.message });
@@ -142,6 +152,8 @@ router.post("/orders", async (req, res): Promise<void> => {
 
   const { customerName, customerEmail, customerPhone, paymentMethod, notes } = parsed.data;
   const rawItems = req.body?.items;
+  if (await rejectIfMemberServiceClosed(rawItems, res)) return;
+
   if (hasInvalidMemberPin(rawItems)) {
     res.status(400).json({
       error: "PIN / Tanggal lahir NEW MEMBER FRESH harus tepat 6 digit angka.",
