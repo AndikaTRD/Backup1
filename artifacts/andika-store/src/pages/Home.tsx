@@ -13,12 +13,22 @@ const FEATURES = [
 
 export default function Home() {
   const [popupOpen, setPopupOpen] = useState(false);
+  const [memberServiceActive, setMemberServiceActive] = useState(true);
   const [reviews, setReviews] = useState<any[]>([]);
   const [reviewName, setReviewName] = useState("");
   const [reviewComment, setReviewComment] = useState("");
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewMessage, setReviewMessage] = useState("");
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
+  useEffect(() => {
+    const loadServiceStatus = () => fetch("/api/service-status")
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data && typeof data.isActive === "boolean") setMemberServiceActive(data.isActive); })
+      .catch(() => undefined);
+    void loadServiceStatus();
+    const interval = window.setInterval(() => void loadServiceStatus(), 30000);
+    return () => window.clearInterval(interval);
+  }, []);
   useEffect(() => { fetch("/api/reviews").then(r => r.ok ? r.json() : []).then(setReviews).catch(() => setReviews([])); }, []);
   async function submitReview(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -123,10 +133,10 @@ export default function Home() {
 
           <div className="p-5">
             {/* Badge */}
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-violet-500/12 border border-violet-500/20 mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-              <span className="text-[10px] font-bold uppercase tracking-widest text-amber-300">
-                Ditutup sementara
+            <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border mb-4 ${memberServiceActive ? "bg-emerald-500/10 border-emerald-500/20" : "bg-amber-500/10 border-amber-500/20"}`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${memberServiceActive ? "bg-emerald-400 animate-pulse" : "bg-amber-400"}`} />
+              <span className={`text-[10px] font-bold uppercase tracking-widest ${memberServiceActive ? "text-emerald-300" : "text-amber-300"}`}>
+                {memberServiceActive ? "Layanan tersedia" : "Ditutup sementara"}
               </span>
             </div>
 
@@ -171,21 +181,24 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Penjualan dihentikan sementara */}
-            <div className="rounded-xl border border-amber-400/25 bg-amber-500/10 p-4 text-left" role="status">
-              <p className="text-sm font-bold text-amber-200">Penjualan ditutup sementara</p>
-              <p className="mt-1 text-xs leading-relaxed text-amber-100/75">
-                Layanan pendaftaran member melalui WhatsApp sedang tidak tersedia. Pemesanan NEW MEMBER FRESH belum dapat dilakukan. Mohon jangan melakukan pembayaran sampai layanan dibuka kembali.
-              </p>
-            </div>
+            {!memberServiceActive && (
+              <div className="mb-3 rounded-xl border border-amber-400/25 bg-amber-500/10 p-4 text-left" role="status">
+                <p className="text-sm font-bold text-amber-200">Penjualan ditutup sementara</p>
+                <p className="mt-1 text-xs leading-relaxed text-amber-100/75">
+                  Layanan NEW MEMBER FRESH sedang tidak menerima pesanan. Silakan cek kembali nanti.
+                </p>
+              </div>
+            )}
             <button
               type="button"
-              disabled
-              className="mt-3 w-full min-h-12 rounded-xl bg-white/10 text-white/45 font-bold text-sm tracking-wide uppercase flex items-center justify-center gap-2 cursor-not-allowed"
+              onClick={() => { if (memberServiceActive) setPopupOpen(true); }}
+              disabled={!memberServiceActive}
+              className={`mt-3 w-full min-h-12 rounded-xl font-bold text-sm tracking-wide uppercase flex items-center justify-center gap-2 transition-all ${memberServiceActive ? "btn-primary text-white shadow-[0_8px_22px_rgba(109,40,217,0.18)]" : "bg-white/10 text-white/45 cursor-not-allowed"}`}
               data-testid="button-beli"
-              aria-disabled="true"
+              aria-disabled={!memberServiceActive}
             >
-              PEMESANAN DITUTUP SEMENTARA
+              {memberServiceActive ? "BELI SEKARANG" : "PEMESANAN DITUTUP SEMENTARA"}
+              {memberServiceActive && <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />}
             </button>
           </div>
         </motion.div>
