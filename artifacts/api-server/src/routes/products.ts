@@ -9,6 +9,22 @@ import {
 
 const router: IRouter = Router();
 
+router.get("/service-status", async (_req, res): Promise<void> => {
+  try {
+    const [product] = await db.select({ isActive: productsTable.isActive })
+      .from(productsTable)
+      .where(eq(productsTable.name, "NEW MEMBER FRESH"));
+    if (!product) {
+      res.status(404).json({ error: "Produk NEW MEMBER FRESH tidak ditemukan." });
+      return;
+    }
+    res.json({ isActive: product.isActive });
+  } catch (err) {
+    console.error("SERVICE STATUS ERROR:", err);
+    res.status(500).json({ error: "Gagal memuat status layanan." });
+  }
+});
+
 router.get("/products", async (_req, res): Promise<void> => {
   try {
     const products = await db
