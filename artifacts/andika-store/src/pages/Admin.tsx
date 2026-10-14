@@ -378,6 +378,8 @@ export default function Admin() {
   // data
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
+  const [memberServiceActive, setMemberServiceActive] = useState(true);
+  const [serviceToggleLoading, setServiceToggleLoading] = useState(false);
   const knownOrderIdsRef = useRef<Set<string> | null>(null);
 
   // ui
@@ -450,6 +452,40 @@ export default function Admin() {
     }
   }, [toast]);
 
+  async function fetchServiceStatus() {
+    const response = await fetch(`${API}/api/admin/service-status`, { credentials: "include" });
+    if (response.ok) {
+      const data = await response.json() as { isActive: boolean };
+      setMemberServiceActive(data.isActive);
+    }
+  }
+
+  async function toggleMemberService() {
+    if (serviceToggleLoading) return;
+    setServiceToggleLoading(true);
+    try {
+      const response = await fetch(`${API}/api/admin/service-status`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isActive: !memberServiceActive }),
+      });
+      const data = await response.json().catch(() => ({})) as { isActive?: boolean; error?: string };
+      if (!response.ok || typeof data.isActive !== "boolean") {
+        throw new Error(data.error || "Status layanan gagal diperbarui.");
+      }
+      setMemberServiceActive(data.isActive);
+      toast({
+        title: data.isActive ? "Layanan berhasil dibuka" : "Layanan berhasil ditutup",
+        description: data.isActive ? "Pelanggan sekarang dapat melakukan pemesanan." : "Checkout pelanggan sekarang dinonaktifkan.",
+      });
+    } catch (error) {
+      toast({ title: error instanceof Error ? error.message : "Gagal mengubah status layanan", variant: "destructive" });
+    } finally {
+      setServiceToggleLoading(false);
+    }
+  }
+
   async function fetchReviews(status = reviewStatus) {
     const response = await fetch(`${API}/api/admin/reviews?status=${status}`, { credentials: "include" });
     if (response.ok) setReviews(await response.json());
@@ -488,6 +524,7 @@ export default function Admin() {
 
   useEffect(() => {
     if (!isAdmin) return;
+    void fetchServiceStatus();
     void fetchData();
     void runCleanupIfDue();
     // Check for new orders while the admin dashboard is open.
@@ -814,7 +851,27 @@ export default function Admin() {
         )}
 
         {activeView === "products" && (
-          <section className="space-y-4 pb-24"><div className="flex items-center gap-3"><button onClick={()=>setActiveView("home")} className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/70"><ArrowLeft className="h-4 w-4"/></button><div><h2 className="text-lg font-black">Kelola Produk</h2><p className="text-xs text-white/40">Ringkasan produk toko</p></div></div><div className="rounded-2xl border border-white/10 bg-[#111020] p-4"><div className="flex items-center gap-3"><div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500"><Package className="h-5 w-5"/></div><div className="min-w-0 flex-1"><p className="font-bold">NEW MEMBER FRESH</p><p className="mt-1 text-xs text-white/45">Member Fresh Alfamart</p></div><span className="rounded-full bg-amber-500/10 px-2 py-1 text-[10px] font-bold text-amber-300">Ditutup sementara</span></div><div className="mt-4 space-y-2 border-t border-white/10 pt-4 text-sm"><div className="flex justify-between gap-3"><span className="text-white/50">Harga 1–9 member</span><strong>Rp6.500/member</strong></div><div className="flex justify-between gap-3"><span className="text-white/50">Harga 10+ member</span><strong>Rp6.000/member</strong></div></div><p className="mt-4 rounded-xl bg-amber-500/10 p-3 text-xs leading-relaxed text-amber-100/80">Pengubahan harga belum diaktifkan di halaman ini agar tidak mengubah harga checkout tanpa dukungan API penyimpanan yang sesuai.</p></div></section>
+          <section className="space-y-4 pb-24">
+            <div className="flex items-center gap-3">
+              <button onClick={() => setActiveView("home")} className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/70"><ArrowLeft className="h-4 w-4" /></button>
+              <div><h2 className="text-lg font-black">Kelola Produk</h2><p className="text-xs text-white/40">Atur ketersediaan layanan NEW MEMBER FRESH</p></div>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-[#111020] p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500"><Package className="h-5 w-5" /></div>
+                <div className="min-w-0 flex-1"><p className="font-bold">NEW MEMBER FRESH</p><p className="mt-1 text-xs text-white/45">Member Fresh Alfamart</p></div>
+                <span className={`rounded-full px-2 py-1 text-[10px] font-bold ${memberServiceActive ? "bg-emerald-500/10 text-emerald-300" : "bg-amber-500/10 text-amber-300"}`}>{memberServiceActive ? "Aktif" : "Ditutup sementara"}</span>
+              </div>
+              <div className="mt-4 space-y-2 border-t border-white/10 pt-4 text-sm">
+                <div className="flex justify-between gap-3"><span className="text-white/50">Harga 1–9 member</span><strong>Rp6.500/member</strong></div>
+                <div className="flex justify-between gap-3"><span className="text-white/50">Harga 10+ member</span><strong>Rp6.000/member</strong></div>
+              </div>
+              <button onClick={() => void toggleMemberService()} disabled={serviceToggleLoading} className={`mt-4 w-full rounded-xl px-4 py-3 text-sm font-extrabold transition-all disabled:opacity-50 ${memberServiceActive ? "border border-amber-400/25 bg-amber-500/10 text-amber-200 hover:bg-amber-500/20" : "bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white"}`}>
+                {serviceToggleLoading ? "Menyimpan..." : memberServiceActive ? "Tutup Layanan Sementara" : "Buka Layanan & Aktifkan Checkout"}
+              </button>
+              <p className="mt-3 rounded-xl bg-white/5 p-3 text-xs leading-relaxed text-white/50">Perubahan tersimpan di database dan berlaku untuk halaman utama, keranjang, serta validasi checkout. Tidak perlu mengubah kode untuk membuka atau menutup layanan lagi.</p>
+            </div>
+          </section>
         )}
 
         {activeView === "orders" && (
