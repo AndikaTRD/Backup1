@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout";
 import { PaymentPopup } from "@/components/payment-popup";
 import { useCart } from "@/hooks/use-cart";
@@ -17,6 +17,17 @@ function formatRp(n: number): string {
 export default function Cart() {
   const { items, removeItem } = useCart();
   const [paymentOpen, setPaymentOpen] = useState(false);
+  const [memberServiceActive, setMemberServiceActive] = useState(true);
+
+  useEffect(() => {
+    const loadServiceStatus = () => fetch("/api/service-status")
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data && typeof data.isActive === "boolean") setMemberServiceActive(data.isActive); })
+      .catch(() => undefined);
+    void loadServiceStatus();
+    const interval = window.setInterval(() => void loadServiceStatus(), 30000);
+    return () => window.clearInterval(interval);
+  }, []);
 
   const grandTotal = items.reduce(
     (s, i) => s + getEffectiveLineTotal(i.productName, i.qty, i.unitPrice),
@@ -130,21 +141,23 @@ export default function Cart() {
               <span className="text-xl font-black text-violet-300">{formatRp(grandTotal)}</span>
             </div>
 
-            {/* Checkout ditutup sementara */}
-            <div className="mb-3 rounded-xl border border-amber-400/25 bg-amber-500/10 p-3" role="status">
-              <p className="text-xs leading-relaxed text-amber-100/85">
-                Checkout NEW MEMBER FRESH ditutup sementara karena pendaftaran melalui WhatsApp sedang tidak tersedia. Mohon jangan melakukan pembayaran.
-              </p>
-            </div>
+            {!memberServiceActive && (
+              <div className="mb-3 rounded-xl border border-amber-400/25 bg-amber-500/10 p-3" role="status">
+                <p className="text-xs leading-relaxed text-amber-100/85">
+                  Checkout NEW MEMBER FRESH sedang ditutup oleh admin. Pesanan belum dapat dikirim.
+                </p>
+              </div>
+            )}
             <button
               type="button"
-              disabled
-              aria-disabled="true"
-              className="w-full min-h-14 rounded-2xl bg-white/10 text-white/40 font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-2 cursor-not-allowed"
+              onClick={() => { if (memberServiceActive) setPaymentOpen(true); }}
+              disabled={!memberServiceActive}
+              aria-disabled={!memberServiceActive}
+              className={`w-full min-h-14 rounded-2xl font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-2 transition-all ${memberServiceActive ? "btn-primary text-white shadow-lg shadow-violet-950/30" : "bg-white/10 text-white/40 cursor-not-allowed"}`}
               data-testid="button-checkout"
             >
               <CreditCard className="w-4 h-4" />
-              Checkout Ditutup
+              {memberServiceActive ? "Checkout" : "Checkout Ditutup"}
             </button>
           </>
         )}
