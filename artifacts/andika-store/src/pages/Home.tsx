@@ -124,9 +124,9 @@ export default function Home() {
           <div className="p-5">
             {/* Badge */}
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-violet-500/12 border border-violet-500/20 mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
-              <span className="text-[10px] font-bold uppercase tracking-widest text-violet-300">
-                Available
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+              <span className="text-[10px] font-bold uppercase tracking-widest text-amber-300">
+                Ditutup sementara
               </span>
             </div>
 
@@ -171,14 +171,21 @@ export default function Home() {
               ))}
             </div>
 
-            {/* CTA */}
+            {/* Penjualan dihentikan sementara */}
+            <div className="rounded-xl border border-amber-400/25 bg-amber-500/10 p-4 text-left" role="status">
+              <p className="text-sm font-bold text-amber-200">Penjualan ditutup sementara</p>
+              <p className="mt-1 text-xs leading-relaxed text-amber-100/75">
+                Layanan pendaftaran member melalui WhatsApp sedang tidak tersedia. Pemesanan NEW MEMBER FRESH belum dapat dilakukan. Mohon jangan melakukan pembayaran sampai layanan dibuka kembali.
+              </p>
+            </div>
             <button
-              onClick={() => setPopupOpen(true)}
-              className="w-full min-h-12 rounded-xl btn-primary text-white font-bold text-sm tracking-wide uppercase flex items-center justify-center gap-2 group shadow-[0_8px_22px_rgba(109,40,217,0.18)]"
+              type="button"
+              disabled
+              className="mt-3 w-full min-h-12 rounded-xl bg-white/10 text-white/45 font-bold text-sm tracking-wide uppercase flex items-center justify-center gap-2 cursor-not-allowed"
               data-testid="button-beli"
+              aria-disabled="true"
             >
-              BELI SEKARANG
-              <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              PEMESANAN DITUTUP SEMENTARA
             </button>
           </div>
         </motion.div>
