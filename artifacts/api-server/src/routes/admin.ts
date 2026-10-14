@@ -1,5 +1,5 @@
 import { Router, type IRouter, type Request, type Response, type NextFunction } from "express";
-import { db, ordersTable } from "@workspace/db";
+import { db, ordersTable, productsTable } from "@workspace/db";
 import { eq, desc, gte } from "drizzle-orm";
 import {
   AdminListOrdersQueryParams,
@@ -51,6 +51,34 @@ router.post("/admin/logout", (req: Request, res: Response) => {
 
 router.get("/admin/me", (req: Request, res: Response) => {
   res.json({ isAdmin: !!req.session.isAdmin });
+});
+
+router.get("/admin/service-status", requireAdmin, async (_req, res): Promise<void> => {
+  const [product] = await db.select({ isActive: productsTable.isActive })
+    .from(productsTable)
+    .where(eq(productsTable.name, "NEW MEMBER FRESH"));
+  if (!product) {
+    res.status(404).json({ error: "Produk NEW MEMBER FRESH tidak ditemukan di database." });
+    return;
+  }
+  res.json({ isActive: product.isActive });
+});
+
+router.patch("/admin/service-status", requireAdmin, async (req, res): Promise<void> => {
+  const isActive = req.body?.isActive;
+  if (typeof isActive !== "boolean") {
+    res.status(400).json({ error: "isActive harus berupa true atau false." });
+    return;
+  }
+  const [product] = await db.update(productsTable)
+    .set({ isActive, updatedAt: new Date() })
+    .where(eq(productsTable.name, "NEW MEMBER FRESH"))
+    .returning({ id: productsTable.id, isActive: productsTable.isActive });
+  if (!product) {
+    res.status(404).json({ error: "Produk NEW MEMBER FRESH tidak ditemukan di database." });
+    return;
+  }
+  res.json({ isActive: product.isActive });
 });
 
 router.get("/admin/orders", requireAdmin, async (req, res): Promise<void> => {
