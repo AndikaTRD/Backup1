@@ -52,6 +52,10 @@ router.post("/cart", async (req, res): Promise<void> => {
     res.status(404).json({ error: "Product not found" });
     return;
   }
+  if (!product.isActive) {
+    res.status(409).json({ error: "Layanan NEW MEMBER FRESH sedang ditutup sementara oleh admin." });
+    return;
+  }
 
   const items = cartStore.get(sessionId) ?? [];
   const existingIdx = items.findIndex((i) => i.productId === productId);
