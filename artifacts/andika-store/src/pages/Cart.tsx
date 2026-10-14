@@ -130,14 +130,21 @@ export default function Cart() {
               <span className="text-xl font-black text-violet-300">{formatRp(grandTotal)}</span>
             </div>
 
-            {/* Checkout */}
+            {/* Checkout ditutup sementara */}
+            <div className="mb-3 rounded-xl border border-amber-400/25 bg-amber-500/10 p-3" role="status">
+              <p className="text-xs leading-relaxed text-amber-100/85">
+                Checkout NEW MEMBER FRESH ditutup sementara karena pendaftaran melalui WhatsApp sedang tidak tersedia. Mohon jangan melakukan pembayaran.
+              </p>
+            </div>
             <button
-              onClick={() => setPaymentOpen(true)}
-              className="w-full min-h-14 rounded-2xl btn-primary text-white font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-2 shadow-lg shadow-violet-950/30"
+              type="button"
+              disabled
+              aria-disabled="true"
+              className="w-full min-h-14 rounded-2xl bg-white/10 text-white/40 font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-2 cursor-not-allowed"
               data-testid="button-checkout"
             >
               <CreditCard className="w-4 h-4" />
-              Checkout
+              Checkout Ditutup
             </button>
           </>
         )}
