@@ -78,6 +78,12 @@ function serializeOrder(order: typeof ordersTable.$inferSelect) {
 }
 
 router.post("/orders/save", async (req, res): Promise<void> => {
+  res.status(503).json({
+    error: "Penjualan NEW MEMBER FRESH ditutup sementara karena layanan pendaftaran WhatsApp belum tersedia. Mohon jangan melakukan pembayaran.",
+    code: "SALES_TEMPORARILY_PAUSED",
+  });
+  return;
+
   const { orderId, customerName, items, paymentMethod, proofUrl, total } = req.body as {
     orderId: string;
     customerName: string;
@@ -122,6 +128,12 @@ router.post("/orders/save", async (req, res): Promise<void> => {
 });
 
 router.post("/orders", async (req, res): Promise<void> => {
+  res.status(503).json({
+    error: "Penjualan NEW MEMBER FRESH ditutup sementara karena layanan pendaftaran WhatsApp belum tersedia. Mohon jangan melakukan pembayaran.",
+    code: "SALES_TEMPORARILY_PAUSED",
+  });
+  return;
+
   const parsed = CreateOrderBody.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.message });
