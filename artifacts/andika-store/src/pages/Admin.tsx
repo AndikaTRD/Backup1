@@ -168,7 +168,7 @@ function OrderCard({
       toast({ title: "Kode tidak tersedia", variant: "destructive" });
       return;
     }
-    const text = `AKTIVASI#${firstItem.kode}\nPIN / TGL LAHIR : ${firstItem.pin ?? "-"}\nQTY JUMLAH MEMBER : ${totalQty}`;
+    const text = `AKTIVASI#${firstItem.kode}\nTGL LAHIR : ${firstItem.pin ?? "-"}\nPIN : \nQTY JUMLAH MEMBER : ${totalQty}`;
     await navigator.clipboard.writeText(text);
     toast({ title: "Format aktivasi berhasil disalin." });
   }
