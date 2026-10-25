@@ -3,6 +3,7 @@ import { Layout } from "@/components/layout";
 import { OrderPopup } from "@/components/order-popup";
 import { motion } from "framer-motion";
 import { Shield, Zap, Clock, Headphones, ChevronRight, Star, Sparkles } from "lucide-react";
+import { useMemberPricing } from "@/hooks/use-member-pricing";
 
 const FEATURES = [
   { icon: Shield, label: "100% Member Baru" },
@@ -12,6 +13,7 @@ const FEATURES = [
 ];
 
 export default function Home() {
+  const { pricing } = useMemberPricing();
   const [popupOpen, setPopupOpen] = useState(false);
   const [memberServiceActive, setMemberServiceActive] = useState(true);
   const [reviews, setReviews] = useState<any[]>([]);
@@ -107,8 +109,8 @@ export default function Home() {
       {/* Store benefits */}
       <section className="relative z-10 mx-auto -mt-1 mb-10 grid w-full max-w-2xl grid-cols-3 gap-2 px-4 sm:gap-3">
         {[
-          { value: "Rp6.500", label: "Harga 1–9 member", icon: Star },
-          { value: "Rp6.000", label: "Mulai 10 member", icon: Zap },
+          { value: `Rp${pricing.regularPrice.toLocaleString("id-ID")}`, label: `Harga 1–${pricing.bulkMin - 1} member`, icon: Star },
+          { value: `Rp${pricing.bulkPrice.toLocaleString("id-ID")}`, label: `Mulai ${pricing.bulkMin} member`, icon: Zap },
           { value: "Responsif", label: "Bantuan admin", icon: Headphones },
         ].map(({ value, label, icon: Icon }) => (
           <div key={label} className="rounded-2xl border border-violet-300/15 bg-gradient-to-b from-white/[0.045] to-white/[0.015] px-2 py-4 text-center shadow-[0_8px_28px_rgba(0,0,0,0.16)] sm:px-4">
@@ -151,21 +153,21 @@ export default function Home() {
                 <Zap className="h-4 w-4 text-emerald-300" />
               </div>
               <p className="text-xs text-emerald-200/90 leading-relaxed text-left">
-                <span className="font-bold">Lebih hemat Rp500 per member.</span>
-                <br />Harga Rp6.000/member untuk pembelian 10 member atau lebih.
+                <span className="font-bold">Harga grosir lebih hemat.</span>
+                <br />Harga Rp{pricing.bulkPrice.toLocaleString("id-ID")}/member untuk pembelian {pricing.bulkMin} member atau lebih.
               </p>
             </div>
             <div className="rounded-xl border border-white/6 bg-white/3 overflow-hidden mb-5">
               <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/5">
-                <span className="text-xs text-white/45">1 – 9 Member</span>
-                <span className="text-sm font-black text-white">Rp6.500<span className="text-xs font-normal text-white/40">/member</span></span>
+                <span className="text-xs text-white/45">1 – {pricing.bulkMin - 1} Member</span>
+                <span className="text-sm font-black text-white">Rp{pricing.regularPrice.toLocaleString("id-ID")}<span className="text-xs font-normal text-white/40">/member</span></span>
               </div>
               <div className="flex items-center justify-between px-4 py-2.5 bg-violet-500/8">
                 <div className="flex items-center gap-1.5">
                   <Star className="w-3 h-3 text-violet-400 fill-violet-400" />
-                  <span className="text-xs text-violet-300 font-semibold">≥ 10 Member</span>
+                  <span className="text-xs text-violet-300 font-semibold">≥ {pricing.bulkMin} Member</span>
                 </div>
-                <span className="text-sm font-black text-violet-300">Rp6.000<span className="text-xs font-normal text-violet-400/60">/member</span></span>
+                <span className="text-sm font-black text-violet-300">Rp{pricing.bulkPrice.toLocaleString("id-ID")}<span className="text-xs font-normal text-violet-400/60">/member</span></span>
               </div>
             </div>
 
