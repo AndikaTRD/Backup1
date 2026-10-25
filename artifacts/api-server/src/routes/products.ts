@@ -1,6 +1,7 @@
 import { Router, type IRouter } from "express";
 import { db, productsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
+import { getMemberPricing } from "../lib/member-pricing";
 import {
   GetProductParams,
   GetProductResponse,
@@ -22,6 +23,16 @@ router.get("/service-status", async (_req, res): Promise<void> => {
   } catch (err) {
     console.error("SERVICE STATUS ERROR:", err);
     res.status(500).json({ error: "Gagal memuat status layanan." });
+  }
+});
+
+router.get("/member-pricing", async (_req, res): Promise<void> => {
+  try {
+    res.setHeader("Cache-Control", "no-store");
+    res.json(await getMemberPricing());
+  } catch (err) {
+    console.error("MEMBER PRICING ERROR:", err);
+    res.status(500).json({ error: "Gagal memuat harga member." });
   }
 });
 
