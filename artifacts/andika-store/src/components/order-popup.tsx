@@ -1,11 +1,11 @@
 import { useState } from "react";
+import { useMemberPricing } from "@/hooks/use-member-pricing";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ShoppingCart } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useLocation } from "wouter";
 import {
   getNewMemberFreshUnitPrice,
-
 } from "@/lib/member-pricing";
 
 interface OrderPopupProps {
@@ -18,6 +18,7 @@ function formatRp(n: number): string {
 }
 
 export function OrderPopup({ open, onClose }: OrderPopupProps) {
+  const { pricing } = useMemberPricing();
   const [qty, setQty] = useState<string>("");
   const [kode, setKode] = useState("");
   const [pin, setPin] = useState("");
