@@ -1,9 +1,10 @@
 import { useState, useRef } from "react";
+import { useMemberPricing } from "@/hooks/use-member-pricing";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Upload, CheckCircle2, Loader2 } from "lucide-react";
 import {
   getNewMemberFreshUnitPrice,
-  NEW_MEMBER_FRESH_BULK_MIN,
+
 } from "@/lib/member-pricing";
 
 interface PurchasePopupProps {
@@ -25,6 +26,7 @@ function formatRupiah(amount: number): string {
 type PaymentMethod = "QRIS" | "TRANSFER";
 
 export function PurchasePopup({ open, onClose }: PurchasePopupProps) {
+  const { pricing } = useMemberPricing();
   const [nama, setNama] = useState("");
   const [jumlah, setJumlah] = useState(1);
   const [payment, setPayment] = useState<PaymentMethod>("QRIS");
@@ -34,7 +36,7 @@ export function PurchasePopup({ open, onClose }: PurchasePopupProps) {
   const [error, setError] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const unitPrice = getNewMemberFreshUnitPrice(jumlah);
+  const unitPrice = getNewMemberFreshUnitPrice(jumlah, pricing);
   const total = unitPrice * jumlah;
 
   function handleJumlahChange(val: string) {
@@ -238,7 +240,7 @@ export function PurchasePopup({ open, onClose }: PurchasePopupProps) {
                     +
                   </button>
                 </div>
-                {jumlah >= NEW_MEMBER_FRESH_BULK_MIN && (
+                {jumlah >= pricing.bulkMin && (
                   <motion.p
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
