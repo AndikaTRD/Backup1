@@ -5,7 +5,7 @@ import { useCart } from "@/hooks/use-cart";
 import { useLocation } from "wouter";
 import {
   getNewMemberFreshUnitPrice,
-  NEW_MEMBER_FRESH_BULK_MIN,
+
 } from "@/lib/member-pricing";
 
 interface OrderPopupProps {
@@ -26,7 +26,7 @@ export function OrderPopup({ open, onClose }: OrderPopupProps) {
   const [, setLocation] = useLocation();
 
   const qtyNum = parseInt(qty, 10) || 0;
-  const unitPrice = getNewMemberFreshUnitPrice(qtyNum);
+  const unitPrice = getNewMemberFreshUnitPrice(qtyNum, pricing);
   const total = qtyNum > 0 ? unitPrice * qtyNum : 0;
   const hasCalc = qtyNum >= 1 && kode.trim() && /^\d{6}$/.test(pin);
 
@@ -188,7 +188,7 @@ export function OrderPopup({ open, onClose }: OrderPopupProps) {
                         <span className="text-white font-bold text-right">{qtyNum}</span>
                         <span className="text-white/40 font-medium">HARGA/MEMBER</span>
                         <span className="text-white font-bold text-right">{formatRp(unitPrice)}</span>
-                        {qtyNum >= NEW_MEMBER_FRESH_BULK_MIN && (
+                        {qtyNum >= pricing.bulkMin && (
                           <>
                             <span className="col-span-2 text-[10px] text-violet-400 font-semibold -mt-0.5">
                               ✓ Harga bulk aktif (≥10 member)
