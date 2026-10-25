@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Upload, CheckCircle2, Loader2, Copy } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
+import { useMemberPricing } from "@/hooks/use-member-pricing";
 import { useLocation } from "wouter";
 import {
   getEffectiveLineTotal,
@@ -84,10 +85,11 @@ export function PaymentPopup({ open, onClose }: PaymentPopupProps) {
   const [copied, setCopied] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const { items, clearCart } = useCart();
+  const { pricing } = useMemberPricing();
   const [, setLocation] = useLocation();
 
   const grandTotal = items.reduce(
-    (s, i) => s + getEffectiveLineTotal(i.productName, i.qty, i.unitPrice),
+    (s, i) => s + getEffectiveLineTotal(i.productName, i.qty, i.unitPrice, pricing),
     0,
   );
 
@@ -144,7 +146,7 @@ export function PaymentPopup({ open, onClose }: PaymentPopupProps) {
           customerName: nama.trim(),
           items: items.map(item => ({
             productName: item.productName,
-            price: getEffectiveUnitPrice(item.productName, item.qty, item.unitPrice),
+            price: getEffectiveUnitPrice(item.productName, item.qty, item.unitPrice, pricing),
             quantity: item.qty,
             kode: item.kode,
             pin: item.pin,
@@ -170,7 +172,7 @@ export function PaymentPopup({ open, onClose }: PaymentPopupProps) {
         `AKTIVASI#${item.kode}`,
         `PIN / TGL LAHIR : ${item.pin}`,
         `JUMLAH QTY MEMBER : ${item.qty}`,
-        `TOTAL : ${formatRp(getEffectiveLineTotal(item.productName, item.qty, item.unitPrice))}`,
+        `TOTAL : ${formatRp(getEffectiveLineTotal(item.productName, item.qty, item.unitPrice, pricing))}`,
       ].join("\n")
     ).join("\n\n");
 
