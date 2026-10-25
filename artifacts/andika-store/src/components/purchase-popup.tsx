@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Upload, CheckCircle2, Loader2 } from "lucide-react";
 import {
   getNewMemberFreshUnitPrice,
-
 } from "@/lib/member-pricing";
 
 interface PurchasePopupProps {
@@ -246,7 +245,7 @@ export function PurchasePopup({ open, onClose }: PurchasePopupProps) {
                     animate={{ opacity: 1, height: "auto" }}
                     className="text-xs text-violet-400 mt-1.5 font-medium"
                   >
-                    Harga bulk aktif: {formatRupiah(getNewMemberFreshUnitPrice(jumlah))}/member
+                    Harga bulk aktif: {formatRupiah(getNewMemberFreshUnitPrice(jumlah, pricing))}/member
                   </motion.p>
                 )}
               </div>
