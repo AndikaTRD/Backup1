@@ -192,7 +192,7 @@ export function OrderPopup({ open, onClose }: OrderPopupProps) {
                         {qtyNum >= pricing.bulkMin && (
                           <>
                             <span className="col-span-2 text-[10px] text-violet-400 font-semibold -mt-0.5">
-                              ✓ Harga bulk aktif (≥10 member)
+                              ✓ Harga bulk aktif (≥{pricing.bulkMin} member)
                             </span>
                           </>
                         )}
