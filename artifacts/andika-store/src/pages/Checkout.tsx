@@ -183,7 +183,7 @@ export default function Checkout() {
                   {cart.items
                     .reduce(
                       (sum, item) =>
-                        sum + getEffectiveUnitPrice(item.productName, item.quantity, item.price) * item.quantity,
+                        sum + getEffectiveUnitPrice(item.productName, item.quantity, item.price, pricing) * item.quantity,
                       0,
                     )
                     .toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}
