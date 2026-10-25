@@ -13,6 +13,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { getEffectiveUnitPrice } from "@/lib/member-pricing";
+import { useMemberPricing } from "@/hooks/use-member-pricing";
 
 const checkoutSchema = z.object({
   customerName: z.string().min(2, "Name is required"),
@@ -25,6 +26,7 @@ const checkoutSchema = z.object({
 type CheckoutFormValues = z.infer<typeof checkoutSchema>;
 
 export default function Checkout() {
+  const { pricing } = useMemberPricing();
   const { sessionId } = useSession();
   const { data: cart, isLoading: cartLoading } = useGetCart({ sessionId }, { query: { enabled: !!sessionId } });
   const createOrder = useCreateOrder();
@@ -56,7 +58,7 @@ export default function Checkout() {
           sessionId,
            items: cart.items.map(item => ({
              ...item,
-             price: getEffectiveUnitPrice(item.productName, item.quantity, item.price),
+             price: getEffectiveUnitPrice(item.productName, item.quantity, item.price, pricing),
            })),
         }
       },
