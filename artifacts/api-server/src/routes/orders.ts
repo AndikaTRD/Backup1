@@ -13,7 +13,7 @@ import {
   UploadPaymentProofResponse,
 } from "@workspace/api-zod";
 import { logger } from "../lib/logger";
-import { getEffectiveUnitPrice } from "../lib/member-pricing";
+import { getEffectiveUnitPrice, getMemberPricing } from "../lib/member-pricing";
 
 const router: IRouter = Router();
 const MEMBER_PRODUCT_NAME = "NEW MEMBER FRESH";
@@ -58,10 +58,10 @@ async function rejectIfMemberServiceClosed(items: unknown, res: Response): Promi
   return false;
 }
 
-function normalizeMemberPricing<T extends OrderItem>(items: T[]): T[] {
+function normalizeMemberPricing<T extends OrderItem>(items: T[], pricing: Awaited<ReturnType<typeof getMemberPricing>>): T[] {
   return items.map((item) => ({
     ...item,
-    price: getEffectiveUnitPrice(item.productName, item.quantity, item.price),
+    price: getEffectiveUnitPrice(item.productName, item.quantity, item.price, pricing),
   }));
 }
 
@@ -121,7 +121,8 @@ router.post("/orders/save", async (req, res): Promise<void> => {
     return;
   }
 
-  const normalizedItems = normalizeMemberPricing(items);
+  const pricing = await getMemberPricing();
+  const normalizedItems = normalizeMemberPricing(items, pricing);
   const normalizedTotal = calculateOrderTotal(normalizedItems);
 
   const [order] = await db
@@ -161,7 +162,8 @@ router.post("/orders", async (req, res): Promise<void> => {
     return;
   }
 
-  const normalizedItems = normalizeMemberPricing(rawItems as OrderItem[]);
+  const pricing = await getMemberPricing();
+  const normalizedItems = normalizeMemberPricing(rawItems as OrderItem[], pricing);
   const total = calculateOrderTotal(normalizedItems);
   const orderId = generateOrderId();
 
