@@ -1,6 +1,7 @@
 import { Router, type IRouter, type Request, type Response, type NextFunction } from "express";
 import { db, ordersTable, productsTable } from "@workspace/db";
 import { eq, desc, gte } from "drizzle-orm";
+import { getMemberPricing, saveMemberPricing } from "../lib/member-pricing";
 import {
   AdminListOrdersQueryParams,
   AdminListOrdersResponse,
@@ -79,6 +80,23 @@ router.patch("/admin/service-status", requireAdmin, async (req, res): Promise<vo
     return;
   }
   res.json({ isActive: product.isActive });
+});
+
+router.get("/admin/member-pricing", requireAdmin, async (_req, res): Promise<void> => {
+  try {
+    res.json(await getMemberPricing());
+  } catch (error) {
+    res.status(500).json({ error: error instanceof Error ? error.message : "Gagal memuat pengaturan harga." });
+  }
+});
+
+router.patch("/admin/member-pricing", requireAdmin, async (req, res): Promise<void> => {
+  try {
+    const pricing = await saveMemberPricing(req.body);
+    res.json(pricing);
+  } catch (error) {
+    res.status(400).json({ error: error instanceof Error ? error.message : "Pengaturan harga tidak valid." });
+  }
 });
 
 router.get("/admin/orders", requireAdmin, async (req, res): Promise<void> => {
