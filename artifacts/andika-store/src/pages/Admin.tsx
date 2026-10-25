@@ -24,6 +24,7 @@ import {
   DollarSign,
   CalendarDays,
   MessageSquare,
+  Save,
 } from "lucide-react";
 import {
   Accordion,
@@ -32,6 +33,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useToast } from "@/hooks/use-toast";
+import { DEFAULT_MEMBER_PRICING, type MemberPricing } from "@/lib/member-pricing";
 
 // Use relative URL so requests stay on the same origin (works through
 // Replit's proxy and Railway's unified deployment). The proxy routes
@@ -380,6 +382,9 @@ export default function Admin() {
   const [loading, setLoading] = useState(false);
   const [memberServiceActive, setMemberServiceActive] = useState(true);
   const [serviceToggleLoading, setServiceToggleLoading] = useState(false);
+  const [memberPricing, setMemberPricing] = useState<MemberPricing>(DEFAULT_MEMBER_PRICING);
+  const [pricingSaving, setPricingSaving] = useState(false);
+  const [pricingLoading, setPricingLoading] = useState(false);
   const knownOrderIdsRef = useRef<Set<string> | null>(null);
 
   // ui
@@ -460,6 +465,48 @@ export default function Admin() {
     }
   }
 
+  async function fetchMemberPricing() {
+    setPricingLoading(true);
+    try {
+      const response = await fetch(`${API}/api/admin/member-pricing`, { credentials: "include", cache: "no-store" });
+      const data = await response.json().catch(() => null) as MemberPricing | { error?: string } | null;
+      if (!response.ok || !data || !("regularPrice" in data)) throw new Error("Gagal memuat pengaturan harga member.");
+      setMemberPricing(data);
+    } catch (error) {
+      toast({ title: error instanceof Error ? error.message : "Gagal memuat harga", variant: "destructive" });
+    } finally {
+      setPricingLoading(false);
+    }
+  }
+
+  async function saveMemberPricing() {
+    if (pricingSaving) return;
+    if (![memberPricing.regularPrice, memberPricing.bulkPrice, memberPricing.bulkMin].every(Number.isSafeInteger) ||
+        memberPricing.regularPrice < 0 || memberPricing.bulkPrice < 0 ||
+        memberPricing.regularPrice > 100000000 || memberPricing.bulkPrice > 100000000 ||
+        memberPricing.bulkMin < 2 || memberPricing.bulkMin > 100000) {
+      toast({ title: "Periksa kembali harga dan minimal grosir.", variant: "destructive" });
+      return;
+    }
+    setPricingSaving(true);
+    try {
+      const response = await fetch(`${API}/api/admin/member-pricing`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(memberPricing),
+      });
+      const data = await response.json().catch(() => ({})) as MemberPricing | { error?: string };
+      if (!response.ok || !("regularPrice" in data)) throw new Error("error" in data ? data.error || "Gagal menyimpan harga." : "Gagal menyimpan harga.");
+      setMemberPricing(data);
+      toast({ title: "Harga member berhasil disimpan", description: "Harga baru berlaku untuk pesanan baru." });
+    } catch (error) {
+      toast({ title: error instanceof Error ? error.message : "Gagal menyimpan harga", variant: "destructive" });
+    } finally {
+      setPricingSaving(false);
+    }
+  }
+
   async function toggleMemberService() {
     if (serviceToggleLoading) return;
     setServiceToggleLoading(true);
@@ -525,6 +572,7 @@ export default function Admin() {
   useEffect(() => {
     if (!isAdmin) return;
     void fetchServiceStatus();
+    void fetchMemberPricing();
     void fetchData();
     void runCleanupIfDue();
     // Check for new orders while the admin dashboard is open.
@@ -854,7 +902,7 @@ export default function Admin() {
           <section className="space-y-4 pb-24">
             <div className="flex items-center gap-3">
               <button onClick={() => setActiveView("home")} className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/70"><ArrowLeft className="h-4 w-4" /></button>
-              <div><h2 className="text-lg font-black">Kelola Produk</h2><p className="text-xs text-white/40">Atur ketersediaan layanan NEW MEMBER FRESH</p></div>
+              <div><h2 className="text-lg font-black">Kelola Produk</h2><p className="text-xs text-white/40">Atur harga dan ketersediaan layanan NEW MEMBER FRESH</p></div>
             </div>
             <div className="rounded-2xl border border-white/10 bg-[#111020] p-4">
               <div className="flex items-center gap-3">
@@ -862,9 +910,27 @@ export default function Admin() {
                 <div className="min-w-0 flex-1"><p className="font-bold">NEW MEMBER FRESH</p><p className="mt-1 text-xs text-white/45">Member Fresh Alfamart</p></div>
                 <span className={`rounded-full px-2 py-1 text-[10px] font-bold ${memberServiceActive ? "bg-emerald-500/10 text-emerald-300" : "bg-amber-500/10 text-amber-300"}`}>{memberServiceActive ? "Aktif" : "Ditutup sementara"}</span>
               </div>
-              <div className="mt-4 space-y-2 border-t border-white/10 pt-4 text-sm">
-                <div className="flex justify-between gap-3"><span className="text-white/50">Harga 1–9 member</span><strong>Rp6.500/member</strong></div>
-                <div className="flex justify-between gap-3"><span className="text-white/50">Harga 10+ member</span><strong>Rp6.000/member</strong></div>
+              <div className="mt-4 space-y-4 border-t border-white/10 pt-4">
+                <div>
+                  <label className="mb-1.5 block text-xs font-bold text-white/60">Harga normal per member (Rp)</label>
+                  <input type="number" min="0" step="1" value={memberPricing.regularPrice} disabled={pricingLoading || pricingSaving} onChange={(e) => setMemberPricing((p) => ({ ...p, regularPrice: Number(e.target.value) }))} className="w-full rounded-xl border border-white/10 bg-black/20 px-3 py-3 text-sm text-white outline-none focus:border-violet-400/50 disabled:opacity-50" />
+                  <p className="mt-1 text-[10px] text-white/35">Digunakan untuk pembelian di bawah batas grosir.</p>
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-xs font-bold text-white/60">Harga grosir per member (Rp)</label>
+                  <input type="number" min="0" step="1" value={memberPricing.bulkPrice} disabled={pricingLoading || pricingSaving} onChange={(e) => setMemberPricing((p) => ({ ...p, bulkPrice: Number(e.target.value) }))} className="w-full rounded-xl border border-white/10 bg-black/20 px-3 py-3 text-sm text-white outline-none focus:border-violet-400/50 disabled:opacity-50" />
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-xs font-bold text-white/60">Minimal pembelian grosir (member)</label>
+                  <input type="number" min="2" max="100000" step="1" value={memberPricing.bulkMin} disabled={pricingLoading || pricingSaving} onChange={(e) => setMemberPricing((p) => ({ ...p, bulkMin: Number(e.target.value) }))} className="w-full rounded-xl border border-white/10 bg-black/20 px-3 py-3 text-sm text-white outline-none focus:border-violet-400/50 disabled:opacity-50" />
+                </div>
+                <div className="rounded-xl bg-white/5 p-3 text-xs text-white/50">
+                  Saat ini: 1–{Math.max(1, memberPricing.bulkMin - 1)} member = <strong className="text-white">{formatRp(memberPricing.regularPrice)}</strong>/member; mulai {memberPricing.bulkMin} member = <strong className="text-white">{formatRp(memberPricing.bulkPrice)}</strong>/member.
+                </div>
+                <button onClick={() => void saveMemberPricing()} disabled={pricingLoading || pricingSaving} className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-4 py-3 text-sm font-extrabold text-white shadow-lg shadow-violet-950/30 disabled:opacity-50">
+                  <Save className="h-4 w-4" />{pricingSaving ? "Menyimpan..." : pricingLoading ? "Memuat harga..." : "Simpan Harga Member"}
+                </button>
+                <p className="text-[10px] leading-relaxed text-white/35">Harga tersimpan di database dan berlaku otomatis untuk pesanan baru. Pesanan lama tetap menggunakan harga saat dibuat.</p>
               </div>
               <button onClick={() => void toggleMemberService()} disabled={serviceToggleLoading} className={`mt-4 w-full rounded-xl px-4 py-3 text-sm font-extrabold transition-all disabled:opacity-50 ${memberServiceActive ? "border border-amber-400/25 bg-amber-500/10 text-amber-200 hover:bg-amber-500/20" : "bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white"}`}>
                 {serviceToggleLoading ? "Menyimpan..." : memberServiceActive ? "Tutup Layanan Sementara" : "Buka Layanan & Aktifkan Checkout"}
