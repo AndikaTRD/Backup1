@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout";
 import { PaymentPopup } from "@/components/payment-popup";
 import { useCart } from "@/hooks/use-cart";
+import { useMemberPricing } from "@/hooks/use-member-pricing";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart, Trash2, ArrowLeft, CreditCard } from "lucide-react";
 import { Link } from "wouter";
@@ -16,6 +17,7 @@ function formatRp(n: number): string {
 
 export default function Cart() {
   const { items, removeItem } = useCart();
+  const { pricing } = useMemberPricing();
   const [paymentOpen, setPaymentOpen] = useState(false);
   const [memberServiceActive, setMemberServiceActive] = useState(true);
 
@@ -30,7 +32,7 @@ export default function Cart() {
   }, []);
 
   const grandTotal = items.reduce(
-    (s, i) => s + getEffectiveLineTotal(i.productName, i.qty, i.unitPrice),
+    (s, i) => s + getEffectiveLineTotal(i.productName, i.qty, i.unitPrice, pricing),
     0,
   );
   const isEmpty = items.length === 0;
@@ -119,13 +121,13 @@ export default function Cart() {
                         <div className="rounded-lg bg-white/4 px-2.5 py-2 text-center">
                           <p className="text-white/35 text-[9px] uppercase tracking-wider mb-0.5">Harga</p>
                             <p className="text-white font-bold">
-                              {formatRp(getEffectiveUnitPrice(item.productName, item.qty, item.unitPrice))}
+                              {formatRp(getEffectiveUnitPrice(item.productName, item.qty, item.unitPrice, pricing))}
                             </p>
                         </div>
                         <div className="rounded-lg bg-violet-500/10 border border-violet-500/20 px-2.5 py-2 text-center">
                           <p className="text-violet-400/70 text-[9px] uppercase tracking-wider mb-0.5">Total</p>
                           <p className="text-violet-300 font-black">
-                            {formatRp(getEffectiveLineTotal(item.productName, item.qty, item.unitPrice))}
+                            {formatRp(getEffectiveLineTotal(item.productName, item.qty, item.unitPrice, pricing))}
                           </p>
                         </div>
                       </div>
