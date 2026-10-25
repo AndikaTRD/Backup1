@@ -160,7 +160,7 @@ export default function Checkout() {
               
               <div className="space-y-4 mb-6 max-h-[300px] overflow-y-auto pr-2">
                 {cart.items.map(item => {
-                  const effectivePrice = getEffectiveUnitPrice(item.productName, item.quantity, item.price);
+                  const effectivePrice = getEffectiveUnitPrice(item.productName, item.quantity, item.price, pricing);
                   return (
                   <div key={item.productId} className="flex justify-between items-center">
                     <div>
