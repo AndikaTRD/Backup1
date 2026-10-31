@@ -92,6 +92,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
               {APP_CONFIG.version}
             </p>
           </div>
+
+          <p className="mt-3 text-center text-[10px] font-medium tracking-[0.12em] text-white/35">
+            Created by <span className="font-bold tracking-[0.16em] text-violet-200/65">GUADS</span>
+          </p>
         </div>
       </footer>
     </div>
